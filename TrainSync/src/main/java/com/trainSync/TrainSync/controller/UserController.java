@@ -16,6 +16,7 @@ import com.trainSync.TrainSync.dto.UserUpdateRequest;
 import com.trainSync.TrainSync.model.UserDetails;
 import com.trainSync.TrainSync.repository.UserDetailsRepository;
 import com.trainSync.TrainSync.service.JwtService;
+import com.trainSync.TrainSync.service.SupabaseStorageService;
 
 /**
  * Author: Sajal Gupta Date: Nov 7, 2025
@@ -30,6 +31,9 @@ public class UserController {
 
 	@Autowired
 	private JwtService jwtService;
+	
+	@Autowired
+	private SupabaseStorageService storageService;
 
 	/**
 	 * 
@@ -75,6 +79,12 @@ public class UserController {
 			UserDetails user = optionalUser.get();
 			user.setName(request.getName());
 			user.setAge(request.getAge());
+			
+			 if (request.getProfilePictureBase64() != null && !request.getProfilePictureBase64().isEmpty()) {
+		            String fileName = userId + ".png";
+		            String publicUrl = storageService.uploadBase64Image(request.getProfilePictureBase64(), fileName);
+		            user.setProfilePictureUrl(publicUrl);
+		        }
 
 			userDetailsRepository.save(user);
 

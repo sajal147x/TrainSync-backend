@@ -26,6 +26,9 @@ public class UserDetails {
 
 	@Column(nullable = false, unique = true, length = 150)
 	private String email;
+	
+	@Column
+	private String profilePictureUrl;
 
 	// Constructors
 	public UserDetails() {
@@ -69,5 +72,19 @@ public class UserDetails {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	/**
+	 * @return the profilePictureUrl
+	 */
+	public String getProfilePictureUrl() {
+		return profilePictureUrl;
+	}
+
+	/**
+	 * @param profilePictureUrl the profilePictureUrl to set
+	 */
+	public void setProfilePictureUrl(String profilePictureUrl) {
+		this.profilePictureUrl = profilePictureUrl;
 	}
 }
