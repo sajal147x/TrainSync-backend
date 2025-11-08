@@ -66,7 +66,7 @@ public class UserController {
 			String token = authHeader.replace("Bearer ", "");
 			String userIdStr = jwtService.extractUserId(token);
 			UUID userId = UUID.fromString(userIdStr);
-
+			System.out.println(request.getProfilePictureBase64());
 			Optional<UserDetails> optionalUser = userDetailsRepository.findById(userId);
 			if (optionalUser.isEmpty()) {
 				return ResponseEntity.status(404).body("User not found");
