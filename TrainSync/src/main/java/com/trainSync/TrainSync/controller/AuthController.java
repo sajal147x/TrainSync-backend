@@ -1,10 +1,16 @@
 package com.trainSync.TrainSync.controller;
 
 import com.trainSync.TrainSync.dto.SignUpRequest;
+import com.trainSync.TrainSync.service.UserService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.UUID;
+
 import org.json.JSONObject;
 
 /**
@@ -22,6 +28,15 @@ public class AuthController {
 
 	@Value("${supabase.key}")
 	private String supabaseKey;
+	
+	@Value("${default.email}")
+	private String defaultEmail;
+	
+	@Value("${default.password}")
+	private String defaultPass;
+	
+	@Autowired
+	private UserService userService;
 
 	/**
 	 * SIGNUP CODE
@@ -50,6 +65,13 @@ public class AuthController {
 			String url = supabaseUrl + "/auth/v1/admin/users";
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
+			// Create entry in user table
+			if (response.getStatusCode().is2xxSuccessful()) {
+				JSONObject jsonResponse = new JSONObject(response.getBody());
+				UUID supabaseId = UUID.fromString(jsonResponse.getString("id"));
+				userService.createUser(supabaseId, request.getEmail());
+			}
+
 			return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -67,8 +89,13 @@ public class AuthController {
 	    try {
 	        // Prepare JSON body
 	        JSONObject body = new JSONObject();
+	        
 	        body.put("email", request.getEmail());
 	        body.put("password", request.getPassword());
+	        if(request.getEmail() == null || request.getEmail().isBlank()) {
+	        	body.put("email", defaultEmail);
+	        	body.put("password", defaultPass);
+	        }
 
 	        // Headers
 	        HttpHeaders headers = new HttpHeaders();
