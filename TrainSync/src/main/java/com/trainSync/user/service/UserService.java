@@ -1,7 +1,8 @@
-package com.trainSync.TrainSync.service;
+package com.trainSync.user.service;
 
-import com.trainSync.TrainSync.model.UserDetails;
-import com.trainSync.TrainSync.repository.UserDetailsRepository;
+import com.trainSync.user.model.UserDetails;
+import com.trainSync.user.repository.UserDetailsRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

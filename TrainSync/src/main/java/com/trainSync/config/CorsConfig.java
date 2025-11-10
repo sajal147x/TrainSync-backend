@@ -1,4 +1,4 @@
-package com.trainSync.TrainSync.config;
+package com.trainSync.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

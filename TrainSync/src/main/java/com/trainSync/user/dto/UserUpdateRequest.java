@@ -1,5 +1,5 @@
 
-package com.trainSync.TrainSync.dto;
+package com.trainSync.user.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 

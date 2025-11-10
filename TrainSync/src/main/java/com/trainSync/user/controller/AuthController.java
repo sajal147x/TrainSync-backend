@@ -1,7 +1,7 @@
-package com.trainSync.TrainSync.controller;
+package com.trainSync.user.controller;
 
-import com.trainSync.TrainSync.dto.SignUpRequest;
-import com.trainSync.TrainSync.service.UserService;
+import com.trainSync.user.dto.SignUpRequest;
+import com.trainSync.user.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

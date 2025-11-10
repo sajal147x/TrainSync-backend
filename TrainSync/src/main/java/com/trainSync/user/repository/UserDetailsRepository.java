@@ -1,7 +1,8 @@
-package com.trainSync.TrainSync.repository;
+package com.trainSync.user.repository;
 
-import com.trainSync.TrainSync.model.UserDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.trainSync.user.model.UserDetails;
 
 import java.util.UUID;
 

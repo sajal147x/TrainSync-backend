@@ -1,4 +1,4 @@
-package com.trainSync.TrainSync.model;
+package com.trainSync.user.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

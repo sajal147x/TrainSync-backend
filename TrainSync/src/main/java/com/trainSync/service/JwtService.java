@@ -1,4 +1,4 @@
-package com.trainSync.TrainSync.service;
+package com.trainSync.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -1,4 +1,4 @@
-package com.trainSync.TrainSync.config;
+package com.trainSync.config;
 
 /**
  * Author: Sajal Gupta

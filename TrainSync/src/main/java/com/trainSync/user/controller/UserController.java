@@ -1,4 +1,4 @@
-package com.trainSync.TrainSync.controller;
+package com.trainSync.user.controller;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.trainSync.TrainSync.dto.UserUpdateRequest;
-import com.trainSync.TrainSync.model.UserDetails;
-import com.trainSync.TrainSync.repository.UserDetailsRepository;
-import com.trainSync.TrainSync.service.JwtService;
-import com.trainSync.TrainSync.service.SupabaseStorageService;
+import com.trainSync.service.JwtService;
+import com.trainSync.service.SupabaseStorageService;
+import com.trainSync.user.dto.UserUpdateRequest;
+import com.trainSync.user.model.UserDetails;
+import com.trainSync.user.repository.UserDetailsRepository;
 
 /**
  * Author: Sajal Gupta Date: Nov 7, 2025

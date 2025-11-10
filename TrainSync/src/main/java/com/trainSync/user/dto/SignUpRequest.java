@@ -1,4 +1,4 @@
-package com.trainSync.TrainSync.dto;
+package com.trainSync.user.dto;
 /**
  * Author: Sajal Gupta
  * Date: 2025-11-06

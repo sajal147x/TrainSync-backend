@@ -1,7 +1,7 @@
 
 
 
-package com.trainSync.TrainSync.service;
+package com.trainSync.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
