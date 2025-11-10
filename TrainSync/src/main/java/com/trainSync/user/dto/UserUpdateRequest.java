@@ -1,8 +1,6 @@
 
 package com.trainSync.user.dto;
 
-import org.springframework.web.multipart.MultipartFile;
-
 /**
  * Author: Sajal Gupta
  * Date: Nov 8, 2025
