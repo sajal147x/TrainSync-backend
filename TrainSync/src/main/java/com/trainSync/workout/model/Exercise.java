@@ -2,6 +2,7 @@
 package com.trainSync.workout.model;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
@@ -10,6 +11,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -32,11 +35,18 @@ public class Exercise {
 	@Column
 	private String name; // e.g. "Bench Press", "Squat"
 
-	@Column
-	private String muscleGroup; // optional e.g. "Chest", "Legs"
+
 
 	@OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExerciseSet> sets;
+	
+	@ManyToMany
+    @JoinTable(
+        name = "exercise_muscle_tag_link",
+        joinColumns = @JoinColumn(name = "exercise_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<MuscleTag> muscleTags;
 
 	/**
 	 * @return the id
@@ -80,19 +90,6 @@ public class Exercise {
 		this.name = name;
 	}
 
-	/**
-	 * @return the muscleGroup
-	 */
-	public String getMuscleGroup() {
-		return muscleGroup;
-	}
-
-	/**
-	 * @param muscleGroup the muscleGroup to set
-	 */
-	public void setMuscleGroup(String muscleGroup) {
-		this.muscleGroup = muscleGroup;
-	}
 
 	/**
 	 * @return the sets
