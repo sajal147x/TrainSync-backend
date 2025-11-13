@@ -14,6 +14,12 @@ import com.trainSync.workout.model.Workout;
  * Date: Nov 13, 2025
  */
 public interface WorkoutRepository extends JpaRepository<Workout, UUID> {
-	
+
 	List<Workout> findTop5ByUserIdOrderByStartTimeDesc(UUID userId);
+
+	/**
+	 * @param userId
+	 * @return
+	 */
+	long countByUserId(UUID userId);
 }
