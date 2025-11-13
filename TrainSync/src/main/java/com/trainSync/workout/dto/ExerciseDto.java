@@ -22,6 +22,10 @@ public class ExerciseDto {
 		this.name = name;
 		this.muscleTags = muscleTags;
 	}
+	
+	public ExerciseDto(String name) {
+		this.name = name;
+	}
 
 	public UUID getId() {
 		return id;

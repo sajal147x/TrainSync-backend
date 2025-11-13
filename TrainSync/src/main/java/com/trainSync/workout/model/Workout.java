@@ -1,7 +1,7 @@
 
 package com.trainSync.workout.model;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,21 +29,21 @@ public class Workout {
 	@GeneratedValue
 	private UUID id;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private UserDetails user; // assumes you already have a UserDetails entity
 
 	@Column
 	private String name; 
 
 	@Column
-	private LocalDateTime startTime;
+	private OffsetDateTime startTime;
 
 	@Column
-	private LocalDateTime endTime;
+	private OffsetDateTime endTime;
 
 	@OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Exercise> exercises;
+	
+	@Column
+	private UUID userId;
 
 	/**
 	 * @return the id
@@ -59,19 +59,6 @@ public class Workout {
 		this.id = id;
 	}
 
-	/**
-	 * @return the user
-	 */
-	public UserDetails getUser() {
-		return user;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(UserDetails user) {
-		this.user = user;
-	}
 
 	/**
 	 * @return the name
@@ -87,31 +74,33 @@ public class Workout {
 		this.name = name;
 	}
 
+
+
 	/**
 	 * @return the startTime
 	 */
-	public LocalDateTime getStartTime() {
+	public OffsetDateTime getStartTime() {
 		return startTime;
 	}
 
 	/**
 	 * @param startTime the startTime to set
 	 */
-	public void setStartTime(LocalDateTime startTime) {
+	public void setStartTime(OffsetDateTime startTime) {
 		this.startTime = startTime;
 	}
 
 	/**
 	 * @return the endTime
 	 */
-	public LocalDateTime getEndTime() {
+	public OffsetDateTime getEndTime() {
 		return endTime;
 	}
 
 	/**
 	 * @param endTime the endTime to set
 	 */
-	public void setEndTime(LocalDateTime endTime) {
+	public void setEndTime(OffsetDateTime endTime) {
 		this.endTime = endTime;
 	}
 
@@ -127,6 +116,20 @@ public class Workout {
 	 */
 	public void setExercises(List<Exercise> exercises) {
 		this.exercises = exercises;
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public UUID getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(UUID userId) {
+		this.userId = userId;
 	}
 
 }

@@ -26,8 +26,7 @@ public class MuscleTag {
     @Column(nullable = false, unique = true)
     private String name; // e.g. "Chest", "Legs", "Triceps"
 
-    @ManyToMany(mappedBy = "muscleTags")
-    private Set<Exercise> exercises;
+
 
     public UUID getId() {
         return id;
@@ -45,11 +44,4 @@ public class MuscleTag {
         this.name = name;
     }
 
-    public Set<Exercise> getExercises() {
-        return exercises;
-    }
-
-    public void setExercises(Set<Exercise> exercises) {
-        this.exercises = exercises;
-    }
 }

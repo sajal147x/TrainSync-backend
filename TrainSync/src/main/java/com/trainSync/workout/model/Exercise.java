@@ -40,13 +40,9 @@ public class Exercise {
 	@OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExerciseSet> sets;
 	
-	@ManyToMany
-    @JoinTable(
-        name = "exercise_muscle_tag_link",
-        joinColumns = @JoinColumn(name = "exercise_id"),
-        inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private Set<MuscleTag> muscleTags;
+	
+	@Column
+	private UUID exerciseLibraryId;
 
 	/**
 	 * @return the id
@@ -103,6 +99,20 @@ public class Exercise {
 	 */
 	public void setSets(List<ExerciseSet> sets) {
 		this.sets = sets;
+	}
+
+	/**
+	 * @return the exerciseLibraryId
+	 */
+	public UUID getExerciseLibraryId() {
+		return exerciseLibraryId;
+	}
+
+	/**
+	 * @param exerciseLibraryId the exerciseLibraryId to set
+	 */
+	public void setExerciseLibraryId(UUID exerciseLibraryId) {
+		this.exerciseLibraryId = exerciseLibraryId;
 	}
 
 }
