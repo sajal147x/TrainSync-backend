@@ -16,8 +16,6 @@ import com.trainSync.workout.model.ExerciseLibrary;
 @Repository
 public interface ExerciseLibraryRepository extends JpaRepository<ExerciseLibrary, UUID> {
 
-    // Pagination with optional search text (name)
-    Page<ExerciseLibrary> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
     // Pagination with optional muscle tag (assuming join table)
     Page<ExerciseLibrary> findDistinctByMuscleTags_NameIn(List<String> tags, Pageable pageable);
@@ -25,8 +23,8 @@ public interface ExerciseLibraryRepository extends JpaRepository<ExerciseLibrary
     // Pagination with both optional filters
     Page<ExerciseLibrary> findDistinctByNameContainingIgnoreCaseAndMuscleTags_NameIn(String name, List<String> tags, Pageable pageable);
 
-    Page<ExerciseLibrary> findByNameContaining(String searchText, Pageable pageable);
+    Page<ExerciseLibrary> findByNameContainingIgnoreCase(String searchText, Pageable pageable);
     Page<ExerciseLibrary> findByMuscleTags_Name(String muscleTag, Pageable pageable);
-    Page<ExerciseLibrary> findByNameContainingAndMuscleTags_Name(String searchText, String muscleTag, Pageable pageable);
+    Page<ExerciseLibrary> findByNameContainingAndMuscleTags_NameIgnoreCase(String searchText, String muscleTag, Pageable pageable);
 
 }
