@@ -17,20 +17,19 @@ import com.trainSync.workout.respository.ExerciseRepository;
 import com.trainSync.workout.respository.WorkoutRepository;
 
 /**
- * Author: Sajal Gupta
- * Date: Nov 13, 2025
+ * Author: Sajal Gupta Date: Nov 13, 2025
  */
 @Service
 public class WorkoutService {
 
-    @Autowired
-    private WorkoutRepository workoutRepository;
+	@Autowired
+	private WorkoutRepository workoutRepository;
 
-    @Autowired
-    private ExerciseRepository exerciseRepository;
-    
-    @Autowired
-    private ExerciseLibraryRepository exerciseLibraryRepository;
+	@Autowired
+	private ExerciseRepository exerciseRepository;
+
+	@Autowired
+	private ExerciseLibraryRepository exerciseLibraryRepository;
 
 	public String createWorkout(WorkoutDto workoutDto, UUID userId) {
 		// Convert date string to LocalDateTime
@@ -52,6 +51,24 @@ public class WorkoutService {
 		exercise.setName(exerciseLib.getName());
 		exerciseRepository.save(exercise);
 
+		return workout.getId().toString();
+	}
+
+	/**
+	 * @param workoutDto
+	 * @param userId
+	 * @return
+	 */
+	public String addExerciseToWorkout(WorkoutDto workoutDto, UUID userId) {
+		// Create and save exercise linked to workout
+		Exercise exercise = new Exercise();
+		Workout workout = workoutRepository.findById(UUID.fromString(workoutDto.getWorkoutId())).get();
+		exercise.setWorkout(workout);
+		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(workoutDto.getExerciseId()))
+				.get();
+		exercise.setExerciseLibraryId(UUID.fromString(workoutDto.getExerciseId()));
+		exercise.setName(exerciseLib.getName());
+		exerciseRepository.save(exercise);
 		return workout.getId().toString();
 	}
 }

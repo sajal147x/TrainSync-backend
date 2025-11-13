@@ -52,6 +52,25 @@ public class WorkoutController {
 			return ResponseEntity.status(500).body("Failed to create workout");
 		}
 	}
+	
+	
+	@PostMapping("/add-exercise-to-workout")
+	public ResponseEntity<String> addExerciseToWorkout(@RequestHeader("Authorization") String authHeader,
+			@RequestBody WorkoutDto workoutDto) {
+		try {
+			String token = authHeader.replace("Bearer ", "");
+			String userIdStr = jwtService.extractUserId(token); // validate JWT and extract Supabase UUID
+			UUID userId = UUID.fromString(userIdStr);
+			String result = workoutService.addExerciseToWorkout(workoutDto, userId);
+			System.out.println(result);
+			return ResponseEntity.ok(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body("Failed to create workout");
+		}
+	}
+	
+	
 
 	/**
 	 * 
