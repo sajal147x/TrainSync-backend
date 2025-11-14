@@ -84,6 +84,7 @@ public class ExerciseLibraryController {
 				EquipmentTagDto equipmentDto = new EquipmentTagDto();
 				equipmentDto.setId(equipmentTag.getId().toString());
 				equipmentDto.setName(equipmentTag.getName());
+				dto.getEquipmentTags().add(equipmentDto);
 			}
 
 			dtoList.add(dto);

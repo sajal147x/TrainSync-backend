@@ -11,7 +11,7 @@ public class ExerciseDto {
 	private String name;
 	private List<MuscleTagDto> muscleTags;
 	private List<SetDto> sets = new ArrayList<SetDto>();
-	private List<EquipmentTagDto> equipments = new ArrayList<EquipmentTagDto>();
+	private List<EquipmentTagDto> equipmentTags = new ArrayList<EquipmentTagDto>();
 
 
 	public ExerciseDto(String id, String name) {
@@ -76,14 +76,14 @@ public class ExerciseDto {
 	/**
 	 * @return the equipments
 	 */
-	public List<EquipmentTagDto> getEquipments() {
-		return equipments;
+	public List<EquipmentTagDto> getEquipmentTags() {
+		return equipmentTags;
 	}
 
 	/**
 	 * @param equipments the equipments to set
 	 */
-	public void setEquipments(List<EquipmentTagDto> equipments) {
-		this.equipments = equipments;
+	public void setEquipmentTags(List<EquipmentTagDto> equipments) {
+		this.equipmentTags = equipments;
 	}
 }

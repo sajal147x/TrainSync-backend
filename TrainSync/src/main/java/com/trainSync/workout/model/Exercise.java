@@ -43,6 +43,23 @@ public class Exercise {
 	
 	@Column
 	private UUID exerciseLibraryId;
+	
+	@Column
+	private UUID equipmentId;
+
+	/**
+	 * @return the equipmentId
+	 */
+	public UUID getEquipmentId() {
+		return equipmentId;
+	}
+
+	/**
+	 * @param equipmentId the equipmentId to set
+	 */
+	public void setEquipmentId(UUID equipmentId) {
+		this.equipmentId = equipmentId;
+	}
 
 	/**
 	 * @return the id
