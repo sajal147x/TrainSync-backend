@@ -10,20 +10,9 @@ import java.util.UUID;
 public class ExerciseDto {
 	private String id;
 	private String name;
-	private List<String> muscleTags;
+	private List<MuscleTagDto> muscleTags;
 	private List<SetDto> sets = new ArrayList<SetDto>();
 
-	/**
-	 * 
-	 * @param id
-	 * @param name
-	 * @param muscleTags
-	 */
-	public ExerciseDto(String id, String name, List<String> muscleTags) {
-		this.id = id;
-		this.name = name;
-		this.muscleTags = muscleTags;
-	}
 
 	public ExerciseDto(String id, String name) {
 		this.id = id;
@@ -34,16 +23,17 @@ public class ExerciseDto {
 		this.name = name;
 	}
 
+	/**
+	 * 
+	 */
+	public ExerciseDto() {}
+
 	public String getId() {
 		return id;
 	}
 
 	public String getName() {
 		return name;
-	}
-
-	public List<String> getMuscleTags() {
-		return muscleTags;
 	}
 
 	public void setId(String id) {
@@ -54,9 +44,6 @@ public class ExerciseDto {
 		this.name = name;
 	}
 
-	public void setMuscleTags(List<String> muscleTags) {
-		this.muscleTags = muscleTags;
-	}
 
 	/**
 	 * @return the sets
@@ -70,5 +57,19 @@ public class ExerciseDto {
 	 */
 	public void setSets(List<SetDto> sets) {
 		this.sets = sets;
+	}
+
+	/**
+	 * @return the muscleTags
+	 */
+	public List<MuscleTagDto> getMuscleTags() {
+		return muscleTags;
+	}
+
+	/**
+	 * @param muscleTags the muscleTags to set
+	 */
+	public void setMuscleTags(List<MuscleTagDto> muscleTags) {
+		this.muscleTags = muscleTags;
 	}
 }

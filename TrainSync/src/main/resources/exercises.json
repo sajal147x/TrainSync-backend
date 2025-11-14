@@ -1,7 +1,7 @@
 [
   {
     "name": "Bench Press",
-    "equipment": "Barbell",
+    "equipment": ["Barbell", "Dumbbell", "Machine"],
     "muscles": [
       { "tag": "Chest", "level": "PRIMARY" },
       { "tag": "Triceps", "level": "SECONDARY" },
@@ -9,8 +9,8 @@
     ]
   },
   {
-    "name": "Barbell Back Squat",
-    "equipment": "Barbell",
+    "name": "Back Squat",
+    "equipment": ["Barbell", "Dumbbell"],
     "muscles": [
       { "tag": "Quads", "level": "PRIMARY" },
       { "tag": "Glutes", "level": "PRIMARY" },
@@ -19,7 +19,7 @@
   },
   {
     "name": "Lat Pulldown",
-    "equipment": "Cable Machine",
+    "equipment": ["Machine"],
     "muscles": [
       { "tag": "Lats", "level": "PRIMARY" },
       { "tag": "Biceps", "level": "SECONDARY" }

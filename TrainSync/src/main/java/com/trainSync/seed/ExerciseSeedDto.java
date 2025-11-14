@@ -13,6 +13,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ExerciseSeedDto {
 	
 	public String name;
+	
+	@JsonProperty("equipment")
+    public List<String> equipment; 
+	
 	@JsonProperty("muscles")
     public List<MuscleTagSeedDto> muscleTags;
 

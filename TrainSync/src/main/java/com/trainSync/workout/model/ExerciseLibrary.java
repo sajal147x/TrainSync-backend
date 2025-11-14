@@ -1,9 +1,12 @@
 
 package com.trainSync.workout.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 /**
@@ -24,7 +28,7 @@ public class ExerciseLibrary {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
 
@@ -37,14 +41,18 @@ public class ExerciseLibrary {
     @Column(name = "created_by")
     private UUID createdBy; // null if global exercise
 
-
-    @ManyToMany
-    @JoinTable(
-        name = "exercise_library_tag_link",
-        joinColumns = @JoinColumn(name = "exercise_library_id"),
-        inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
+    @OneToMany(mappedBy = "exerciseLibrary", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ExerciseLibraryTagLink> tagLinks = new ArrayList<>();
+    
+    @ManyToMany @JoinTable( name = "exercise_library_tag_link", joinColumns = @JoinColumn(name = "exercise_library_id"), inverseJoinColumns = @JoinColumn(name = "tag_id") )
     private Set<MuscleTag> muscleTags;
+    
+    
+    @Column
+    private String equipment;
+    
+    @Column
+    private String displayName; //name + (equipment)
 
     public UUID getId() {
         return id;
@@ -87,11 +95,62 @@ public class ExerciseLibrary {
         this.createdBy = createdBy;
     }
 
-    public Set<MuscleTag> getMuscleTags() {
-        return muscleTags;
-    }
 
-    public void setMuscleTags(Set<MuscleTag> muscleTags) {
-        this.muscleTags = muscleTags;
-    }
+	/**
+	 * @return the equipment
+	 */
+	public String getEquipment() {
+		return equipment;
+	}
+
+	/**
+	 * @param equipment the equipment to set
+	 */
+	public void setEquipment(String equipment) {
+		this.equipment = equipment;
+	}
+
+	/**
+	 * @return the displayName
+	 */
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	/**
+	 * @param displayName the displayName to set
+	 */
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	/**
+	 * @return the tagLinks
+	 */
+	public List<ExerciseLibraryTagLink> getTagLinks() {
+		return tagLinks;
+	}
+
+	/**
+	 * @param tagLinks the tagLinks to set
+	 */
+	public void setTagLinks(List<ExerciseLibraryTagLink> tagLinks) {
+		this.tagLinks = tagLinks;
+	}
+
+	/**
+	 * @return the muscleTags
+	 */
+	public Set<MuscleTag> getMuscleTags() {
+		return muscleTags;
+	}
+
+	/**
+	 * @param muscleTags the muscleTags to set
+	 */
+	public void setMuscleTags(Set<MuscleTag> muscleTags) {
+		this.muscleTags = muscleTags;
+	}
+
+	
 }

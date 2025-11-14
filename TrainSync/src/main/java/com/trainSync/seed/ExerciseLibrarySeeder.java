@@ -55,28 +55,36 @@ public class ExerciseLibrarySeeder {
 			});
 
 			for (ExerciseSeedDto dto : seedList) {
+			    // If JSON has no equipment list, skip
+			    if (dto.equipment == null || dto.equipment.isEmpty()) {
+			        System.err.println("No equipment found for exercise: " + dto.name);
+			        continue;
+			    }
+			    // Create one entry PER equipment
+			    for (String equipment : dto.equipment) {
+			        ExerciseLibrary exercise = new ExerciseLibrary();
+			        exercise.setName(dto.name);
+			        exercise.setEquipment(equipment); 
+			        exercise.setDisplayName(dto.name + " (" + equipment + ")");
+			        exercise = exerciseLibraryRepository.save(exercise);
+			        // Seed muscle tags
+			        for (MuscleTagSeedDto tagDto : dto.muscleTags) {
+			            MuscleTag tag;
+			            Optional<MuscleTag> tagOptional = muscleTagRepository.findByName(tagDto.tag);
+			            if (tagOptional.isPresent()) {
+			                tag = tagOptional.get();
+			            } else {
+			                tag = new MuscleTag();
+			                tag.setName(tagDto.tag);
+			                tag = muscleTagRepository.save(tag);
+			            }
+			            // Create link
+			            ExerciseLibraryTagLink link =
+			                    new ExerciseLibraryTagLink(exercise, tag, tagDto.level.toUpperCase());
 
-				ExerciseLibrary exercise = new ExerciseLibrary();
-				exercise.setName(dto.name);
-				exercise = exerciseLibraryRepository.save(exercise);
-
-				for (MuscleTagSeedDto tagDto : dto.muscleTags) {
-					// Check if tag already exists
-					Optional<MuscleTag> tagOptional = muscleTagRepository.findByName(tagDto.tag);
-					MuscleTag tag = new MuscleTag();
-					if (!tagOptional.isEmpty()) {
-						tag = tagOptional.get();
-					} else {
-						tag = new MuscleTag();
-						tag = new MuscleTag();
-						tag.setName(tagDto.tag);
-						muscleTagRepository.save(tag);
-					}
-					// Create link with PRIMARY/SECONDARY level
-					ExerciseLibraryTagLink link = new ExerciseLibraryTagLink(exercise, tag, tagDto.level.toUpperCase());
-
-					linkRepository.save(link);
-				}
+			            linkRepository.save(link);
+			        }
+			    }
 			}
 
 			System.out.println("Exercise Library seeding complete.");
