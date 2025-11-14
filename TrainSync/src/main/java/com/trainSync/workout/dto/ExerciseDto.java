@@ -2,7 +2,6 @@ package com.trainSync.workout.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Author: Sajal Gupta Date: Nov 12, 2025
@@ -12,6 +11,7 @@ public class ExerciseDto {
 	private String name;
 	private List<MuscleTagDto> muscleTags;
 	private List<SetDto> sets = new ArrayList<SetDto>();
+	private List<EquipmentTagDto> equipments = new ArrayList<EquipmentTagDto>();
 
 
 	public ExerciseDto(String id, String name) {
@@ -71,5 +71,19 @@ public class ExerciseDto {
 	 */
 	public void setMuscleTags(List<MuscleTagDto> muscleTags) {
 		this.muscleTags = muscleTags;
+	}
+
+	/**
+	 * @return the equipments
+	 */
+	public List<EquipmentTagDto> getEquipments() {
+		return equipments;
+	}
+
+	/**
+	 * @param equipments the equipments to set
+	 */
+	public void setEquipments(List<EquipmentTagDto> equipments) {
+		this.equipments = equipments;
 	}
 }

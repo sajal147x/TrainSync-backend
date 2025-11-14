@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trainSync.workout.dto.EquipmentTagDto;
 import com.trainSync.workout.dto.ExerciseDto;
 import com.trainSync.workout.dto.MuscleTagDto;
+import com.trainSync.workout.model.EquipmentTag;
 import com.trainSync.workout.model.ExerciseLibrary;
+import com.trainSync.workout.model.ExerciseLibraryEquipmentLink;
 import com.trainSync.workout.model.ExerciseLibraryTagLink;
 import com.trainSync.workout.model.MuscleTag;
 import com.trainSync.workout.respository.ExerciseLibraryRepository;
@@ -77,6 +80,11 @@ public class ExerciseLibraryController {
 				muscleTags.add(muscleTagDto);
 			}
 			dto.setMuscleTags(muscleTags);
+			for (EquipmentTag equipmentTag : e.getEquipmentTags()) {
+				EquipmentTagDto equipmentDto = new EquipmentTagDto();
+				equipmentDto.setId(equipmentTag.getId().toString());
+				equipmentDto.setName(equipmentTag.getName());
+			}
 
 			dtoList.add(dto);
 		}
