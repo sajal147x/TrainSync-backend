@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Bench Press",
+    "equipment": "Barbell",
+    "muscles": [
+      { "tag": "Chest", "level": "PRIMARY" },
+      { "tag": "Triceps", "level": "SECONDARY" },
+      { "tag": "Front Delts", "level": "SECONDARY" }
+    ]
+  },
+  {
+    "name": "Barbell Back Squat",
+    "equipment": "Barbell",
+    "muscles": [
+      { "tag": "Quads", "level": "PRIMARY" },
+      { "tag": "Glutes", "level": "PRIMARY" },
+      { "tag": "Hamstrings", "level": "SECONDARY" }
+    ]
+  },
+  {
+    "name": "Lat Pulldown",
+    "equipment": "Cable Machine",
+    "muscles": [
+      { "tag": "Lats", "level": "PRIMARY" },
+      { "tag": "Biceps", "level": "SECONDARY" }
+    ]
+  }
+]

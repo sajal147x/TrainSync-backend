@@ -12,6 +12,10 @@ import com.trainSync.workout.respository.ExerciseRepository;
 import com.trainSync.workout.respository.ExerciseSetRepository;
 
 
+/**
+ * @author sajalgupta
+ * @date nov 13, 2025
+ */
 @Service
 public class EditExerciseService {
 

@@ -37,7 +37,7 @@ public class ExerciseLibrary {
     @Column(name = "created_by")
     private UUID createdBy; // null if global exercise
 
-    // ✅ Many-to-Many with tags
+
     @ManyToMany
     @JoinTable(
         name = "exercise_library_tag_link",
