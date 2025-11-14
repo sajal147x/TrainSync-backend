@@ -67,7 +67,7 @@ public class ExerciseLibraryController {
 		for (ExerciseLibrary e : exercises) {
 			ExerciseDto dto = new ExerciseDto();
 			dto.setId(e.getId().toString());
-			dto.setName(e.getDisplayName());
+			dto.setName(e.getName());
 			List<MuscleTagDto> muscleTags = new ArrayList<>();
 
 			for (ExerciseLibraryTagLink tag : e.getTagLinks()) {

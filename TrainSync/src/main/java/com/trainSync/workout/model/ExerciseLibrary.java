@@ -47,12 +47,9 @@ public class ExerciseLibrary {
     @ManyToMany @JoinTable( name = "exercise_library_tag_link", joinColumns = @JoinColumn(name = "exercise_library_id"), inverseJoinColumns = @JoinColumn(name = "tag_id") )
     private Set<MuscleTag> muscleTags;
     
-    
-    @Column
-    private String equipment;
-    
-    @Column
-    private String displayName; //name + (equipment)
+    @ManyToMany @JoinTable( name = "exercise_library_equipment_tag_link", joinColumns = @JoinColumn(name = "exercise_library_id"), inverseJoinColumns = @JoinColumn(name = "tag_id") )
+    private Set<EquipmentTag> equipmentTags;
+  
 
     public UUID getId() {
         return id;
@@ -96,33 +93,6 @@ public class ExerciseLibrary {
     }
 
 
-	/**
-	 * @return the equipment
-	 */
-	public String getEquipment() {
-		return equipment;
-	}
-
-	/**
-	 * @param equipment the equipment to set
-	 */
-	public void setEquipment(String equipment) {
-		this.equipment = equipment;
-	}
-
-	/**
-	 * @return the displayName
-	 */
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	/**
-	 * @param displayName the displayName to set
-	 */
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
 
 	/**
 	 * @return the tagLinks
@@ -151,6 +121,21 @@ public class ExerciseLibrary {
 	public void setMuscleTags(Set<MuscleTag> muscleTags) {
 		this.muscleTags = muscleTags;
 	}
+	
+	/**
+	 * @return the equipmentTags
+	 */
+	public Set<EquipmentTag> getEquipmentTags() {
+		return equipmentTags;
+	}
+
+	/**
+	 * @param equipmentTags the equipmentTags to set
+	 */
+	public void setEquipmentTags(Set<EquipmentTag> equipmentTags) {
+		this.equipmentTags = equipmentTags;
+	}
+
 
 	
 }

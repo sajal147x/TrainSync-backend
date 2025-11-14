@@ -1,8 +1,8 @@
+
 package com.trainSync.workout.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,12 +11,16 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 
+/**
+ * Author: Sajal Gupta
+ * Date: Nov 14, 2025
+ */
 @Entity
-@Table(name = "exercise_library_tag_link")
-public class ExerciseLibraryTagLink {
+@Table(name = "exercise_library_equipment_tag_link")
+public class ExerciseLibraryEquipmentLink {
 
     @EmbeddedId
-    private ExerciseLibraryTagKey id;
+    private ExerciseLibraryEquipmentKey id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("exerciseLibraryId")
@@ -28,25 +32,22 @@ public class ExerciseLibraryTagLink {
     @MapsId("tagId")
     @JoinColumn(name = "tag_id")
     @JsonIgnore
-    private MuscleTag muscleTag;
+    private EquipmentTag equipmentTag;
 
-    @Column(name = "level", nullable = false)
-    private String level; // PRIMARY or SECONDARY
 
-    public ExerciseLibraryTagLink() {}
+    public ExerciseLibraryEquipmentLink() {}
 
-    public ExerciseLibraryTagLink(ExerciseLibrary exerciseLibrary, MuscleTag muscleTag, String level) {
+    public ExerciseLibraryEquipmentLink(ExerciseLibrary exerciseLibrary, EquipmentTag equipmentTag) {
         this.exerciseLibrary = exerciseLibrary;
-        this.muscleTag = muscleTag;
-        this.level = level;
-        this.id = new ExerciseLibraryTagKey(exerciseLibrary.getId(), muscleTag.getId());
+        this.equipmentTag = equipmentTag;
+        this.id = new ExerciseLibraryEquipmentKey(exerciseLibrary.getId(), equipmentTag.getId());
     }
 
-    public ExerciseLibraryTagKey getId() {
+    public ExerciseLibraryEquipmentKey getId() {
         return id;
     }
 
-    public void setId(ExerciseLibraryTagKey id) {
+    public void setId(ExerciseLibraryEquipmentKey id) {
         this.id = id;
     }
 
@@ -58,19 +59,18 @@ public class ExerciseLibraryTagLink {
         this.exerciseLibrary = exerciseLibrary;
     }
 
-    public MuscleTag getMuscleTag() {
-        return muscleTag;
-    }
+	/**
+	 * @return the equipmentTag
+	 */
+	public EquipmentTag getEquipmentTag() {
+		return equipmentTag;
+	}
 
-    public void setMuscleTag(MuscleTag muscleTag) {
-        this.muscleTag = muscleTag;
-    }
+	/**
+	 * @param equipmentTag the equipmentTag to set
+	 */
+	public void setEquipmentTag(EquipmentTag equipmentTag) {
+		this.equipmentTag = equipmentTag;
+	}
 
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
 }

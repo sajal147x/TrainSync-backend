@@ -1,4 +1,5 @@
 
+
 package com.trainSync.workout.model;
 
 import java.util.UUID;
@@ -11,18 +12,18 @@ import jakarta.persistence.Table;
 
 /**
  * Author: Sajal Gupta
- * Date: Nov 12, 2025
+ * Date: Nov 14, 2025
  */
 @Entity
-@Table(name = "muscle_tag")
-public class MuscleTag {
+@Table(name = "equipment_tag")
+public class EquipmentTag {
 
     @Id
     @GeneratedValue
     private UUID id;
 
     @Column(nullable = false, unique = true)
-    private String name; // e.g. "Chest", "Legs", "Triceps"
+    private String name; // e.g. "barbell, dumbell"
 
 
 
