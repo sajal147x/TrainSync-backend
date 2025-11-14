@@ -58,7 +58,7 @@ public class ExerciseLibraryController {
 			exercises = exerciseLibraryRepository.findAll(pageable);
 		}
 
-		return exercises.map(e -> new ExerciseDto(e.getId(), e.getName(),
+		return exercises.map(e -> new ExerciseDto(e.getId().toString(), e.getName(),
 				e.getMuscleTags().stream().map(MuscleTag::getName).toList()));
 	}
 	

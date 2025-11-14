@@ -1,5 +1,6 @@
 package com.trainSync.workout.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ public class WorkoutDto {
     
     private String workoutId;
     
-    private List<ExerciseDto> exercises;
+    private List<ExerciseDto> exercises = new ArrayList<ExerciseDto>();
 
     public WorkoutDto() {}
 

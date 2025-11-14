@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.trainSync.service.JwtService;
 import com.trainSync.workout.dto.ExerciseDto;
+import com.trainSync.workout.dto.SetDto;
 import com.trainSync.workout.dto.WorkoutDto;
+import com.trainSync.workout.model.Exercise;
+import com.trainSync.workout.model.ExerciseSet;
 import com.trainSync.workout.model.Workout;
 import com.trainSync.workout.respository.WorkoutRepository;
 import com.trainSync.workout.service.WorkoutService;
@@ -107,13 +110,19 @@ public class WorkoutController {
 
 	        // Map entity to DTO
 	        WorkoutDto workoutDto = new WorkoutDto();
-	        workoutDto.setExerciseId(workout.getId().toString());
+	        workoutDto.setWorkoutId(workout.getId().toString());
 	        workoutDto.setWorkoutName(workout.getName());
-	        workoutDto.setExercises(
-	                workout.getExercises().stream()
-	                        .map(e -> new ExerciseDto(e.getName()))
-	                        .collect(Collectors.toList())
-	        );
+	        
+	        for (Exercise exercise:  workout.getExercises()) {
+	        	ExerciseDto exerciseDto = new ExerciseDto(exercise.getId().toString(), exercise.getName());
+	        	if (exercise.getSets() != null && !exercise.getSets().isEmpty()) {
+	        		for (ExerciseSet set : exercise.getSets()) {
+	        			SetDto setDto = new SetDto(set.getId().toString(), set.getWeight(), set.getReps(), set.getSetNumber());
+	        			exerciseDto.getSets().add(setDto);
+	        		}
+	        	}
+	        	workoutDto.getExercises().add(exerciseDto);
+	        }
 
 	        return ResponseEntity.ok(workoutDto);
 
