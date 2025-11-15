@@ -22,6 +22,7 @@ import com.trainSync.workout.model.ExerciseLibrary;
 import com.trainSync.workout.model.ExerciseLibraryEquipmentLink;
 import com.trainSync.workout.model.ExerciseLibraryTagLink;
 import com.trainSync.workout.model.MuscleTag;
+import com.trainSync.workout.respository.EquipmentTagRepository;
 import com.trainSync.workout.respository.ExerciseLibraryRepository;
 import com.trainSync.workout.respository.MuscleTagRepository;
 
@@ -37,6 +38,9 @@ public class ExerciseLibraryController {
 	
 	@Autowired
 	private MuscleTagRepository muscleTagRepository;
+	
+	@Autowired
+	private EquipmentTagRepository equipmentTagRepository;
 	
 	
 	/**
@@ -107,6 +111,24 @@ public class ExerciseLibraryController {
 	            .map(MuscleTag::getName)
 	            .sorted(String::compareToIgnoreCase)
 	            .toList();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@GetMapping("/equipmenttags")
+	public List<EquipmentTagDto> getEquipmentTags() {
+		List<EquipmentTagDto> dtos = new ArrayList<EquipmentTagDto>();
+		List<EquipmentTag> ls = equipmentTagRepository.findAll();
+		for (EquipmentTag tag : ls) {
+			EquipmentTagDto dto = new EquipmentTagDto();
+			dto.setId(tag.getId().toString());
+			dto.setName(tag.getName());
+			dtos.add(dto);
+		}
+		return dtos;
+
 	}
 
 }
