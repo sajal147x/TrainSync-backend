@@ -27,14 +27,18 @@ public class PreMadeWorkout {
 	private UUID id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
-	private UserDetails userDetails;
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private UserDetails userDetails;
+
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
 
 	@Column
 	private String name;
 
 	@Column
 	private OffsetDateTime createdAt;
+	
 
 	/**
 	 * @return the userDetails
@@ -90,5 +94,19 @@ public class PreMadeWorkout {
 	 */
 	public void setCreatedAt(OffsetDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public UUID getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(UUID userId) {
+		this.userId = userId;
 	}
 }
