@@ -29,6 +29,9 @@ public class UserDetails {
 	
 	@Column
 	private String profilePictureUrl;
+	
+	@Column
+	private String userType;
 
 	// Constructors
 	public UserDetails() {
@@ -86,5 +89,19 @@ public class UserDetails {
 	 */
 	public void setProfilePictureUrl(String profilePictureUrl) {
 		this.profilePictureUrl = profilePictureUrl;
+	}
+
+	/**
+	 * @return the userType
+	 */
+	public String getUserType() {
+		return userType;
+	}
+
+	/**
+	 * @param userType the userType to set
+	 */
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
 }
