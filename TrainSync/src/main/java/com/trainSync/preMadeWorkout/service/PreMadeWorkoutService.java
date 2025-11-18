@@ -11,10 +11,13 @@ import org.springframework.stereotype.Service;
 
 import com.trainSync.preMadeWorkout.dto.PreMadeWorkoutDto;
 import com.trainSync.preMadeWorkout.dto.PreMadeWorkoutFetchDto;
+import com.trainSync.preMadeWorkout.dto.PreMadeWorkoutSetFetchDto;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkout;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkoutExercise;
+import com.trainSync.preMadeWorkout.model.PreMadeWorkoutSet;
 import com.trainSync.preMadeWorkout.repository.PreMadeWorkoutExerciseRepository;
 import com.trainSync.preMadeWorkout.repository.PreMadeWorkoutRepository;
+import com.trainSync.preMadeWorkout.repository.PreMadeWorkoutSetRepository;
 import com.trainSync.workout.model.ExerciseLibrary;
 import com.trainSync.workout.respository.EquipmentTagRepository;
 import com.trainSync.workout.respository.ExerciseLibraryRepository;
@@ -36,6 +39,9 @@ public class PreMadeWorkoutService {
 
 	@Autowired
 	EquipmentTagRepository equipmentTagRepository;
+	
+	@Autowired
+	PreMadeWorkoutSetRepository preMadeWorkoutSetRepository;
 
 	/**
 	 * @param dto
@@ -92,6 +98,41 @@ public class PreMadeWorkoutService {
 			PreMadeWorkoutFetchDto dto = new PreMadeWorkoutFetchDto();
 			dto.setId(workout.getId().toString());
 			dto.setName(workout.getName());
+			dtos.add(dto);
+		}
+		return dtos;
+	}
+
+	/**
+	 * @param preMadeWorkoutId
+	 * @param exerciseId
+	 * @param equipmentId
+	 * @return
+	 */
+	public String addExerciseToWorkout(String preMadeWorkoutId, String exerciseId, String equipmentId) {
+		PreMadeWorkoutExercise exercise = new PreMadeWorkoutExercise();
+		exercise.setPreMadeWorkout(preMadeWorkoutRepository.findById(UUID.fromString(preMadeWorkoutId)).get());
+		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(exerciseId)).get();
+		exercise.setExercise(exerciseLib);
+		exercise.setEquipment(equipmentTagRepository.findById(UUID.fromString(equipmentId)).get());
+		preMadeWorkoutExerciseRepository.save(exercise);
+		return preMadeWorkoutId;
+	}
+
+	/**
+	 * @param preMadeWorkoutExerciseId
+	 * @return
+	 */
+	public List<PreMadeWorkoutSetFetchDto> fetchSetsForExercise(String preMadeWorkoutExerciseId) {
+		List<PreMadeWorkoutSetFetchDto> dtos = new ArrayList<PreMadeWorkoutSetFetchDto>();
+		List<PreMadeWorkoutSet> sets = preMadeWorkoutSetRepository.findByPreMadeWorkoutExerciseId(UUID.fromString(preMadeWorkoutExerciseId));
+		if(sets == null) {
+			return new ArrayList<PreMadeWorkoutSetFetchDto>();
+		}
+		for(var set : sets) {
+			PreMadeWorkoutSetFetchDto dto = new PreMadeWorkoutSetFetchDto();
+			dto.setId(set.getId().toString());
+			dto.setSetNumber(set.getSetNumber());
 			dtos.add(dto);
 		}
 		return dtos;

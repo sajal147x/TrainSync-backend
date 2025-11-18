@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.trainSync.preMadeWorkout.dto.PreMadeWorkoutDto;
 import com.trainSync.preMadeWorkout.dto.PreMadeWorkoutExerciseFetchDto;
 import com.trainSync.preMadeWorkout.dto.PreMadeWorkoutFetchDto;
+import com.trainSync.preMadeWorkout.dto.PreMadeWorkoutSetFetchDto;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkout;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkoutExercise;
 import com.trainSync.preMadeWorkout.service.PreMadeWorkoutService;
@@ -51,12 +52,23 @@ public class PreMadeWorkoutController {
 			return ResponseEntity.status(500).body("Failed to create workout");
 		}
 	}
+	
+	@PostMapping("/add-exercise-to-premade-workout")
+	public ResponseEntity<String> addExerciseToWorkout(@RequestHeader("Authorization") String authHeader,
+			@RequestBody PreMadeWorkoutDto dto) {
+		try {
+			String result = preMadeWorkoutService.addExerciseToWorkout(dto.getPreMadeWorkoutId(), dto.getExerciseId(), dto.getEquipmentId());
+			return ResponseEntity.ok(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body("Failed to create workout");
+		}
+	}
 
 	@GetMapping("/getPreMadeWorkout")
 	public ResponseEntity<?> getPreMadeWorkout(@RequestHeader("Authorization") String authHeader,
 			@RequestParam String preMadeWorkoutId) {
 		try {
-			System.out.println("CALLED" + preMadeWorkoutId);
 			PreMadeWorkout workout = preMadeWorkoutService.fetchWorkout(UUID.fromString(preMadeWorkoutId));
 			List<PreMadeWorkoutExercise> exercises = preMadeWorkoutService
 					.fetchExercises(UUID.fromString(preMadeWorkoutId));
@@ -89,6 +101,17 @@ public class PreMadeWorkoutController {
 			List<PreMadeWorkoutFetchDto> dtos = preMadeWorkoutService.findPreMadeWorkoutsForUser(userId);
 			return ResponseEntity.ok(dtos);
 
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body("Failed to create workout");
+		}
+	}
+	
+	@GetMapping("/getPreMadeWorkoutSets")
+	public ResponseEntity<?> getPreMadeWorkoutSets(@RequestHeader("Authorization") String authHeader, @RequestParam String preMadeWorkoutExerciseId) {
+		try {
+			List<PreMadeWorkoutSetFetchDto> dtos = preMadeWorkoutService.fetchSetsForExercise(preMadeWorkoutExerciseId);
+			return ResponseEntity.ok(dtos);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(500).body("Failed to create workout");

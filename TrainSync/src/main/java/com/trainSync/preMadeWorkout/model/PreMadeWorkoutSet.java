@@ -3,6 +3,7 @@ package com.trainSync.preMadeWorkout.model;
 
 import java.util.UUID;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -22,9 +23,13 @@ public class PreMadeWorkoutSet {
 	@GeneratedValue
 	private UUID id;
 
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "pre_made_workout_exercise_id", nullable = false)
 	PreMadeWorkoutExercise preMadeWorkoutExercise;
+	
+	@Column
+	private int setNumber;
 
 	/**
 	 * @return the id
@@ -52,6 +57,20 @@ public class PreMadeWorkoutSet {
 	 */
 	public void setPreMadeWorkoutExercise(PreMadeWorkoutExercise preMadeWorkoutExercise) {
 		this.preMadeWorkoutExercise = preMadeWorkoutExercise;
+	}
+	
+	/**
+	 * @return the setNumber
+	 */
+	public int getSetNumber() {
+		return setNumber;
+	}
+
+	/**
+	 * @param setNumber the setNumber to set
+	 */
+	public void setSetNumber(int setNumber) {
+		this.setNumber = setNumber;
 	}
 
 }

@@ -7,6 +7,7 @@ package com.trainSync.preMadeWorkout.dto;
 
 public class PreMadeWorkoutDto {
 
+	private String preMadeWorkoutId;
 	private String exerciseId;
 	private String name;
 	private String equipmentId;
@@ -16,6 +17,20 @@ public class PreMadeWorkoutDto {
 	 */
 	public String getExerciseId() {
 		return exerciseId;
+	}
+
+	/**
+	 * @return the preMadeWorkoutId
+	 */
+	public String getPreMadeWorkoutId() {
+		return preMadeWorkoutId;
+	}
+
+	/**
+	 * @param preMadeWorkoutId the preMadeWorkoutId to set
+	 */
+	public void setPreMadeWorkoutId(String preMadeWorkoutId) {
+		this.preMadeWorkoutId = preMadeWorkoutId;
 	}
 
 	/**
