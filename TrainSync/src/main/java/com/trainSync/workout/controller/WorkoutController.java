@@ -48,7 +48,6 @@ public class WorkoutController {
 			String userIdStr = jwtService.extractUserId(token); // validate JWT and extract Supabase UUID
 			UUID userId = UUID.fromString(userIdStr);
 			String result = workoutService.createWorkout(workoutDto, userId);
-			System.out.println(result);
 			return ResponseEntity.ok(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -87,7 +86,6 @@ public class WorkoutController {
 	        @RequestParam String workoutId) {
 
 	    try {
-	    	System.out.println("WORKOUT ID IS " + workoutId);
 	        // Extract user ID from JWT
 	        String token = authHeader.replace("Bearer ", "");
 	        String userIdStr = jwtService.extractUserId(token);

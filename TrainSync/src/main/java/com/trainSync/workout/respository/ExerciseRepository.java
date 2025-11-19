@@ -24,4 +24,14 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
 			      AND e.exerciseLibraryId = :exerciseLibraryId
 			""")
 	List<Exercise> findByUserAndExerciseLibraryId(UUID userId, UUID exerciseLibraryId);
+	
+	// Find latest exercise for user
+	@Query("""
+			    SELECT e
+			    FROM Exercise e
+			    WHERE e.workout.userId = :userId
+			      AND e.exerciseLibraryId = :exerciseLibraryId
+			      order by e.workout.startTime desc limit 1
+			""")
+	Exercise findLatestExerciseForUser(UUID userId, UUID exerciseLibraryId);
 }
