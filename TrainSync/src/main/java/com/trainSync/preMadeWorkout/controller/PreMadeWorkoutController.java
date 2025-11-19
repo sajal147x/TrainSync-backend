@@ -117,5 +117,22 @@ public class PreMadeWorkoutController {
 			return ResponseEntity.status(500).body("Failed to create workout");
 		}
 	}
+	
+	@PostMapping("/start-workout-using-pre-made")
+	public ResponseEntity<String> startWorkoutUsingPreMade(@RequestHeader("Authorization") String authHeader,
+			@RequestBody PreMadeWorkoutDto dto) {
+		try {
+			String token = authHeader.replace("Bearer ", "");
+			String userIdStr = jwtService.extractUserId(token); // validate JWT and extract Supabase UUID
+			UUID userId = UUID.fromString(userIdStr);
+			System.out.println(" ID " + dto.getPreMadeWorkoutId());
+			String result = preMadeWorkoutService.createWorkoutWithPreMadeWorkout(userId, dto.getPreMadeWorkoutId());
+			System.out.println(result);
+			return ResponseEntity.ok(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body("Failed to create workout");
+		}
+	}
 
 }

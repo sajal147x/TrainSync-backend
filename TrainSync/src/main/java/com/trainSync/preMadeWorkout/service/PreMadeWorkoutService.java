@@ -21,6 +21,7 @@ import com.trainSync.preMadeWorkout.repository.PreMadeWorkoutSetRepository;
 import com.trainSync.workout.model.ExerciseLibrary;
 import com.trainSync.workout.respository.EquipmentTagRepository;
 import com.trainSync.workout.respository.ExerciseLibraryRepository;
+import com.trainSync.workout.service.WorkoutService;
 
 /**
  * Author: Sajal Gupta Date: Nov 18, 2025
@@ -42,6 +43,9 @@ public class PreMadeWorkoutService {
 	
 	@Autowired
 	PreMadeWorkoutSetRepository preMadeWorkoutSetRepository;
+	
+	@Autowired
+	WorkoutService workoutService;
 
 	/**
 	 * @param dto
@@ -136,6 +140,18 @@ public class PreMadeWorkoutService {
 			dtos.add(dto);
 		}
 		return dtos;
+	}
+
+	/**
+	 * @param userId
+	 * @param preMadeWorkoutId
+	 * @return
+	 */
+	public String createWorkoutWithPreMadeWorkout(UUID userId, String preMadeWorkoutId) {
+		PreMadeWorkout preMade = preMadeWorkoutRepository.findById(UUID.fromString(preMadeWorkoutId)).get();
+		List<PreMadeWorkoutExercise> preMadeExercises = preMadeWorkoutExerciseRepository.findByPreMadeWorkoutId(UUID.fromString(preMadeWorkoutId));
+		String workoutId = workoutService.createWorkoutUsingPreMade(preMade, preMadeExercises, userId);
+		return workoutId;
 	}
 
 }
