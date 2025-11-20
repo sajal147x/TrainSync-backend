@@ -1,8 +1,8 @@
 
 package com.trainSync.workout.model;
 
+import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
@@ -11,8 +11,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -46,6 +44,11 @@ public class Exercise {
 	
 	@Column
 	private UUID equipmentId;
+	
+	@Column
+	private String preFilledFromLastWorkoutFlag = "NO";
+	
+	@Column OffsetDateTime preFilledWorkoutDate;
 
 	/**
 	 * @return the equipmentId
@@ -130,6 +133,34 @@ public class Exercise {
 	 */
 	public void setExerciseLibraryId(UUID exerciseLibraryId) {
 		this.exerciseLibraryId = exerciseLibraryId;
+	}
+
+	/**
+	 * @return the preFilledFromLastWorkoutFlag
+	 */
+	public String getPreFilledFromLastWorkoutFlag() {
+		return preFilledFromLastWorkoutFlag;
+	}
+
+	/**
+	 * @param preFilledFromLastWorkoutFlag the preFilledFromLastWorkoutFlag to set
+	 */
+	public void setPreFilledFromLastWorkoutFlag(String preFilledFromLastWorkoutFlag) {
+		this.preFilledFromLastWorkoutFlag = preFilledFromLastWorkoutFlag;
+	}
+
+	/**
+	 * @return the preFilledWorkoutDate
+	 */
+	public OffsetDateTime getPreFilledWorkoutDate() {
+		return preFilledWorkoutDate;
+	}
+
+	/**
+	 * @param preFilledWorkoutDate the preFilledWorkoutDate to set
+	 */
+	public void setPreFilledWorkoutDate(OffsetDateTime preFilledWorkoutDate) {
+		this.preFilledWorkoutDate = preFilledWorkoutDate;
 	}
 
 }

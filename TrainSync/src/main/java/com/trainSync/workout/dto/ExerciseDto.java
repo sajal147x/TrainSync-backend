@@ -12,6 +12,8 @@ public class ExerciseDto {
 	private List<MuscleTagDto> muscleTags;
 	private List<SetDto> sets = new ArrayList<SetDto>();
 	private List<EquipmentTagDto> equipmentTags = new ArrayList<EquipmentTagDto>();
+	private String preFilledFlag;
+	private String preFilledDate;
 
 
 	public ExerciseDto(String id, String name) {
@@ -86,4 +88,33 @@ public class ExerciseDto {
 	public void setEquipmentTags(List<EquipmentTagDto> equipments) {
 		this.equipmentTags = equipments;
 	}
+	
+	/**
+	 * @return the preFilledFlag
+	 */
+	public String getPreFilledFlag() {
+		return preFilledFlag;
+	}
+
+	/**
+	 * @param preFilledFlag the preFilledFlag to set
+	 */
+	public void setPreFilledFlag(String preFilledFlag) {
+		this.preFilledFlag = preFilledFlag;
+	}
+
+	/**
+	 * @return the preFilledDate
+	 */
+	public String getPreFilledDate() {
+		return preFilledDate;
+	}
+
+	/**
+	 * @param preFilledDate the preFilledDate to set
+	 */
+	public void setPreFilledDate(String preFilledDate) {
+		this.preFilledDate = preFilledDate;
+	}
+
 }

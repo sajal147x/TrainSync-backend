@@ -83,53 +83,51 @@ public class WorkoutController {
 	@GetMapping("/get-workout")
 	public ResponseEntity<?> retrieveWorkout(
 	        @RequestHeader("Authorization") String authHeader,
-	        @RequestParam String workoutId) {
+			@RequestParam String workoutId) {
+		try {
+			// Extract user ID from JWT
+			String token = authHeader.replace("Bearer ", "");
+			String userIdStr = jwtService.extractUserId(token);
+			UUID userId = UUID.fromString(userIdStr);
 
-	    try {
-	        // Extract user ID from JWT
-	        String token = authHeader.replace("Bearer ", "");
-	        String userIdStr = jwtService.extractUserId(token);
-	        UUID userId = UUID.fromString(userIdStr);
+			// Fetch workout by ID
+			UUID workoutIdUUID = UUID.fromString(workoutId);
+			Optional<Workout> optionalWorkout = workoutRepository.findById(workoutIdUUID);
 
-	        // Fetch workout by ID
-	        UUID workoutIdUUID = UUID.fromString(workoutId);
-	        Optional<Workout> optionalWorkout = workoutRepository.findById(workoutIdUUID);
+			if (optionalWorkout.isEmpty()) {
+				return ResponseEntity.status(404).body("Workout not found");
+			}
+			Workout workout = optionalWorkout.get();
+			// Authorization check
+			if (!workout.getUserId().equals(userId)) {
+				return ResponseEntity.status(403).body("You are not authorized to view this workout");
+			}
+			// Map entity to DTO
+			WorkoutDto workoutDto = new WorkoutDto();
+			workoutDto.setWorkoutId(workout.getId().toString());
+			workoutDto.setWorkoutName(workout.getName());
 
-	        if (optionalWorkout.isEmpty()) {
-	            return ResponseEntity.status(404).body("Workout not found");
-	        }
+			for (Exercise exercise : workout.getExercises()) {
+				ExerciseDto exerciseDto = new ExerciseDto(exercise.getId().toString(), exercise.getName());
+				exerciseDto.setPreFilledFlag(exercise.getPreFilledFromLastWorkoutFlag());
+				if (exercise.getPreFilledWorkoutDate() != null) {
+					exerciseDto.setPreFilledDate(exercise.getPreFilledWorkoutDate().toString());
+				}
+				if (exercise.getSets() != null && !exercise.getSets().isEmpty()) {
+					for (ExerciseSet set : exercise.getSets()) {
+						SetDto setDto = new SetDto(set.getId().toString(), set.getWeight(), set.getReps(),
+								set.getSetNumber());
+						exerciseDto.getSets().add(setDto);
+					}
+				}
+				workoutDto.getExercises().add(exerciseDto);
+			}
 
-	        Workout workout = optionalWorkout.get();
-
-	        // Authorization check
-	        if (!workout.getUserId().equals(userId)) {
-	            return ResponseEntity.status(403).body("You are not authorized to view this workout");
-	        }
-
-	        // Map entity to DTO
-	        WorkoutDto workoutDto = new WorkoutDto();
-	        workoutDto.setWorkoutId(workout.getId().toString());
-	        workoutDto.setWorkoutName(workout.getName());
-	        
-	        for (Exercise exercise:  workout.getExercises()) {
-	        	ExerciseDto exerciseDto = new ExerciseDto(exercise.getId().toString(), exercise.getName());
-	        	if (exercise.getSets() != null && !exercise.getSets().isEmpty()) {
-	        		for (ExerciseSet set : exercise.getSets()) {
-	        			SetDto setDto = new SetDto(set.getId().toString(), set.getWeight(), set.getReps(), set.getSetNumber());
-	        			exerciseDto.getSets().add(setDto);
-	        		}
-	        	}
-	        	workoutDto.getExercises().add(exerciseDto);
-	        }
-
-	        return ResponseEntity.ok(workoutDto);
-
-	    } catch (IllegalArgumentException e) {
-	    	e.printStackTrace();
-	        return ResponseEntity.badRequest().body("Invalid UUID format");
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(500).body("Failed to retrieve workout");
-	    }
+			return ResponseEntity.ok(workoutDto);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body("Failed to retrieve workout");
+		}
 	}
 }
