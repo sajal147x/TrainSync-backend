@@ -1,7 +1,6 @@
 
 package com.trainSync.workout.model;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,21 +47,9 @@ public class Exercise {
 	@Column
 	private String preFilledFromLastWorkoutFlag = "NO";
 	
-	@Column OffsetDateTime preFilledWorkoutDate;
-
-	/**
-	 * @return the equipmentId
-	 */
-	public UUID getEquipmentId() {
-		return equipmentId;
-	}
-
-	/**
-	 * @param equipmentId the equipmentId to set
-	 */
-	public void setEquipmentId(UUID equipmentId) {
-		this.equipmentId = equipmentId;
-	}
+	@ManyToOne
+	@JoinColumn(name = "pre_filled_workout_id", nullable = true)
+	private Workout preFilledWorkout;
 
 	/**
 	 * @return the id
@@ -149,18 +136,34 @@ public class Exercise {
 		this.preFilledFromLastWorkoutFlag = preFilledFromLastWorkoutFlag;
 	}
 
+
+
 	/**
-	 * @return the preFilledWorkoutDate
+	 * @return the preFilledWorkout
 	 */
-	public OffsetDateTime getPreFilledWorkoutDate() {
-		return preFilledWorkoutDate;
+	public Workout getPreFilledWorkout() {
+		return preFilledWorkout;
 	}
 
 	/**
-	 * @param preFilledWorkoutDate the preFilledWorkoutDate to set
+	 * @param preFilledWorkout the preFilledWorkout to set
 	 */
-	public void setPreFilledWorkoutDate(OffsetDateTime preFilledWorkoutDate) {
-		this.preFilledWorkoutDate = preFilledWorkoutDate;
+	public void setPreFilledWorkout(Workout preFilledWorkout) {
+		this.preFilledWorkout = preFilledWorkout;
+	}
+
+	/**
+	 * @return the equipmentId
+	 */
+	public UUID getEquipmentId() {
+		return equipmentId;
+	}
+
+	/**
+	 * @param equipmentId the equipmentId to set
+	 */
+	public void setEquipmentId(UUID equipmentId) {
+		this.equipmentId = equipmentId;
 	}
 
 }

@@ -159,7 +159,7 @@ public class WorkoutService {
 			newSet.setReps(set.getReps());
 			setsToSave.add(newSet);
 			exercise.setPreFilledFromLastWorkoutFlag("YES");
-			exercise.setPreFilledWorkoutDate(lastExerciseForUser.getWorkout().getStartTime());
+			exercise.setPreFilledWorkout(lastExerciseForUser.getWorkout());
 		}
 		exerciseRepository.save(exercise);
 		exerciseSetRepository.saveAll(setsToSave);

@@ -14,6 +14,7 @@ public class ExerciseDto {
 	private List<EquipmentTagDto> equipmentTags = new ArrayList<EquipmentTagDto>();
 	private String preFilledFlag;
 	private String preFilledDate;
+	private String preFilledWorkoutName;
 
 
 	public ExerciseDto(String id, String name) {
@@ -115,6 +116,20 @@ public class ExerciseDto {
 	 */
 	public void setPreFilledDate(String preFilledDate) {
 		this.preFilledDate = preFilledDate;
+	}
+
+	/**
+	 * @return the preFilledWorkoutName
+	 */
+	public String getPreFilledWorkoutName() {
+		return preFilledWorkoutName;
+	}
+
+	/**
+	 * @param preFilledWorkoutName the preFilledWorkoutName to set
+	 */
+	public void setPreFilledWorkoutName(String preFilledWorkoutName) {
+		this.preFilledWorkoutName = preFilledWorkoutName;
 	}
 
 }
