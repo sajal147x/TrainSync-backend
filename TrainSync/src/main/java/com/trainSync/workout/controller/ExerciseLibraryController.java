@@ -105,12 +105,17 @@ public class ExerciseLibraryController {
 	 * @return
 	 */
 	@GetMapping("/muscletags")
-	public List<String> getMuscleTags() {
-	    return muscleTagRepository.findAll()
-	            .stream()
-	            .map(MuscleTag::getName)
-	            .sorted(String::compareToIgnoreCase)
-	            .toList();
+	public List<MuscleTagDto> getMuscleTags() {
+		List<MuscleTagDto> dtos = new ArrayList<MuscleTagDto>();
+		List<MuscleTag> ls = muscleTagRepository.findAll();
+		for (MuscleTag tag : ls) {
+			MuscleTagDto dto = new MuscleTagDto();
+			dto.setId(tag.getId().toString());
+			dto.setName(tag.getName());
+			dtos.add(dto);
+		}
+		return dtos;
+
 	}
 	
 	/**

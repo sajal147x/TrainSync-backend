@@ -8,6 +8,8 @@ package com.trainSync.workout.dto;
 
 public class MuscleTagDto {
 	
+	private String id;
+	
 	private String name;
 	private String level;
 	/**
@@ -15,6 +17,18 @@ public class MuscleTagDto {
 	 */
 	public String getName() {
 		return name;
+	}
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
 	}
 	/**
 	 * @param name the name to set
