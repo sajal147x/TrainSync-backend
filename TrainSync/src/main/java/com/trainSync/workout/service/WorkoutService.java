@@ -47,26 +47,29 @@ public class WorkoutService {
 	@Autowired
 	private ExerciseSetRepository exerciseSetRepository;
 
+	/**
+	 * 1. create and save workout
+	 * 2. create and save exercise
+	 * 3. pre populate sets if exercise has been done before
+	 * @param workoutDto
+	 * @param userId
+	 * @return
+	 */
 	public String createWorkout(WorkoutDto workoutDto, UUID userId) {
 		// Convert date string to LocalDateTime
 		OffsetDateTime dateTime = OffsetDateTime.parse(workoutDto.getWorkoutDate(),
 				DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 		// Create and save workout
-		Workout workout = new Workout();
-		workout.setName(workoutDto.getWorkoutName());
-		workout.setStartTime(dateTime);
-		workout.setUserId(userId);
-		workoutRepository.save(workout);
+		Workout workout = createWorkout(workoutDto.getWorkoutName(), dateTime, userId);
+
 		// Create and save exercise linked to workout
-		Exercise exercise = new Exercise();
-		exercise.setWorkout(workout);
 		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(workoutDto.getExerciseId()))
 				.get();
-		exercise.setExerciseLibraryId(UUID.fromString(workoutDto.getExerciseId()));
-		exercise.setName(exerciseLib.getName());
+
 		Exercise lastExerciseForUser = exerciseRepository.findLatestExerciseForUser(userId, exerciseLib.getId());
-		exerciseRepository.save(exercise);
-		//ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
+
+		Exercise exercise = createExercise(exerciseLib, workout);
+		// ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
 		createSetsBasedOnLastWorkoutForExercise(lastExerciseForUser, exercise, exerciseLib.getId(), userId);
 
 		return workout.getId().toString();
@@ -74,22 +77,19 @@ public class WorkoutService {
 
 
 	/**
+	 * 1. create exercise and save it
+	 * 2. pre populate sets if done before
 	 * @param workoutDto
 	 * @param userId
 	 * @return
 	 */
 	public String addExerciseToWorkout(WorkoutDto workoutDto, UUID userId) {
 		// Create and save exercise linked to workout
-		Exercise exercise = new Exercise();
 		Workout workout = workoutRepository.findById(UUID.fromString(workoutDto.getWorkoutId())).get();
-		exercise.setWorkout(workout);
 		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(workoutDto.getExerciseId()))
 				.get();
-		exercise.setExerciseLibraryId(UUID.fromString(workoutDto.getExerciseId()));
-		exercise.setName(exerciseLib.getName());
 		Exercise lastExerciseForUser = exerciseRepository.findLatestExerciseForUser(userId, exerciseLib.getId());
-		exerciseRepository.save(exercise);
-
+		Exercise exercise = createExercise(exerciseLib, workout);
 		// ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
 		createSetsBasedOnLastWorkoutForExercise(lastExerciseForUser, exercise, exerciseLib.getId(), userId);
 		return workout.getId().toString();
@@ -103,20 +103,12 @@ public class WorkoutService {
 	public String createWorkoutUsingPreMade(PreMadeWorkout preMade, List<PreMadeWorkoutExercise> preMadeExercises,
 			UUID userId) {
 		OffsetDateTime dateTime = OffsetDateTime.now();
-		Workout workout = new Workout();
-		workout.setName(preMade.getName());
-		workout.setStartTime(dateTime);
-		workout.setUserId(userId);
-		workoutRepository.save(workout);
-
+		Workout workout = createWorkout(preMade.getName(), dateTime, userId);
 		// Excercises
 		for (PreMadeWorkoutExercise preMadeExercise : preMadeExercises) {
-			Exercise exercise = new Exercise();
-			exercise.setWorkout(workout);
 			ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(preMadeExercise.getExercise().getId())
 					.get();
-			exercise.setExerciseLibraryId(exerciseLib.getId());
-			exercise.setName(exerciseLib.getName());
+			Exercise exercise = createExercise(exerciseLib, workout);
 			// SETS
 			List<PreMadeWorkoutSet> preMadeSets = preMadeWorkoutSetRepository
 					.findByPreMadeWorkoutExerciseId(preMadeExercise.getId());
@@ -134,6 +126,36 @@ public class WorkoutService {
 		return workout.getId().toString();
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 * @param time
+	 * @param userId
+	 * @return
+	 */
+	private Workout createWorkout(String name, OffsetDateTime time, UUID userId) {
+		Workout workout = new Workout();
+		workout.setName(name);
+		workout.setStartTime(time);
+		workout.setUserId(userId);
+		workoutRepository.save(workout);
+		return workout;
+	}
+	
+	/**
+	 * 
+	 * @param exerciseLib
+	 * @param workout
+	 * @return
+	 */
+	private Exercise createExercise(ExerciseLibrary exerciseLib, Workout workout) {
+	    Exercise exercise = new Exercise();
+	    exercise.setWorkout(workout);
+	    exercise.setExerciseLibraryId(exerciseLib.getId());
+	    exercise.setName(exerciseLib.getName());
+
+	    return exerciseRepository.save(exercise);
+	}
 	
 	/**
 	 * @param exercise 
