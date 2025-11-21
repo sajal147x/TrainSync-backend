@@ -25,6 +25,7 @@ public interface ExerciseLibraryRepository extends JpaRepository<ExerciseLibrary
 
     Page<ExerciseLibrary> findByNameContainingIgnoreCase(String searchText, Pageable pageable);
     Page<ExerciseLibrary> findByMuscleTags_Name(String muscleTag, Pageable pageable);
+    Page<ExerciseLibrary> findByMuscleTags_Id(UUID muscleTagId, Pageable pageable);
     Page<ExerciseLibrary> findByNameContainingAndMuscleTags_NameIgnoreCase(String searchText, String muscleTag, Pageable pageable);
 
 }

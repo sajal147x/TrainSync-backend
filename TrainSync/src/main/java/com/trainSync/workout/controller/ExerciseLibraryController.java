@@ -2,6 +2,7 @@ package com.trainSync.workout.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -55,7 +56,6 @@ public class ExerciseLibraryController {
 	public Page<ExerciseDto> getExercises(@RequestParam(required = false) String searchText,
 			@RequestParam(required = false) String muscleTag, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
-		System.out.println("EXERCISE LIB CALLED");
 		Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
 		Page<ExerciseLibrary> exercises;
 
@@ -65,7 +65,8 @@ public class ExerciseLibraryController {
 		} else if (searchText != null) {
 			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCase(searchText, pageable);
 		} else if (muscleTag != null) {
-			exercises = exerciseLibraryRepository.findByMuscleTags_Name(muscleTag, pageable);
+			System.out.println(muscleTag);
+			exercises = exerciseLibraryRepository.findByMuscleTags_Id(UUID.fromString(muscleTag), pageable);
 		} else {
 			exercises = exerciseLibraryRepository.findAll(pageable);
 		}
