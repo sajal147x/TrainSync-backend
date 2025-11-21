@@ -24,8 +24,42 @@ public interface ExerciseLibraryRepository extends JpaRepository<ExerciseLibrary
     Page<ExerciseLibrary> findDistinctByNameContainingIgnoreCaseAndMuscleTags_NameIn(String name, List<String> tags, Pageable pageable);
 
     Page<ExerciseLibrary> findByNameContainingIgnoreCase(String searchText, Pageable pageable);
-    Page<ExerciseLibrary> findByMuscleTags_Name(String muscleTag, Pageable pageable);
     Page<ExerciseLibrary> findByMuscleTags_Id(UUID muscleTagId, Pageable pageable);
-    Page<ExerciseLibrary> findByNameContainingAndMuscleTags_NameIgnoreCase(String searchText, String muscleTag, Pageable pageable);
+    Page<ExerciseLibrary> findByNameContainingIgnoreCaseAndMuscleTags_Id(String searchText, UUID muscleTag, Pageable pageable);
+
+	/**
+	 * @param searchText
+	 * @param muscleTagUuid
+	 * @param equipmentTagUuid
+	 * @param pageable
+	 * @return
+	 */
+	Page<ExerciseLibrary> findByNameContainingIgnoreCaseAndMuscleTags_IdAndEquipmentTags_Id(String searchText,
+			UUID muscleTagUuid, UUID equipmentTagUuid, Pageable pageable);
+
+	/**
+	 * @param searchText
+	 * @param equipmentTagUuid
+	 * @param pageable
+	 * @return
+	 */
+	Page<ExerciseLibrary> findByNameContainingIgnoreCaseAndEquipmentTags_Id(String searchText, UUID equipmentTagUuid,
+			Pageable pageable);
+
+	/**
+	 * @param muscleTagUuid
+	 * @param equipmentTagUuid
+	 * @param pageable
+	 * @return
+	 */
+	Page<ExerciseLibrary> findByMuscleTags_IdAndEquipmentTags_Id(UUID muscleTagUuid, UUID equipmentTagUuid,
+			Pageable pageable);
+
+	/**
+	 * @param equipmentTagUuid
+	 * @param pageable
+	 * @return
+	 */
+	Page<ExerciseLibrary> findByEquipmentTags_Id(UUID equipmentTagUuid, Pageable pageable);
 
 }
