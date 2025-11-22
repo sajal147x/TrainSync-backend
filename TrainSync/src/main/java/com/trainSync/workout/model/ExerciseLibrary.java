@@ -11,6 +11,7 @@ import org.hibernate.annotations.BatchSize;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -48,7 +49,7 @@ public class ExerciseLibrary {
     private List<ExerciseLibraryTagLink> tagLinks = new ArrayList<>();
     
     
-    @ManyToMany @JoinTable( name = "exercise_library_equipment_tag_link", joinColumns = @JoinColumn(name = "exercise_library_id"), inverseJoinColumns = @JoinColumn(name = "tag_id") )
+    @ManyToMany @JoinTable(name = "exercise_library_equipment_tag_link", joinColumns = @JoinColumn(name = "exercise_library_id"), inverseJoinColumns = @JoinColumn(name = "tag_id") )
     @BatchSize(size = 10)
     private Set<EquipmentTag> equipmentTags;
   

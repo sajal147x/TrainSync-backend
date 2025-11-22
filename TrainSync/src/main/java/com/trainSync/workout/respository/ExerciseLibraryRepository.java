@@ -56,5 +56,11 @@ public interface ExerciseLibraryRepository extends JpaRepository<ExerciseLibrary
             Pageable pageable
     );
 
+	/**
+	 * @param name
+	 * @return
+	 */
+	ExerciseLibrary findByNameIgnoreCase(String name);
+
 }
 

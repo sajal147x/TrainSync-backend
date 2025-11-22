@@ -24,7 +24,8 @@ import com.trainSync.workout.respository.ExerciseLibraryRepository;
 import com.trainSync.workout.service.WorkoutService;
 
 /**
- * Author: Sajal Gupta Date: Nov 18, 2025
+ * Author: Sajal Gupta 
+ * Date: Nov 18, 2025
  */
 @Service
 public class PreMadeWorkoutService {

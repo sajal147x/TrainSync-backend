@@ -9,6 +9,7 @@ import java.util.List;
  */
 public class ExerciseConfigureDto {
 	
+	public String exerciseId;
 	public String name;
 	public List<String> equipmentIds;
 	public List<String> muscleTagIdsPrimary;
