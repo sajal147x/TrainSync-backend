@@ -18,13 +18,13 @@ public class ExerciseLibraryTagLink {
     @EmbeddedId
     private ExerciseLibraryTagKey id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @MapsId("exerciseLibraryId")
     @JoinColumn(name = "exercise_library_id")
     @JsonIgnore
     private ExerciseLibrary exerciseLibrary;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @MapsId("tagId")
     @JoinColumn(name = "tag_id")
     @JsonIgnore

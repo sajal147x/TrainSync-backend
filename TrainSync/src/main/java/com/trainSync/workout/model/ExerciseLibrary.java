@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.annotations.BatchSize;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,12 +44,12 @@ public class ExerciseLibrary {
     private UUID createdBy; // null if global exercise
 
     @OneToMany(mappedBy = "exerciseLibrary", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 10)
     private List<ExerciseLibraryTagLink> tagLinks = new ArrayList<>();
     
-    @ManyToMany @JoinTable( name = "exercise_library_tag_link", joinColumns = @JoinColumn(name = "exercise_library_id"), inverseJoinColumns = @JoinColumn(name = "tag_id") )
-    private Set<MuscleTag> muscleTags;
     
     @ManyToMany @JoinTable( name = "exercise_library_equipment_tag_link", joinColumns = @JoinColumn(name = "exercise_library_id"), inverseJoinColumns = @JoinColumn(name = "tag_id") )
+    @BatchSize(size = 10)
     private Set<EquipmentTag> equipmentTags;
   
 
@@ -108,19 +110,6 @@ public class ExerciseLibrary {
 		this.tagLinks = tagLinks;
 	}
 
-	/**
-	 * @return the muscleTags
-	 */
-	public Set<MuscleTag> getMuscleTags() {
-		return muscleTags;
-	}
-
-	/**
-	 * @param muscleTags the muscleTags to set
-	 */
-	public void setMuscleTags(Set<MuscleTag> muscleTags) {
-		this.muscleTags = muscleTags;
-	}
 	
 	/**
 	 * @return the equipmentTags

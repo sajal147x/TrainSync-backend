@@ -56,28 +56,29 @@ public class ExerciseLibraryController {
 	public Page<ExerciseDto> getExercises(@RequestParam(required = false) String searchText,
 			@RequestParam(required = false) String muscleTag, @RequestParam(required = false) String equipmentTag, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
-		Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+		long startTime = System.currentTimeMillis();
+		Pageable pageable = PageRequest.of(page, size);
 		Page<ExerciseLibrary> exercises;
 		UUID muscleTagUuid = muscleTag != null ? UUID.fromString(muscleTag) : null;
 		UUID equipmentTagUuid = equipmentTag != null ? UUID.fromString(equipmentTag) : null;
 		//search text, muscle tag, and equipment
 		if (searchText != null && muscleTagUuid != null && equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCaseAndMuscleTags_IdAndEquipmentTags_Id(
+			exercises = exerciseLibraryRepository.findDistinctByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndEquipmentTags_Id(
 					searchText, muscleTagUuid, equipmentTagUuid, pageable);
 		} 
 		//search text and muscle tag
 		else if (searchText != null && muscleTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCaseAndMuscleTags_Id(searchText,
+			exercises = exerciseLibraryRepository.findDistinctByNameContainingIgnoreCaseAndTagLinks_MuscleTag_Id(searchText,
 					muscleTagUuid, pageable);
 		}
 		//search text and equipment tag
 		else if (searchText != null && equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCaseAndEquipmentTags_Id(searchText,
+			exercises = exerciseLibraryRepository.findDistinctByNameContainingIgnoreCaseAndEquipmentTags_Id(searchText,
 					equipmentTagUuid, pageable);
 		} 
 		//muscle tag and equipment tag
 		else if (muscleTagUuid != null && equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByMuscleTags_IdAndEquipmentTags_Id(muscleTagUuid,
+			exercises = exerciseLibraryRepository.findDistinctByTagLinks_MuscleTag_IdAndEquipmentTags_Id(muscleTagUuid,
 					equipmentTagUuid, pageable);
 		} 
 		//only search text
@@ -86,21 +87,24 @@ public class ExerciseLibraryController {
 		} 
 		//only muscle tag
 		else if (muscleTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByMuscleTags_Id(muscleTagUuid, pageable);
+			exercises = exerciseLibraryRepository.findDistinctByTagLinks_MuscleTag_Id(muscleTagUuid, pageable);
 		} 
 		//only equipment tag
 		else if (equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByEquipmentTags_Id(equipmentTagUuid, pageable);
+			exercises = exerciseLibraryRepository.findDistinctByEquipmentTags_Id(equipmentTagUuid, pageable);
 		}
 		// no filter
 		else {
 			exercises = exerciseLibraryRepository.findAll(pageable);
 		}
 
+		long endTime = System.currentTimeMillis();
+		System.out.println("TIME TOOK " + (endTime- startTime));
 		// Convert to DTO
 		List<ExerciseDto> dtoList = convertExerciseToDto(exercises);
 		// Wrap into Page<ExerciseDto>
 		Page<ExerciseDto> dtoPage = new PageImpl<>(dtoList, pageable, exercises.getTotalElements());
+		
 
 		return dtoPage;
 	}
