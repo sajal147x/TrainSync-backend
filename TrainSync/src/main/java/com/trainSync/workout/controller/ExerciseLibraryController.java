@@ -121,8 +121,9 @@ public class ExerciseLibraryController {
 		List<ExerciseDto> dtoList = new ArrayList<>();
 
 		for (ExerciseLibrary e : exercises) {
-			for (EquipmentTag equipmentTag : e.getEquipmentTags()) {
-				if(equipmentTagUuid!=null && !equipmentTagUuid.equals(equipmentTag.getId())){
+			for (ExerciseLibraryEquipmentLink equipmentLink : e.getEquipmentLinks()) {
+				EquipmentTag equipmentTag = equipmentLink.getEquipmentTag();
+				if (equipmentTagUuid != null && !equipmentTagUuid.equals(equipmentTag.getId())) {
 					continue;
 				}
 				EquipmentTagDto equipmentDto = new EquipmentTagDto();
@@ -131,6 +132,7 @@ public class ExerciseLibraryController {
 				ExerciseDto dto = new ExerciseDto();
 				dto.setEquipmentTag(equipmentDto);
 				dto.setId(e.getId().toString());
+				dto.setExercisePictureUrl(equipmentLink.getExercisePictureUrl());
 				dto.setName(e.getName() + " (" + equipmentDto.getName() + ")");
 				for (ExerciseLibraryTagLink tag : e.getTagLinks()) {
 					MuscleTagDto muscleTagDto = new MuscleTagDto();

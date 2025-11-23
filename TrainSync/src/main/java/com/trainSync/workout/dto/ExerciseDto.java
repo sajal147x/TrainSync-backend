@@ -15,6 +15,7 @@ public class ExerciseDto {
 	private String preFilledFlag;
 	private String preFilledDate;
 	private String preFilledWorkoutName;
+	private String exercisePictureUrl;
 
 
 	public ExerciseDto(String id, String name) {
@@ -130,6 +131,20 @@ public class ExerciseDto {
 	 */
 	public void setPreFilledWorkoutName(String preFilledWorkoutName) {
 		this.preFilledWorkoutName = preFilledWorkoutName;
+	}
+
+	/**
+	 * @return the exercisePictureUrl
+	 */
+	public String getExercisePictureUrl() {
+		return exercisePictureUrl;
+	}
+
+	/**
+	 * @param exercisePictureUrl the exercisePictureUrl to set
+	 */
+	public void setExercisePictureUrl(String exercisePictureUrl) {
+		this.exercisePictureUrl = exercisePictureUrl;
 	}
 
 }

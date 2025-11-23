@@ -3,6 +3,7 @@ package com.trainSync.workout.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -33,6 +34,9 @@ public class ExerciseLibraryEquipmentLink {
     @JoinColumn(name = "tag_id")
     @JsonIgnore
     private EquipmentTag equipmentTag;
+    
+    @Column
+	private String exercisePictureUrl;
 
 
     public ExerciseLibraryEquipmentLink() {}
@@ -71,6 +75,20 @@ public class ExerciseLibraryEquipmentLink {
 	 */
 	public void setEquipmentTag(EquipmentTag equipmentTag) {
 		this.equipmentTag = equipmentTag;
+	}
+
+	/**
+	 * @return the exercisePictureUrl
+	 */
+	public String getExercisePictureUrl() {
+		return exercisePictureUrl;
+	}
+
+	/**
+	 * @param exercisePictureUrl the exercisePictureUrl to set
+	 */
+	public void setExercisePictureUrl(String exercisePictureUrl) {
+		this.exercisePictureUrl = exercisePictureUrl;
 	}
 
 }

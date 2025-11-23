@@ -48,6 +48,9 @@ public class ExerciseLibrary {
     @BatchSize(size = 10)
     private List<ExerciseLibraryTagLink> tagLinks = new ArrayList<>();
     
+    @OneToMany(mappedBy = "exerciseLibrary", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 10)
+    private List<ExerciseLibraryEquipmentLink> equipmentLinks = new ArrayList<>();
     
     @ManyToMany @JoinTable(name = "exercise_library_equipment_tag_link", joinColumns = @JoinColumn(name = "exercise_library_id"), inverseJoinColumns = @JoinColumn(name = "tag_id") )
     @BatchSize(size = 10)
@@ -124,6 +127,20 @@ public class ExerciseLibrary {
 	 */
 	public void setEquipmentTags(Set<EquipmentTag> equipmentTags) {
 		this.equipmentTags = equipmentTags;
+	}
+
+	/**
+	 * @return the equipmentLinks
+	 */
+	public List<ExerciseLibraryEquipmentLink> getEquipmentLinks() {
+		return equipmentLinks;
+	}
+
+	/**
+	 * @param equipmentLinks the equipmentLinks to set
+	 */
+	public void setEquipmentLinks(List<ExerciseLibraryEquipmentLink> equipmentLinks) {
+		this.equipmentLinks = equipmentLinks;
 	}
 
 
