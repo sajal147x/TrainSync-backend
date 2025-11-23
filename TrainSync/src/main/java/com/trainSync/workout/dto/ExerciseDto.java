@@ -9,9 +9,9 @@ import java.util.List;
 public class ExerciseDto {
 	private String id;
 	private String name;
-	private List<MuscleTagDto> muscleTags;
+	private List<MuscleTagDto> muscleTags = new ArrayList<MuscleTagDto>();
 	private List<SetDto> sets = new ArrayList<SetDto>();
-	private List<EquipmentTagDto> equipmentTags = new ArrayList<EquipmentTagDto>();
+	private EquipmentTagDto equipmentTag = new EquipmentTagDto();
 	private String preFilledFlag;
 	private String preFilledDate;
 	private String preFilledWorkoutName;
@@ -79,15 +79,15 @@ public class ExerciseDto {
 	/**
 	 * @return the equipments
 	 */
-	public List<EquipmentTagDto> getEquipmentTags() {
-		return equipmentTags;
+	public EquipmentTagDto getEquipmentTag() {
+		return equipmentTag;
 	}
 
 	/**
 	 * @param equipments the equipments to set
 	 */
-	public void setEquipmentTags(List<EquipmentTagDto> equipments) {
-		this.equipmentTags = equipments;
+	public void setEquipmentTag(EquipmentTagDto equipment) {
+		this.equipmentTag = equipment;
 	}
 	
 	/**
