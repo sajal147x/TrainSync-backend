@@ -58,48 +58,47 @@ public class ConfigureExerciseController {
     
     
     @PostMapping("/create-exercise")
-    public String createExercise(@RequestBody ExerciseConfigureDto dto) {
+	public String createExercise(@RequestBody ExerciseConfigureDto dto) {
 
+		for (String equipmentId : dto.equipmentIds) {
+			ExerciseLibrary exercise = new ExerciseLibrary();
+			exercise.setName(dto.name);
+			exercise.setEquipment(equipmentTagRepository.findById(UUID.fromString(equipmentId)).get());
+			exercise = exerciseLibraryRepository.save(exercise);
 
-    	
-        ExerciseLibrary exercise = new ExerciseLibrary();
-        exercise.setName(dto.name);
-        exercise.setName(dto.name); // displayName can be updated if needed
-        exercise.setEquipment(equipmentTagRepository.findById(UUID.fromString(dto.equipmentId)).get());
-        exercise = exerciseLibraryRepository.save(exercise);
+			// Seed MuscleTags
+			if (dto.muscleTagIdsPrimary != null) {
+				for (String tagDto : dto.muscleTagIdsPrimary) {
+					System.out.println("PRIMARY");
+					MuscleTag tag;
+					Optional<MuscleTag> tagOptional = muscleTagRepository.findById(UUID.fromString(tagDto));
+					if (tagOptional.isPresent()) {
+						tag = tagOptional.get();
 
-        // Seed MuscleTags
-        if (dto.muscleTagIdsPrimary != null) {
-			for (String tagDto : dto.muscleTagIdsPrimary) {
-				System.out.println("PRIMARY");
-				MuscleTag tag;
-				Optional<MuscleTag> tagOptional = muscleTagRepository.findById(UUID.fromString(tagDto));
-				if (tagOptional.isPresent()) {
-					tag = tagOptional.get();
-
-					// Create link with PRIMARY/SECONDARY
-					ExerciseLibraryTagLink link = new ExerciseLibraryTagLink(exercise, tag, "PRIMARY");
-					linkRepository.save(link);
+						// Create link with PRIMARY/SECONDARY
+						ExerciseLibraryTagLink link = new ExerciseLibraryTagLink(exercise, tag, "PRIMARY");
+						linkRepository.save(link);
+					}
 				}
 			}
-        }
-        if (dto.muscleTagIdsSecondary != null) {
-			for (String tagDto : dto.muscleTagIdsSecondary) {
-				System.out.println("SECONDARY");
-				MuscleTag tag;
-				Optional<MuscleTag> tagOptional = muscleTagRepository.findById(UUID.fromString(tagDto));
-				if (tagOptional.isPresent()) {
-					tag = tagOptional.get();
+			if (dto.muscleTagIdsSecondary != null) {
+				for (String tagDto : dto.muscleTagIdsSecondary) {
+					System.out.println("SECONDARY");
+					MuscleTag tag;
+					Optional<MuscleTag> tagOptional = muscleTagRepository.findById(UUID.fromString(tagDto));
+					if (tagOptional.isPresent()) {
+						tag = tagOptional.get();
 
-					// Create link with PRIMARY/SECONDARY
-					ExerciseLibraryTagLink link = new ExerciseLibraryTagLink(exercise, tag, "SECONDARY");
-					linkRepository.save(link);
+						// Create link with PRIMARY/SECONDARY
+						ExerciseLibraryTagLink link = new ExerciseLibraryTagLink(exercise, tag, "SECONDARY");
+						linkRepository.save(link);
+					}
 				}
 			}
-        }
-    
-    	return null;
-    }
+
+		}
+		return null;
+	}
     
     
     @PostMapping("/edit-exercise")
