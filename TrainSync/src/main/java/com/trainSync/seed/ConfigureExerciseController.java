@@ -19,14 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.trainSync.seed.dto.EditExerciseConfigDto;
 import com.trainSync.service.SupabaseStorageService;
-import com.trainSync.workout.model.EquipmentTag;
 import com.trainSync.workout.model.ExerciseLibrary;
-import com.trainSync.workout.model.ExerciseLibraryEquipmentKey;
-import com.trainSync.workout.model.ExerciseLibraryEquipmentLink;
 import com.trainSync.workout.model.ExerciseLibraryTagLink;
 import com.trainSync.workout.model.MuscleTag;
 import com.trainSync.workout.respository.EquipmentTagRepository;
-import com.trainSync.workout.respository.ExerciseLibraryEquipmentLinkRepository;
 import com.trainSync.workout.respository.ExerciseLibraryRepository;
 import com.trainSync.workout.respository.ExerciseLibraryTagLinkRepository;
 import com.trainSync.workout.respository.MuscleTagRepository;
@@ -44,7 +40,6 @@ public class ConfigureExerciseController {
     private final MuscleTagRepository muscleTagRepository;
     private final EquipmentTagRepository equipmentTagRepository;
     private final ExerciseLibraryTagLinkRepository linkRepository;
-    private final ExerciseLibraryEquipmentLinkRepository equipmentLinkRepository;
     
     @Autowired
 	private SupabaseStorageService storageService;
@@ -53,14 +48,12 @@ public class ConfigureExerciseController {
             ExerciseLibraryRepository exerciseLibraryRepository,
             MuscleTagRepository muscleTagRepository,
             EquipmentTagRepository equipmentTagRepository,
-            ExerciseLibraryTagLinkRepository linkRepository,
-            ExerciseLibraryEquipmentLinkRepository equipmentLinkRepository
+            ExerciseLibraryTagLinkRepository linkRepository
     ) {
         this.exerciseLibraryRepository = exerciseLibraryRepository;
         this.muscleTagRepository = muscleTagRepository;
         this.equipmentTagRepository = equipmentTagRepository;
         this.linkRepository = linkRepository;
-        this.equipmentLinkRepository = equipmentLinkRepository;
     }
     
     
@@ -72,6 +65,7 @@ public class ConfigureExerciseController {
         ExerciseLibrary exercise = new ExerciseLibrary();
         exercise.setName(dto.name);
         exercise.setName(dto.name); // displayName can be updated if needed
+        exercise.setEquipment(equipmentTagRepository.findById(UUID.fromString(dto.equipmentId)).get());
         exercise = exerciseLibraryRepository.save(exercise);
 
         // Seed MuscleTags
@@ -103,21 +97,6 @@ public class ConfigureExerciseController {
 				}
 			}
         }
-
-        // Seed EquipmentTags
-		if (dto.equipmentIds != null) {
-			for (String equipmentId : dto.equipmentIds) {
-				EquipmentTag equipmentTag;
-				Optional<EquipmentTag> equipOptional = equipmentTagRepository.findById(UUID.fromString(equipmentId));
-				if (equipOptional.isPresent()) {
-					equipmentTag = equipOptional.get();
-
-					// Create link to exercise
-					ExerciseLibraryEquipmentLink link = new ExerciseLibraryEquipmentLink(exercise, equipmentTag);
-					equipmentLinkRepository.save(link);
-				}
-			}
-		}
     
     	return null;
     }
@@ -125,16 +104,14 @@ public class ConfigureExerciseController {
     
     @PostMapping("/edit-exercise")
     public String editExericse(@RequestBody EditExerciseConfigDto dto) throws Exception {
-    	ExerciseLibraryEquipmentKey key = new ExerciseLibraryEquipmentKey();
-    	key.setExerciseLibraryId(UUID.fromString(dto.exerciseId));
-    	key.setTagId(UUID.fromString(dto.equipmentTagId));
-    	ExerciseLibraryEquipmentLink link = equipmentLinkRepository.findById(key).get();
+    	
+    	ExerciseLibrary exercise = exerciseLibraryRepository.findById(UUID.fromString(dto.exerciseId)).get();
     	byte[] resized = resizeTo400(dto.pictureBase64);
-    	String fileName = link.getExerciseLibrary().getName() + link.getEquipmentTag().getName() + ".jpg";
+    	String fileName = exercise.getName() + exercise.getEquipment().getName() + ".jpg";
     	String base64 = Base64.getEncoder().encodeToString(resized);
     	String publicUrl = storageService.uploadBase64Image(base64, fileName, "exercise-pictures");
-    	link.setExercisePictureUrl(publicUrl);
-    	equipmentLinkRepository.save(link);
+    	exercise.setExercisePictureUrl(publicUrl);
+    	exerciseLibraryRepository.save(exercise);
     	System.out.println("SAVED");
     	return null;
     }

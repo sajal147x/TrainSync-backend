@@ -38,8 +38,9 @@ public class Exercise {
 	private List<ExerciseSet> sets;
 	
 	
-	@Column
-	private UUID exerciseLibraryId;
+	@ManyToOne
+	@JoinColumn(name = "exercise_id")
+	private ExerciseLibrary exerciseLibrary;
 
 	
 	@ManyToOne
@@ -110,19 +111,6 @@ public class Exercise {
 		this.sets = sets;
 	}
 
-	/**
-	 * @return the exerciseLibraryId
-	 */
-	public UUID getExerciseLibraryId() {
-		return exerciseLibraryId;
-	}
-
-	/**
-	 * @param exerciseLibraryId the exerciseLibraryId to set
-	 */
-	public void setExerciseLibraryId(UUID exerciseLibraryId) {
-		this.exerciseLibraryId = exerciseLibraryId;
-	}
 
 	/**
 	 * @return the preFilledFromLastWorkoutFlag
@@ -161,6 +149,20 @@ public class Exercise {
 
 	public void setEquipment(EquipmentTag equipment) {
 		this.equipment = equipment;
+	}
+
+	/**
+	 * @return the exerciseLibrary
+	 */
+	public ExerciseLibrary getExerciseLibrary() {
+		return exerciseLibrary;
+	}
+
+	/**
+	 * @param exerciseLibrary the exerciseLibrary to set
+	 */
+	public void setExerciseLibrary(ExerciseLibrary exerciseLibrary) {
+		this.exerciseLibrary = exerciseLibrary;
 	}
 
 }

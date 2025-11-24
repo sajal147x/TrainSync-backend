@@ -156,7 +156,7 @@ public class WorkoutService {
 	    Exercise exercise = new Exercise();
 	    exercise.setWorkout(workout);
 	    exercise.setEquipment(equipmentTagRepository.findById(equipmentId).get());
-	    exercise.setExerciseLibraryId(exerciseLib.getId());
+	    exercise.setExerciseLibrary(exerciseLib);
 	    exercise.setName(exerciseLib.getName());
 
 	    return exerciseRepository.save(exercise);

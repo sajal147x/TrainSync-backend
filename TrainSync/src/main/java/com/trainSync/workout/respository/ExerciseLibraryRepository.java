@@ -1,4 +1,3 @@
-
 package com.trainSync.workout.respository;
 
 import java.util.UUID;
@@ -11,56 +10,46 @@ import org.springframework.stereotype.Repository;
 
 import com.trainSync.workout.model.ExerciseLibrary;
 
-/**
- * Author: Sajal Gupta Date: Nov 12, 2025
- */
 @Repository
 public interface ExerciseLibraryRepository extends JpaRepository<ExerciseLibrary, UUID> {
 
-    
-    @EntityGraph(attributePaths = { "tagLinks", "tagLinks.muscleTag" })
+    @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
     Page<ExerciseLibrary> findByNameContainingIgnoreCase(String searchText, Pageable pageable);
 
-    @EntityGraph(attributePaths = { "tagLinks", "tagLinks.muscleTag" })
-    Page<ExerciseLibrary> findDistinctByTagLinks_MuscleTag_Id(UUID muscleTagId, Pageable pageable);
+    @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
+    Page<ExerciseLibrary> findByEquipment_Id(UUID equipmentId, Pageable pageable);
 
-    @EntityGraph(attributePaths = {  "tagLinks", "tagLinks.muscleTag" })
-    Page<ExerciseLibrary> findDistinctByEquipmentTags_Id(UUID equipmentTagId, Pageable pageable);
+    @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
+    Page<ExerciseLibrary> findByTagLinks_MuscleTag_Id(UUID muscleTagId, Pageable pageable);
 
-    @EntityGraph(attributePaths = {  "tagLinks", "tagLinks.muscleTag" })
-    Page<ExerciseLibrary> findDistinctByNameContainingIgnoreCaseAndTagLinks_MuscleTag_Id(
+    @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
+    Page<ExerciseLibrary> findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_Id(
             String searchText,
             UUID muscleTagId,
             Pageable pageable
     );
 
-    @EntityGraph(attributePaths = { "tagLinks", "tagLinks.muscleTag" })
-    Page<ExerciseLibrary> findDistinctByNameContainingIgnoreCaseAndEquipmentTags_Id(
+    @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
+    Page<ExerciseLibrary> findByNameContainingIgnoreCaseAndEquipment_Id(
             String searchText,
-            UUID equipmentTagId,
+            UUID equipmentId,
             Pageable pageable
     );
 
-    @EntityGraph(attributePaths = {"tagLinks", "tagLinks.muscleTag" })
-    Page<ExerciseLibrary> findDistinctByTagLinks_MuscleTag_IdAndEquipmentTags_Id(
+    @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
+    Page<ExerciseLibrary> findByTagLinks_MuscleTag_IdAndEquipment_Id(
             UUID muscleTagId,
-            UUID equipmentTagId,
+            UUID equipmentId,
             Pageable pageable
     );
 
-    @EntityGraph(attributePaths = { "tagLinks", "tagLinks.muscleTag" })
-    Page<ExerciseLibrary> findDistinctByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndEquipmentTags_Id(
+    @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
+    Page<ExerciseLibrary> findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndEquipment_Id(
             String searchText,
             UUID muscleTagId,
-            UUID equipmentTagId,
+            UUID equipmentId,
             Pageable pageable
     );
 
-	/**
-	 * @param name
-	 * @return
-	 */
-	ExerciseLibrary findByNameIgnoreCase(String name);
-
+    ExerciseLibrary findByNameIgnoreCase(String name);
 }
-

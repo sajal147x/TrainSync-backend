@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -48,13 +49,13 @@ public class ExerciseLibrary {
     @BatchSize(size = 10)
     private List<ExerciseLibraryTagLink> tagLinks = new ArrayList<>();
     
-    @OneToMany(mappedBy = "exerciseLibrary", cascade = CascadeType.ALL, orphanRemoval = true)
-    @BatchSize(size = 10)
-    private List<ExerciseLibraryEquipmentLink> equipmentLinks = new ArrayList<>();
+    @Column
+    private String exercisePictureUrl;
     
-    @ManyToMany @JoinTable(name = "exercise_library_equipment_tag_link", joinColumns = @JoinColumn(name = "exercise_library_id"), inverseJoinColumns = @JoinColumn(name = "tag_id") )
-    @BatchSize(size = 10)
-    private Set<EquipmentTag> equipmentTags;
+
+	@ManyToOne
+	@JoinColumn(name = "equipment_id")
+    private EquipmentTag equipment;
   
 
     public UUID getId() {
@@ -114,34 +115,37 @@ public class ExerciseLibrary {
 		this.tagLinks = tagLinks;
 	}
 
+
+	/**
+	 * @return the exercisePictureUrl
+	 */
+	public String getExercisePictureUrl() {
+		return exercisePictureUrl;
+	}
+
+	/**
+	 * @param exercisePictureUrl the exercisePictureUrl to set
+	 */
+	public void setExercisePictureUrl(String exercisePictureUrl) {
+		this.exercisePictureUrl = exercisePictureUrl;
+	}
+
+	/**
+	 * @return the equipment
+	 */
+	public EquipmentTag getEquipment() {
+		return equipment;
+	}
+
+	/**
+	 * @param equipment the equipment to set
+	 */
+	public void setEquipment(EquipmentTag equipment) {
+		this.equipment = equipment;
+	}
+
 	
-	/**
-	 * @return the equipmentTags
-	 */
-	public Set<EquipmentTag> getEquipmentTags() {
-		return equipmentTags;
-	}
-
-	/**
-	 * @param equipmentTags the equipmentTags to set
-	 */
-	public void setEquipmentTags(Set<EquipmentTag> equipmentTags) {
-		this.equipmentTags = equipmentTags;
-	}
-
-	/**
-	 * @return the equipmentLinks
-	 */
-	public List<ExerciseLibraryEquipmentLink> getEquipmentLinks() {
-		return equipmentLinks;
-	}
-
-	/**
-	 * @param equipmentLinks the equipmentLinks to set
-	 */
-	public void setEquipmentLinks(List<ExerciseLibraryEquipmentLink> equipmentLinks) {
-		this.equipmentLinks = equipmentLinks;
-	}
+	
 
 
 	

@@ -14,13 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.trainSync.seed.dto.EditExerciseTagsDto;
 import com.trainSync.workout.dto.EquipmentTagDto;
 import com.trainSync.workout.dto.ExerciseDto;
 import com.trainSync.workout.dto.MuscleTagDto;
 import com.trainSync.workout.model.EquipmentTag;
 import com.trainSync.workout.model.ExerciseLibrary;
-import com.trainSync.workout.model.ExerciseLibraryEquipmentLink;
 import com.trainSync.workout.model.ExerciseLibraryTagLink;
 import com.trainSync.workout.model.MuscleTag;
 import com.trainSync.workout.respository.EquipmentTagRepository;
@@ -64,22 +62,22 @@ public class ExerciseLibraryController {
 		System.out.println("SEARCH TEXT " + searchText + "MUSCLE TAG" + muscleTag + "EQUIPMENT TAG" + equipmentTag);
 		//search text, muscle tag, and equipment
 		if (searchText != null && muscleTagUuid != null && equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findDistinctByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndEquipmentTags_Id(
+			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndEquipment_Id(
 					searchText, muscleTagUuid, equipmentTagUuid, pageable);
 		} 
 		//search text and muscle tag
 		else if (searchText != null && muscleTagUuid != null) {
-			exercises = exerciseLibraryRepository.findDistinctByNameContainingIgnoreCaseAndTagLinks_MuscleTag_Id(searchText,
+			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_Id(searchText,
 					muscleTagUuid, pageable);
 		}
 		//search text and equipment tag
 		else if (searchText != null && equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findDistinctByNameContainingIgnoreCaseAndEquipmentTags_Id(searchText,
+			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCaseAndEquipment_Id(searchText,
 					equipmentTagUuid, pageable);
 		} 
 		//muscle tag and equipment tag
 		else if (muscleTagUuid != null && equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findDistinctByTagLinks_MuscleTag_IdAndEquipmentTags_Id(muscleTagUuid,
+			exercises = exerciseLibraryRepository.findByTagLinks_MuscleTag_IdAndEquipment_Id(muscleTagUuid,
 					equipmentTagUuid, pageable);
 		} 
 		//only search text
@@ -88,11 +86,11 @@ public class ExerciseLibraryController {
 		} 
 		//only muscle tag
 		else if (muscleTagUuid != null) {
-			exercises = exerciseLibraryRepository.findDistinctByTagLinks_MuscleTag_Id(muscleTagUuid, pageable);
+			exercises = exerciseLibraryRepository.findByTagLinks_MuscleTag_Id(muscleTagUuid, pageable);
 		} 
 		//only equipment tag
 		else if (equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findDistinctByEquipmentTags_Id(equipmentTagUuid, pageable);
+			exercises = exerciseLibraryRepository.findByEquipment_Id(equipmentTagUuid, pageable);
 		}
 		// no filter
 		else {
@@ -100,7 +98,7 @@ public class ExerciseLibraryController {
 		}
 
 		// Convert to DTO
-		List<ExerciseDto> dtoList = convertExerciseToDtoPerEquipment(exercises, equipmentTagUuid);
+		List<ExerciseDto> dtoList = convertExerciseToDto(exercises, equipmentTagUuid);
 		// Wrap into Page<ExerciseDto>
 		Page<ExerciseDto> dtoPage = new PageImpl<>(dtoList, pageable, exercises.getTotalElements());
 		
@@ -108,102 +106,39 @@ public class ExerciseLibraryController {
 		return dtoPage;
 	}
 	
-	/**
-	 * 
-	 * @param searchText
-	 * @param muscleTag
-	 * @param page
-	 * @param size
-	 * @return
-	 */
-	@GetMapping("/fetch-for-edit-exercise-tags")
-	public Page<EditExerciseTagsDto> getExercises(@RequestParam(required = false) String searchText, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
-		Pageable pageable = PageRequest.of(page, size);
-		Page<ExerciseLibrary> exercises;
-
-		// only search text
-		if (searchText != null) {
-			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCase(searchText, pageable);
-		}
-
-		// no filter
-		else {
-			exercises = exerciseLibraryRepository.findAll(pageable);
-		}
-
-		// Convert to DTO
-		List<EditExerciseTagsDto> dtoList = convertExerciseToDto(exercises);
-		// Wrap into Page<ExerciseDto>
-		Page<EditExerciseTagsDto> dtoPage = new PageImpl<>(dtoList, pageable, exercises.getTotalElements());
-
-		return dtoPage;
-	}
 	
-	/**
-	 * 
-	 * 
-	 * @param exercises
-	 * @return
-	 */
-	private List<EditExerciseTagsDto> convertExerciseToDto(Page<ExerciseLibrary> exercises) {
-		List<EditExerciseTagsDto> dtoList = new ArrayList<>();
-		for (ExerciseLibrary e : exercises) {
-			EditExerciseTagsDto dto = new EditExerciseTagsDto();
-			dto.setId(e.getId().toString());
-			dto.setName(e.getName());
-			List<MuscleTagDto> muscleTags = new ArrayList<>();
-
-			for (ExerciseLibraryTagLink tag : e.getTagLinks()) {
-				MuscleTagDto muscleTagDto = new MuscleTagDto();
-				muscleTagDto.setName(tag.getMuscleTag().getName());
-				muscleTagDto.setLevel(tag.getLevel());
-				muscleTags.add(muscleTagDto);
-			}
-			dto.setMuscleTags(muscleTags);
-			for (EquipmentTag equipment : e.getEquipmentTags()) {
-				EquipmentTagDto equipmentDto = new EquipmentTagDto();
-				equipmentDto.setId(equipment.getId().toString());
-				equipmentDto.setName(equipment.getName());
-				dto.getEquipmentTags().add(equipmentDto);
-			}
-
-			dtoList.add(dto);
-		}
-		return dtoList;
-	}
+	
+	
 
 	/**
 	 * @param exercises
 	 * @return
 	 */
-	private List<ExerciseDto> convertExerciseToDtoPerEquipment(Page<ExerciseLibrary> exercises, UUID equipmentTagUuid) {
+	private List<ExerciseDto> convertExerciseToDto(Page<ExerciseLibrary> exercises, UUID equipmentTagUuid) {
 		List<ExerciseDto> dtoList = new ArrayList<>();
 
 		for (ExerciseLibrary e : exercises) {
-			for (ExerciseLibraryEquipmentLink equipmentLink : e.getEquipmentLinks()) {
-				EquipmentTag equipmentTag = equipmentLink.getEquipmentTag();
-				if (equipmentTagUuid != null && !equipmentTagUuid.equals(equipmentTag.getId())) {
-					continue;
-				}
-				EquipmentTagDto equipmentDto = new EquipmentTagDto();
-				equipmentDto.setId(equipmentTag.getId().toString());
-				equipmentDto.setName(equipmentTag.getName());
-				ExerciseDto dto = new ExerciseDto();
-				dto.setEquipmentTag(equipmentDto);
-				dto.setId(e.getId().toString());
-				dto.setExercisePictureUrl(equipmentLink.getExercisePictureUrl());
-				dto.setName(e.getName() + " (" + equipmentDto.getName() + ")");
-				for (ExerciseLibraryTagLink tag : e.getTagLinks()) {
-					MuscleTagDto muscleTagDto = new MuscleTagDto();
-					muscleTagDto.setId(tag.getMuscleTag().getId().toString());
-					muscleTagDto.setName(tag.getMuscleTag().getName());
-					muscleTagDto.setLevel(tag.getLevel());
-					dto.getMuscleTags().add(muscleTagDto);
-				}
-				dtoList.add(dto);
+
+			EquipmentTagDto equipmentDto = new EquipmentTagDto();
+			equipmentDto.setId(e.getEquipment().getId().toString());
+			equipmentDto.setName(e.getEquipment().getName());
+			ExerciseDto dto = new ExerciseDto();
+			dto.setEquipmentTag(equipmentDto);
+			dto.setId(e.getId().toString());
+			dto.setExercisePictureUrl(e.getExercisePictureUrl());
+			dto.setName(e.getName() + " (" + e.getEquipment().getName() + ")");
+
+			for (ExerciseLibraryTagLink tag : e.getTagLinks()) {
+				MuscleTagDto muscleTagDto = new MuscleTagDto();
+				muscleTagDto.setId(tag.getMuscleTag().getId().toString());
+				muscleTagDto.setName(tag.getMuscleTag().getName());
+				muscleTagDto.setLevel(tag.getLevel());
+				dto.getMuscleTags().add(muscleTagDto);
 			}
+			dtoList.add(dto);
+
 		}
+
 		return dtoList;
 	}
 	
