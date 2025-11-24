@@ -62,13 +62,13 @@ public class ExerciseLibraryController {
 		System.out.println("SEARCH TEXT " + searchText + "MUSCLE TAG" + muscleTag + "EQUIPMENT TAG" + equipmentTag);
 		//search text, muscle tag, and equipment
 		if (searchText != null && muscleTagUuid != null && equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndEquipment_Id(
-					searchText, muscleTagUuid, equipmentTagUuid, pageable);
+			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndTagLinks_LevelAndEquipment_Id(
+					searchText, muscleTagUuid,"PRIMARY", equipmentTagUuid, pageable);
 		} 
 		//search text and muscle tag
 		else if (searchText != null && muscleTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_Id(searchText,
-					muscleTagUuid, pageable);
+			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndTagLinks_Level(searchText,
+					muscleTagUuid,"PRIMARY", pageable);
 		}
 		//search text and equipment tag
 		else if (searchText != null && equipmentTagUuid != null) {
@@ -77,7 +77,7 @@ public class ExerciseLibraryController {
 		} 
 		//muscle tag and equipment tag
 		else if (muscleTagUuid != null && equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByTagLinks_MuscleTag_IdAndEquipment_Id(muscleTagUuid,
+			exercises = exerciseLibraryRepository.findByTagLinks_MuscleTag_IdAndTagLinks_LevelAndEquipment_Id(muscleTagUuid, "PRIMARY",
 					equipmentTagUuid, pageable);
 		} 
 		//only search text
@@ -86,7 +86,7 @@ public class ExerciseLibraryController {
 		} 
 		//only muscle tag
 		else if (muscleTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByTagLinks_MuscleTag_Id(muscleTagUuid, pageable);
+			exercises = exerciseLibraryRepository.findByTagLinks_MuscleTag_IdAndTagLinks_Level(muscleTagUuid, "PRIMARY", pageable);
 		} 
 		//only equipment tag
 		else if (equipmentTagUuid != null) {
