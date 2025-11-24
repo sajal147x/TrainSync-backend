@@ -14,13 +14,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trainSync.service.JwtService;
-import com.trainSync.workout.dto.EquipmentTagDto;
 import com.trainSync.workout.dto.ExerciseDto;
 import com.trainSync.workout.dto.SetDto;
 import com.trainSync.workout.dto.WorkoutDto;
 import com.trainSync.workout.model.Exercise;
+import com.trainSync.workout.model.ExerciseLibraryEquipmentKey;
+import com.trainSync.workout.model.ExerciseLibraryEquipmentLink;
 import com.trainSync.workout.model.ExerciseSet;
 import com.trainSync.workout.model.Workout;
+import com.trainSync.workout.respository.ExerciseLibraryEquipmentLinkRepository;
 import com.trainSync.workout.respository.ExerciseRepository;
 import com.trainSync.workout.respository.WorkoutRepository;
 import com.trainSync.workout.service.WorkoutService;
@@ -43,6 +45,9 @@ public class WorkoutController {
 	
 	@Autowired
 	private ExerciseRepository exerciseRepository;
+	
+	@Autowired
+	private ExerciseLibraryEquipmentLinkRepository equipmentLinkRepository;
 
 	@PostMapping("/create-workout")
 	public ResponseEntity<String> createWorkout(@RequestHeader("Authorization") String authHeader,
@@ -122,6 +127,12 @@ public class WorkoutController {
 				}
 				exerciseDto.getEquipmentTag().setId(exercise.getEquipment().getId().toString());
 				exerciseDto.getEquipmentTag().setName(exercise.getEquipment().getName());
+				
+				ExerciseLibraryEquipmentKey key = new ExerciseLibraryEquipmentKey();
+				key.setExerciseLibraryId(exercise.getExerciseLibraryId());
+				key.setTagId(exercise.getEquipment().getId());
+				ExerciseLibraryEquipmentLink equipmentLink = equipmentLinkRepository.findById(key).get();
+				exerciseDto.setExercisePictureUrl(equipmentLink.getExercisePictureUrl());
 
 				if (exercise.getSets() != null && !exercise.getSets().isEmpty()) {
 					for (ExerciseSet set : exercise.getSets()) {
@@ -161,6 +172,11 @@ public class WorkoutController {
 			Exercise exercise = optionalExercise.get();
 
 			ExerciseDto exerciseDto = new ExerciseDto(exercise.getId().toString(), exercise.getName());
+			ExerciseLibraryEquipmentKey key = new ExerciseLibraryEquipmentKey();
+			key.setExerciseLibraryId(exercise.getExerciseLibraryId());
+			key.setTagId(exercise.getEquipment().getId());
+			ExerciseLibraryEquipmentLink equipmentLink = equipmentLinkRepository.findById(key).get();
+			exerciseDto.setExercisePictureUrl(equipmentLink.getExercisePictureUrl());
 			exerciseDto.setPreFilledFlag(exercise.getPreFilledFromLastWorkoutFlag());
 			if (exercise.getPreFilledWorkout() != null) {
 				exerciseDto.setPreFilledDate(exercise.getPreFilledWorkout().getStartTime().toString());
