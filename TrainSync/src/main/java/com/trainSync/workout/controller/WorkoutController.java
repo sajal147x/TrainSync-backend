@@ -2,7 +2,6 @@ package com.trainSync.workout.controller;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +20,7 @@ import com.trainSync.workout.dto.WorkoutDto;
 import com.trainSync.workout.model.Exercise;
 import com.trainSync.workout.model.ExerciseSet;
 import com.trainSync.workout.model.Workout;
+import com.trainSync.workout.respository.ExerciseRepository;
 import com.trainSync.workout.respository.WorkoutRepository;
 import com.trainSync.workout.service.WorkoutService;
 
@@ -39,6 +39,9 @@ public class WorkoutController {
 
 	@Autowired
 	private WorkoutRepository workoutRepository;
+	
+	@Autowired
+	private ExerciseRepository exerciseRepository;
 
 	@PostMapping("/create-workout")
 	public ResponseEntity<String> createWorkout(@RequestHeader("Authorization") String authHeader,
@@ -127,6 +130,46 @@ public class WorkoutController {
 			return ResponseEntity.ok(workoutDto);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body("Failed to retrieve workout");
+		}
+	}
+	
+	
+	/**
+	 * 
+	 * @param authHeader
+	 * @param workoutIdStr
+	 * @return
+	 */
+	@GetMapping("/get-sets")
+	public ResponseEntity<?> retrieveSets(
+	        @RequestHeader("Authorization") String authHeader,
+			@RequestParam String exerciseId) {
+		try {
+
+			// Fetch workout by ID
+			UUID exerciseIdUuid = UUID.fromString(exerciseId);
+			Optional<Exercise> optionalExercise = exerciseRepository.findById(exerciseIdUuid);
+
+			Exercise exercise = optionalExercise.get();
+
+			ExerciseDto exerciseDto = new ExerciseDto(exercise.getId().toString(), exercise.getName());
+			exerciseDto.setPreFilledFlag(exercise.getPreFilledFromLastWorkoutFlag());
+			if (exercise.getPreFilledWorkout() != null) {
+				exerciseDto.setPreFilledDate(exercise.getPreFilledWorkout().getStartTime().toString());
+				exerciseDto.setPreFilledWorkoutName(exercise.getPreFilledWorkout().getName());
+			}
+			if (exercise.getSets() != null && !exercise.getSets().isEmpty()) {
+				for (ExerciseSet set : exercise.getSets()) {
+					SetDto setDto = new SetDto(set.getId().toString(), set.getWeight(), set.getReps(),
+							set.getSetNumber());
+					exerciseDto.getSets().add(setDto);
+				}
+			}
+
+			return ResponseEntity.ok(exerciseDto);
+		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(500).body("Failed to retrieve workout");
 		}
