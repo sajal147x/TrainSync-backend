@@ -40,9 +40,11 @@ public class Exercise {
 	
 	@Column
 	private UUID exerciseLibraryId;
+
 	
-	@Column
-	private UUID equipmentId;
+	@ManyToOne
+	@JoinColumn(name = "equipment_id", nullable = true)
+	private EquipmentTag equipment;
 	
 	@Column
 	private String preFilledFromLastWorkoutFlag = "NO";
@@ -152,18 +154,13 @@ public class Exercise {
 		this.preFilledWorkout = preFilledWorkout;
 	}
 
-	/**
-	 * @return the equipmentId
-	 */
-	public UUID getEquipmentId() {
-		return equipmentId;
+
+	public EquipmentTag getEquipment() {
+		return equipment;
 	}
 
-	/**
-	 * @param equipmentId the equipmentId to set
-	 */
-	public void setEquipmentId(UUID equipmentId) {
-		this.equipmentId = equipmentId;
+	public void setEquipment(EquipmentTag equipment) {
+		this.equipment = equipment;
 	}
 
 }

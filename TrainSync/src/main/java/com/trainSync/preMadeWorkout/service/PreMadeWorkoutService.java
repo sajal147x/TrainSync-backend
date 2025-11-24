@@ -148,10 +148,10 @@ public class PreMadeWorkoutService {
 	 * @param preMadeWorkoutId
 	 * @return
 	 */
-	public String createWorkoutWithPreMadeWorkout(UUID userId, String preMadeWorkoutId) {
+	public String createWorkoutWithPreMadeWorkout(UUID userId, String preMadeWorkoutId, String equipmentId) {
 		PreMadeWorkout preMade = preMadeWorkoutRepository.findById(UUID.fromString(preMadeWorkoutId)).get();
 		List<PreMadeWorkoutExercise> preMadeExercises = preMadeWorkoutExerciseRepository.findByPreMadeWorkoutId(UUID.fromString(preMadeWorkoutId));
-		String workoutId = workoutService.createWorkoutUsingPreMade(preMade, preMadeExercises, userId);
+		String workoutId = workoutService.createWorkoutUsingPreMade(preMade, preMadeExercises, userId, equipmentId);
 		return workoutId;
 	}
 

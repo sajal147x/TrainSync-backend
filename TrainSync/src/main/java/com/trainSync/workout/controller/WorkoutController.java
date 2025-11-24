@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trainSync.service.JwtService;
+import com.trainSync.workout.dto.EquipmentTagDto;
 import com.trainSync.workout.dto.ExerciseDto;
 import com.trainSync.workout.dto.SetDto;
 import com.trainSync.workout.dto.WorkoutDto;
@@ -63,6 +64,7 @@ public class WorkoutController {
 	public ResponseEntity<String> addExerciseToWorkout(@RequestHeader("Authorization") String authHeader,
 			@RequestBody WorkoutDto workoutDto) {
 		try {
+			System.out.println("EQUIPMENT" + workoutDto.getEquipmentId());
 			String token = authHeader.replace("Bearer ", "");
 			String userIdStr = jwtService.extractUserId(token); // validate JWT and extract Supabase UUID
 			UUID userId = UUID.fromString(userIdStr);
@@ -111,12 +113,16 @@ public class WorkoutController {
 			workoutDto.setWorkoutName(workout.getName());
 
 			for (Exercise exercise : workout.getExercises()) {
-				ExerciseDto exerciseDto = new ExerciseDto(exercise.getId().toString(), exercise.getName());
+				ExerciseDto exerciseDto = new ExerciseDto(exercise.getId().toString(),
+						(exercise.getName() + " (" + exercise.getEquipment().getName() + ")"));
 				exerciseDto.setPreFilledFlag(exercise.getPreFilledFromLastWorkoutFlag());
 				if (exercise.getPreFilledWorkout() != null) {
 					exerciseDto.setPreFilledDate(exercise.getPreFilledWorkout().getStartTime().toString());
 					exerciseDto.setPreFilledWorkoutName(exercise.getPreFilledWorkout().getName());
 				}
+				exerciseDto.getEquipmentTag().setId(exercise.getEquipment().getId().toString());
+				exerciseDto.getEquipmentTag().setName(exercise.getEquipment().getName());
+
 				if (exercise.getSets() != null && !exercise.getSets().isEmpty()) {
 					for (ExerciseSet set : exercise.getSets()) {
 						SetDto setDto = new SetDto(set.getId().toString(), set.getWeight(), set.getReps(),
