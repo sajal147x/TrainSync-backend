@@ -42,10 +42,7 @@ public class Exercise {
 	@JoinColumn(name = "exercise_id")
 	private ExerciseLibrary exerciseLibrary;
 
-	
-	@ManyToOne
-	@JoinColumn(name = "equipment_id", nullable = true)
-	private EquipmentTag equipment;
+
 	
 	@Column
 	private String preFilledFromLastWorkoutFlag = "NO";
@@ -142,14 +139,6 @@ public class Exercise {
 		this.preFilledWorkout = preFilledWorkout;
 	}
 
-
-	public EquipmentTag getEquipment() {
-		return equipment;
-	}
-
-	public void setEquipment(EquipmentTag equipment) {
-		this.equipment = equipment;
-	}
 
 	/**
 	 * @return the exerciseLibrary

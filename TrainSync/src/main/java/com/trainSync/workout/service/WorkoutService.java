@@ -48,8 +48,6 @@ public class WorkoutService {
 	@Autowired
 	private ExerciseSetRepository exerciseSetRepository;
 	
-	@Autowired
-	private EquipmentTagRepository equipmentTagRepository;
 
 	/**
 	 * 1. create and save workout
@@ -72,7 +70,7 @@ public class WorkoutService {
 
 		Exercise lastExerciseForUser = exerciseRepository.findLatestExerciseForUser(userId, exerciseLib.getId());
 
-		Exercise exercise = createExercise(exerciseLib, workout, UUID.fromString(workoutDto.getEquipmentId()));
+		Exercise exercise = createExercise(exerciseLib, workout);
 		// ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
 		createSetsBasedOnLastWorkoutForExercise(lastExerciseForUser, exercise, exerciseLib.getId(), userId);
 
@@ -93,7 +91,7 @@ public class WorkoutService {
 		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(workoutDto.getExerciseId()))
 				.get();
 		Exercise lastExerciseForUser = exerciseRepository.findLatestExerciseForUser(userId, exerciseLib.getId());
-		Exercise exercise = createExercise(exerciseLib, workout,UUID.fromString(workoutDto.getEquipmentId()));
+		Exercise exercise = createExercise(exerciseLib, workout);
 		// ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
 		createSetsBasedOnLastWorkoutForExercise(lastExerciseForUser, exercise, exerciseLib.getId(), userId);
 		return workout.getId().toString();
@@ -105,14 +103,14 @@ public class WorkoutService {
 	 * @return
 	 */
 	public String createWorkoutUsingPreMade(PreMadeWorkout preMade, List<PreMadeWorkoutExercise> preMadeExercises,
-			UUID userId, String equipmentId) {
+			UUID userId) {
 		OffsetDateTime dateTime = OffsetDateTime.now();
 		Workout workout = createWorkout(preMade.getName(), dateTime, userId);
 		// Excercises
 		for (PreMadeWorkoutExercise preMadeExercise : preMadeExercises) {
 			ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(preMadeExercise.getExercise().getId())
 					.get();
-			Exercise exercise = createExercise(exerciseLib, workout, UUID.fromString(equipmentId));
+			Exercise exercise = createExercise(exerciseLib, workout);
 			// SETS
 			List<PreMadeWorkoutSet> preMadeSets = preMadeWorkoutSetRepository
 					.findByPreMadeWorkoutExerciseId(preMadeExercise.getId());
@@ -152,10 +150,9 @@ public class WorkoutService {
 	 * @param workout
 	 * @return
 	 */
-	private Exercise createExercise(ExerciseLibrary exerciseLib, Workout workout, UUID equipmentId) {
+	private Exercise createExercise(ExerciseLibrary exerciseLib, Workout workout) {
 	    Exercise exercise = new Exercise();
 	    exercise.setWorkout(workout);
-	    exercise.setEquipment(equipmentTagRepository.findById(equipmentId).get());
 	    exercise.setExerciseLibrary(exerciseLib);
 	    exercise.setName(exerciseLib.getName());
 
