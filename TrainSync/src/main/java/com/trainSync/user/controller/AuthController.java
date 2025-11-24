@@ -87,6 +87,7 @@ public class AuthController {
 	@PostMapping("/signin")
 	public ResponseEntity<String> login(@RequestBody SignUpRequest request) {
 	    try {
+	    	System.out.println("SIGN IN");
 	        // Prepare JSON body
 	        JSONObject body = new JSONObject();
 	        

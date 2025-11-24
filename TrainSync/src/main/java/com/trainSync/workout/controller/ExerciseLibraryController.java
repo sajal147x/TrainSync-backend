@@ -5,31 +5,26 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.trainSync.TrainSyncApplication;
+import com.trainSync.seed.dto.EditExerciseTagsDto;
 import com.trainSync.workout.dto.EquipmentTagDto;
 import com.trainSync.workout.dto.ExerciseDto;
 import com.trainSync.workout.dto.MuscleTagDto;
 import com.trainSync.workout.model.EquipmentTag;
-import com.trainSync.workout.model.Exercise;
 import com.trainSync.workout.model.ExerciseLibrary;
 import com.trainSync.workout.model.ExerciseLibraryEquipmentLink;
 import com.trainSync.workout.model.ExerciseLibraryTagLink;
 import com.trainSync.workout.model.MuscleTag;
 import com.trainSync.workout.respository.EquipmentTagRepository;
 import com.trainSync.workout.respository.ExerciseLibraryRepository;
-import com.trainSync.workout.respository.ExerciseRepository;
 import com.trainSync.workout.respository.MuscleTagRepository;
 
 /**
@@ -105,19 +100,84 @@ public class ExerciseLibraryController {
 		}
 
 		// Convert to DTO
-		List<ExerciseDto> dtoList = convertExerciseToDto(exercises, equipmentTagUuid);
+		List<ExerciseDto> dtoList = convertExerciseToDtoPerEquipment(exercises, equipmentTagUuid);
 		// Wrap into Page<ExerciseDto>
 		Page<ExerciseDto> dtoPage = new PageImpl<>(dtoList, pageable, exercises.getTotalElements());
 		
 
 		return dtoPage;
 	}
+	
+	/**
+	 * 
+	 * @param searchText
+	 * @param muscleTag
+	 * @param page
+	 * @param size
+	 * @return
+	 */
+	@GetMapping("/fetch-for-edit-exercise-tags")
+	public Page<EditExerciseTagsDto> getExercises(@RequestParam(required = false) String searchText, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<ExerciseLibrary> exercises;
+
+		// only search text
+		if (searchText != null) {
+			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCase(searchText, pageable);
+		}
+
+		// no filter
+		else {
+			exercises = exerciseLibraryRepository.findAll(pageable);
+		}
+
+		// Convert to DTO
+		List<EditExerciseTagsDto> dtoList = convertExerciseToDto(exercises);
+		// Wrap into Page<ExerciseDto>
+		Page<EditExerciseTagsDto> dtoPage = new PageImpl<>(dtoList, pageable, exercises.getTotalElements());
+
+		return dtoPage;
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param exercises
+	 * @return
+	 */
+	private List<EditExerciseTagsDto> convertExerciseToDto(Page<ExerciseLibrary> exercises) {
+		List<EditExerciseTagsDto> dtoList = new ArrayList<>();
+		for (ExerciseLibrary e : exercises) {
+			EditExerciseTagsDto dto = new EditExerciseTagsDto();
+			dto.setId(e.getId().toString());
+			dto.setName(e.getName());
+			List<MuscleTagDto> muscleTags = new ArrayList<>();
+
+			for (ExerciseLibraryTagLink tag : e.getTagLinks()) {
+				MuscleTagDto muscleTagDto = new MuscleTagDto();
+				muscleTagDto.setName(tag.getMuscleTag().getName());
+				muscleTagDto.setLevel(tag.getLevel());
+				muscleTags.add(muscleTagDto);
+			}
+			dto.setMuscleTags(muscleTags);
+			for (EquipmentTag equipment : e.getEquipmentTags()) {
+				EquipmentTagDto equipmentDto = new EquipmentTagDto();
+				equipmentDto.setId(equipment.getId().toString());
+				equipmentDto.setName(equipment.getName());
+				dto.getEquipmentTags().add(equipmentDto);
+			}
+
+			dtoList.add(dto);
+		}
+		return dtoList;
+	}
 
 	/**
 	 * @param exercises
 	 * @return
 	 */
-	private List<ExerciseDto> convertExerciseToDto(Page<ExerciseLibrary> exercises, UUID equipmentTagUuid) {
+	private List<ExerciseDto> convertExerciseToDtoPerEquipment(Page<ExerciseLibrary> exercises, UUID equipmentTagUuid) {
 		List<ExerciseDto> dtoList = new ArrayList<>();
 
 		for (ExerciseLibrary e : exercises) {
