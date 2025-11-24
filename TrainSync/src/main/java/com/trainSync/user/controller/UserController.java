@@ -82,7 +82,7 @@ public class UserController {
 			
 			 if (request.getProfilePictureBase64() != null && !request.getProfilePictureBase64().isEmpty()) {
 		            String fileName = userId + ".png";
-		            String publicUrl = storageService.uploadBase64Image(request.getProfilePictureBase64(), fileName);
+		            String publicUrl = storageService.uploadBase64Image(request.getProfilePictureBase64(), fileName, "profile-pictures");
 		            user.setProfilePictureUrl(publicUrl);
 		        }
 

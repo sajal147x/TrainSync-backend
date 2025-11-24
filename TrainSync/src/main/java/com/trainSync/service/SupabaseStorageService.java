@@ -23,8 +23,6 @@ public class SupabaseStorageService {
     @Value("${supabase.key}")
     private String supabaseKey;
 
-    @Value("${supabase.bucket.name}")
-    private String bucketName;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -35,7 +33,7 @@ public class SupabaseStorageService {
      * @param fileName   Name of the file to store
      * @return public URL of the uploaded file
      */
-    public String uploadBase64Image(String base64Data, String fileName) {
+    public String uploadBase64Image(String base64Data, String fileName, String bucketName) {
         try {
             byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
 

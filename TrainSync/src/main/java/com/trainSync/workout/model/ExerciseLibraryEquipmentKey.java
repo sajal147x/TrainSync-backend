@@ -15,7 +15,7 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class ExerciseLibraryEquipmentKey implements Serializable {
 
-    @Column(name = "exercise_library_id")
+	@Column(name = "exercise_library_id")
     private UUID exerciseLibraryId;
 
     @Column(name = "tag_id")
@@ -43,4 +43,32 @@ public class ExerciseLibraryEquipmentKey implements Serializable {
     }
 
     // getters and setters
+    /**
+	 * @return the exerciseLibraryId
+	 */
+	public UUID getExerciseLibraryId() {
+		return exerciseLibraryId;
+	}
+
+	/**
+	 * @param exerciseLibraryId the exerciseLibraryId to set
+	 */
+	public void setExerciseLibraryId(UUID exerciseLibraryId) {
+		this.exerciseLibraryId = exerciseLibraryId;
+	}
+
+	/**
+	 * @return the tagId
+	 */
+	public UUID getTagId() {
+		return tagId;
+	}
+
+	/**
+	 * @param tagId the tagId to set
+	 */
+	public void setTagId(UUID tagId) {
+		this.tagId = tagId;
+	}
+
 }

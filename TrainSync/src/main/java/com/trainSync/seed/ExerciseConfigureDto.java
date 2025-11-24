@@ -14,5 +14,6 @@ public class ExerciseConfigureDto {
 	public List<String> equipmentIds;
 	public List<String> muscleTagIdsPrimary;
 	public List<String> muscleTagIdsSecondary;
+	
 
 }
