@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.trainSync.service.JwtService;
 import com.trainSync.stats.dto.ExerciseProgressionDto;
-import com.trainSync.stats.service.ExerciseProgressionService;
 import com.trainSync.workout.respository.WorkoutRepository;
 
 /**
@@ -30,9 +29,7 @@ public class HomeStatsController {
 	
 	@Autowired
     private JwtService jwtService;
-	
-	@Autowired
-	private ExerciseProgressionService exerciseProgressionService;
+
 
 
     @GetMapping("/loggedWorkouts")
@@ -57,26 +54,19 @@ public class HomeStatsController {
         }
     }
     
-    
     /**
      * 
      * @param authHeader
-     * @param exerciseId
      * @return
      */
-    @GetMapping("/exerciseProgression")
-    public ResponseEntity<List<ExerciseProgressionDto>> getExerciseProgression(
-            @RequestHeader("Authorization") String authHeader,
-			@RequestParam("exerciseId") String exerciseId) {
-
-		// Extract userId from JWT
+    @GetMapping("/monthlyExerciseCountPerMuscle")
+	public ResponseEntity<?> getMonthlyExerciseCountPerMuscle(@RequestHeader("Authorization") String authHeader) {
+		// Extract user ID from JWT token
 		String token = authHeader.replace("Bearer ", "");
-		String userId = jwtService.extractUserId(token);
+		String userIdStr = jwtService.extractUserId(token);
+		UUID userId = UUID.fromString(userIdStr);
 
-		List<ExerciseProgressionDto> progression = exerciseProgressionService
-				.computeExerciseTonnageProgression(UUID.fromString(userId), UUID.fromString(exerciseId));
-
-		return ResponseEntity.ok(progression);
+		return null;
 	}
     
     
