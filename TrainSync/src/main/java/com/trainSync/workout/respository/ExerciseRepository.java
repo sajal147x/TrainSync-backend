@@ -2,12 +2,16 @@
 
 package com.trainSync.workout.respository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import com.trainSync.stats.dto.MonthlyExerciseCountPerMuscleDto;
 import com.trainSync.workout.model.Exercise;
 
 /**
@@ -34,4 +38,22 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
 			      order by e.workout.startTime desc limit 1
 			""")
 	Exercise findLatestExerciseForUser(UUID userId, UUID exerciseLibraryId);
+
+	@Query("""
+		    SELECT new com.trainSync.stats.dto.MonthlyExerciseCountPerMuscleDto(
+		        mt.name,
+		        COUNT(e)
+		    )
+		    FROM Exercise e
+		    JOIN e.workout w
+		    JOIN e.exerciseLibrary el
+		    JOIN el.tagLinks tl
+		    JOIN tl.muscleTag mt
+		    WHERE w.userId = :userId
+		      AND w.startTime >= :cutoff
+		      AND tl.level = 'PRIMARY'
+		    GROUP BY mt.name
+		    ORDER BY COUNT(e) DESC
+		""")
+	List<MonthlyExerciseCountPerMuscleDto> findPrimaryMuscleCounts(@Param("userId") UUID userId, @Param("cutoff") OffsetDateTime cutoff);
 }

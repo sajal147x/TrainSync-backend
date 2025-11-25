@@ -1,19 +1,21 @@
 package com.trainSync.stats.controller;
 
 
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trainSync.service.JwtService;
-import com.trainSync.stats.dto.ExerciseProgressionDto;
+import com.trainSync.stats.dto.MonthlyExerciseCountPerMuscleDto;
+import com.trainSync.workout.respository.ExerciseRepository;
 import com.trainSync.workout.respository.WorkoutRepository;
 
 /**
@@ -24,11 +26,18 @@ import com.trainSync.workout.respository.WorkoutRepository;
 @RequestMapping("/api/homeStats")
 public class HomeStatsController {
 
-	@Autowired
-    private WorkoutRepository workoutRepository;
+	private final WorkoutRepository workoutRepository;
 	
-	@Autowired
-    private JwtService jwtService;
+	private final JwtService jwtService;
+	
+	private final ExerciseRepository exerciseRepository;
+	
+	public HomeStatsController(WorkoutRepository workoutRepository, JwtService jwtService,
+			ExerciseRepository exerciseRepository) {
+		this.workoutRepository = workoutRepository;
+		this.jwtService = jwtService;
+		this.exerciseRepository = exerciseRepository;
+	}
 
 
 
@@ -65,8 +74,17 @@ public class HomeStatsController {
 		String token = authHeader.replace("Bearer ", "");
 		String userIdStr = jwtService.extractUserId(token);
 		UUID userId = UUID.fromString(userIdStr);
+		List<MonthlyExerciseCountPerMuscleDto> dto = exerciseRepository.findPrimaryMuscleCounts(userId,
+				OffsetDateTime.now().minusDays(30));
 
-		return null;
+		return ResponseEntity.ok(dto);
+	}
+    
+    public static void main(String[] args) {
+    	
+    	//List<Map<String, Object>> map = exerciseRepository.findPrimaryMuscleCounts(UUID.fromString(""));
+    	
+		
 	}
     
     

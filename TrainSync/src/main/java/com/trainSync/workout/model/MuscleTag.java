@@ -23,6 +23,9 @@ public class MuscleTag {
 
     @Column(nullable = false, unique = true)
     private String name; // e.g. "Chest", "Legs", "Triceps"
+    
+    @Column
+    private String muscleGroup;
 
 
 
@@ -41,5 +44,19 @@ public class MuscleTag {
     public void setName(String name) {
         this.name = name;
     }
+
+	/**
+	 * @return the muscleGroup
+	 */
+	public String getMuscleGroup() {
+		return muscleGroup;
+	}
+
+	/**
+	 * @param muscleGroup the muscleGroup to set
+	 */
+	public void setMuscleGroup(String muscleGroup) {
+		this.muscleGroup = muscleGroup;
+	}
 
 }
