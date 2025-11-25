@@ -21,7 +21,6 @@ import com.trainSync.workout.model.Exercise;
 import com.trainSync.workout.model.ExerciseLibrary;
 import com.trainSync.workout.model.ExerciseSet;
 import com.trainSync.workout.model.Workout;
-import com.trainSync.workout.respository.EquipmentTagRepository;
 import com.trainSync.workout.respository.ExerciseLibraryRepository;
 import com.trainSync.workout.respository.ExerciseRepository;
 import com.trainSync.workout.respository.ExerciseSetRepository;

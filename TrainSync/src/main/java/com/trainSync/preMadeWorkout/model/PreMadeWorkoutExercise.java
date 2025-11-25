@@ -3,7 +3,6 @@ package com.trainSync.preMadeWorkout.model;
 
 import java.util.UUID;
 
-import com.trainSync.workout.model.EquipmentTag;
 import com.trainSync.workout.model.ExerciseLibrary;
 
 import jakarta.persistence.Column;

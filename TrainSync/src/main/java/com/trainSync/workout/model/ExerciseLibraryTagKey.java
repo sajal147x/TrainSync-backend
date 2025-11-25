@@ -7,7 +7,9 @@ import jakarta.persistence.*;
 @Embeddable
 public class ExerciseLibraryTagKey implements Serializable {
 
-    @Column(name = "exercise_library_id")
+    private static final long serialVersionUID = 1L;
+
+	@Column(name = "exercise_library_id")
     private UUID exerciseLibraryId;
 
     @Column(name = "tag_id")

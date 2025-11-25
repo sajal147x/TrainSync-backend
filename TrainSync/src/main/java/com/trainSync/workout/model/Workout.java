@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.trainSync.preMadeWorkout.model.PreMadeWorkout;
-import com.trainSync.user.model.UserDetails;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

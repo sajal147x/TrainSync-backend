@@ -2,8 +2,6 @@
 
 package com.trainSync.seed.dto;
 
-import com.trainSync.workout.dto.EquipmentTagDto;
-
 /**
  * Author: Sajal Gupta
  * Date: Nov 23, 2025

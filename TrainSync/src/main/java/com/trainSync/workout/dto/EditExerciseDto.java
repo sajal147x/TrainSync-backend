@@ -1,8 +1,6 @@
 
 package com.trainSync.workout.dto;
 
-import java.util.UUID;
-
 /**
  * Author: Sajal Gupta Date: Nov 13, 2025
  */

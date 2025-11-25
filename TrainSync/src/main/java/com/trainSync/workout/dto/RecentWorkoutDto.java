@@ -1,8 +1,6 @@
 
 package com.trainSync.workout.dto;
 
-import java.time.LocalDateTime;
-
 /**
  * Author: Sajal Gupta
  * Date: Nov 13, 2025
