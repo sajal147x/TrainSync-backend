@@ -10,40 +10,40 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * Author: Sajal Gupta
- * Date: Nov 12, 2025
+ * Author: Sajal Gupta Date: Nov 12, 2025
  */
 @Entity
 @Table(name = "muscle_tag")
 public class MuscleTag {
 
-    @Id
-    @GeneratedValue
-    private UUID id;
+	@Id
+	@GeneratedValue
+	private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String name; // e.g. "Chest", "Legs", "Triceps"
-    
-    @Column
-    private String muscleGroup;
+	@Column(nullable = false, unique = true)
+	private String name; // e.g. "Chest", "Legs", "Triceps"
 
+	@Column
+	private String muscleGroup;
 
+	@Column
+	private String musclePictureUrl;
 
-    public UUID getId() {
-        return id;
-    }
+	public UUID getId() {
+		return id;
+	}
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+	public void setId(UUID id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	/**
 	 * @return the muscleGroup
@@ -59,4 +59,17 @@ public class MuscleTag {
 		this.muscleGroup = muscleGroup;
 	}
 
+	/**
+	 * @return the musclePictureUrl
+	 */
+	public String getMusclePictureUrl() {
+		return musclePictureUrl;
+	}
+
+	/**
+	 * @param musclePictureUrl the musclePictureUrl to set
+	 */
+	public void setMusclePictureUrl(String musclePictureUrl) {
+		this.musclePictureUrl = musclePictureUrl;
+	}
 }

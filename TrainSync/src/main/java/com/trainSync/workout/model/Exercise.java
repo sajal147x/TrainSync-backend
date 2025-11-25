@@ -50,6 +50,9 @@ public class Exercise {
 	@ManyToOne
 	@JoinColumn(name = "pre_filled_workout_id", nullable = true)
 	private Workout preFilledWorkout;
+	
+	@Column
+	private int exerciseOrder;
 
 	/**
 	 * @return the id
@@ -152,6 +155,20 @@ public class Exercise {
 	 */
 	public void setExerciseLibrary(ExerciseLibrary exerciseLibrary) {
 		this.exerciseLibrary = exerciseLibrary;
+	}
+
+	/**
+	 * @return the exerciseOrder
+	 */
+	public int getExerciseOrder() {
+		return exerciseOrder;
+	}
+
+	/**
+	 * @param exerciseOrder the exerciseOrder to set
+	 */
+	public void setExerciseOrder(int exerciseOrder) {
+		this.exerciseOrder = exerciseOrder;
 	}
 
 }

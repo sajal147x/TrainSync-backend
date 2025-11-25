@@ -64,9 +64,9 @@ public class PreMadeWorkoutService {
 		// Create and save exercise linked to workout
 		PreMadeWorkoutExercise exercise = new PreMadeWorkoutExercise();
 		exercise.setPreMadeWorkout(workout);
+		exercise.setExerciseOrder(1); //exercise order will be 1 for new pre made workouts
 		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(dto.getExerciseId())).get();
 		exercise.setExercise(exerciseLib);
-		exercise.setEquipment(equipmentTagRepository.findById(UUID.fromString(dto.getEquipmentId())).get());
 
 		preMadeWorkoutExerciseRepository.save(exercise);
 
@@ -114,12 +114,12 @@ public class PreMadeWorkoutService {
 	 * @param equipmentId
 	 * @return
 	 */
-	public String addExerciseToWorkout(String preMadeWorkoutId, String exerciseId, String equipmentId) {
+	public String addExerciseToWorkout(String preMadeWorkoutId, String exerciseId, String equipmentId, int exerciseOrder) {
 		PreMadeWorkoutExercise exercise = new PreMadeWorkoutExercise();
 		exercise.setPreMadeWorkout(preMadeWorkoutRepository.findById(UUID.fromString(preMadeWorkoutId)).get());
+		exercise.setExerciseOrder(exerciseOrder);
 		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(exerciseId)).get();
 		exercise.setExercise(exerciseLib);
-		exercise.setEquipment(equipmentTagRepository.findById(UUID.fromString(equipmentId)).get());
 		preMadeWorkoutExerciseRepository.save(exercise);
 		return preMadeWorkoutId;
 	}

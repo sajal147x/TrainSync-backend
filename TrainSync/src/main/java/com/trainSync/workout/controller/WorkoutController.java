@@ -121,7 +121,7 @@ public class WorkoutController {
 				}
 				exerciseDto.getEquipmentTag().setId(exercise.getExerciseLibrary().getEquipment().getId().toString());
 				exerciseDto.getEquipmentTag().setName(exercise.getExerciseLibrary().getEquipment().getName());
-				
+				exerciseDto.setExerciseOrder(exercise.getExerciseOrder());
 
 				exerciseDto.setExercisePictureUrl(exercise.getExerciseLibrary().getExercisePictureUrl());
 

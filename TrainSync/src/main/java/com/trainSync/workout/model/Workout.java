@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.trainSync.preMadeWorkout.model.PreMadeWorkout;
 import com.trainSync.user.model.UserDetails;
 
 import jakarta.persistence.CascadeType;
@@ -44,6 +45,10 @@ public class Workout {
 	
 	@Column
 	private UUID userId;
+	
+	@ManyToOne
+	@JoinColumn(name = "pre_made_workout_id")
+	private PreMadeWorkout preMadeWorkout;
 
 	/**
 	 * @return the id
@@ -130,6 +135,20 @@ public class Workout {
 	 */
 	public void setUserId(UUID userId) {
 		this.userId = userId;
+	}
+
+	/**
+	 * @return the preMadeWorkout
+	 */
+	public PreMadeWorkout getPreMadeWorkout() {
+		return preMadeWorkout;
+	}
+
+	/**
+	 * @param preMadeWorkout the preMadeWorkout to set
+	 */
+	public void setPreMadeWorkout(PreMadeWorkout preMadeWorkout) {
+		this.preMadeWorkout = preMadeWorkout;
 	}
 
 }

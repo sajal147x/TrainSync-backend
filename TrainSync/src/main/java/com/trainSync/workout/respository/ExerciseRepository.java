@@ -41,7 +41,7 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
 
 	@Query("""
 		    SELECT new com.trainSync.stats.dto.MonthlyExerciseCountPerMuscleDto(
-		        mt.name,
+		        mt.muscleGroup,
 		        COUNT(e)
 		    )
 		    FROM Exercise e
@@ -52,8 +52,8 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
 		    WHERE w.userId = :userId
 		      AND w.startTime >= :cutoff
 		      AND tl.level = 'PRIMARY'
-		    GROUP BY mt.name
-		    ORDER BY COUNT(e) DESC
+		    GROUP BY mt.muscleGroup
+		    ORDER BY MAX(w.startTime) DESC
 		""")
 	List<MonthlyExerciseCountPerMuscleDto> findPrimaryMuscleCounts(@Param("userId") UUID userId, @Param("cutoff") OffsetDateTime cutoff);
 }

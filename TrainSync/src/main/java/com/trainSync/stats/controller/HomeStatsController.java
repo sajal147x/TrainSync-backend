@@ -75,7 +75,7 @@ public class HomeStatsController {
 		String userIdStr = jwtService.extractUserId(token);
 		UUID userId = UUID.fromString(userIdStr);
 		List<MonthlyExerciseCountPerMuscleDto> dto = exerciseRepository.findPrimaryMuscleCounts(userId,
-				OffsetDateTime.now().minusDays(30));
+				OffsetDateTime.now().minusDays(7));
 
 		return ResponseEntity.ok(dto);
 	}

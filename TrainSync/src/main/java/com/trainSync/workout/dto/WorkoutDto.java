@@ -13,6 +13,7 @@ public class WorkoutDto {
     private String workoutDate;
     private String equipmentId;
     private String workoutId;
+    private int exerciseOrder;
     
     private List<ExerciseDto> exercises = new ArrayList<ExerciseDto>();
 
@@ -105,6 +106,22 @@ public class WorkoutDto {
 	 */
 	public void setEquipmentId(String equipmentId) {
 		this.equipmentId = equipmentId;
+	}
+
+
+	/**
+	 * @return the exerciseOrder
+	 */
+	public int getExerciseOrder() {
+		return exerciseOrder;
+	}
+
+
+	/**
+	 * @param exerciseOrder the exerciseOrder to set
+	 */
+	public void setExerciseOrder(int exerciseOrder) {
+		this.exerciseOrder = exerciseOrder;
 	}
 
   

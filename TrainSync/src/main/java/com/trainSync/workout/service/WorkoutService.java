@@ -70,7 +70,7 @@ public class WorkoutService {
 
 		Exercise lastExerciseForUser = exerciseRepository.findLatestExerciseForUser(userId, exerciseLib.getId());
 
-		Exercise exercise = createExercise(exerciseLib, workout);
+		Exercise exercise = createExercise(exerciseLib, workout, 1); //exercise order will always be 1 for new workouts
 		// ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
 		createSetsBasedOnLastWorkoutForExercise(lastExerciseForUser, exercise, exerciseLib.getId(), userId);
 
@@ -91,7 +91,7 @@ public class WorkoutService {
 		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(workoutDto.getExerciseId()))
 				.get();
 		Exercise lastExerciseForUser = exerciseRepository.findLatestExerciseForUser(userId, exerciseLib.getId());
-		Exercise exercise = createExercise(exerciseLib, workout);
+		Exercise exercise = createExercise(exerciseLib, workout, workoutDto.getExerciseOrder());
 		// ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
 		createSetsBasedOnLastWorkoutForExercise(lastExerciseForUser, exercise, exerciseLib.getId(), userId);
 		return workout.getId().toString();
@@ -110,7 +110,7 @@ public class WorkoutService {
 		for (PreMadeWorkoutExercise preMadeExercise : preMadeExercises) {
 			ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(preMadeExercise.getExercise().getId())
 					.get();
-			Exercise exercise = createExercise(exerciseLib, workout);
+			Exercise exercise = createExercise(exerciseLib, workout, preMadeExercise.getExerciseOrder());
 			// SETS
 			List<PreMadeWorkoutSet> preMadeSets = preMadeWorkoutSetRepository
 					.findByPreMadeWorkoutExerciseId(preMadeExercise.getId());
@@ -148,15 +148,17 @@ public class WorkoutService {
 	 * 
 	 * @param exerciseLib
 	 * @param workout
+	 * @param exerciseOrder 
 	 * @return
 	 */
-	private Exercise createExercise(ExerciseLibrary exerciseLib, Workout workout) {
-	    Exercise exercise = new Exercise();
-	    exercise.setWorkout(workout);
-	    exercise.setExerciseLibrary(exerciseLib);
-	    exercise.setName(exerciseLib.getName());
+	private Exercise createExercise(ExerciseLibrary exerciseLib, Workout workout, int exerciseOrder) {
+		Exercise exercise = new Exercise();
+		exercise.setWorkout(workout);
+		exercise.setExerciseLibrary(exerciseLib);
+		exercise.setName(exerciseLib.getName());
+		exercise.setExerciseOrder(exerciseOrder);
 
-	    return exerciseRepository.save(exercise);
+		return exerciseRepository.save(exercise);
 	}
 	
 	/**

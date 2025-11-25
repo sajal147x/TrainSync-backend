@@ -11,6 +11,7 @@ public class PreMadeWorkoutDto {
 	private String exerciseId;
 	private String name;
 	private String equipmentId;
+	private int exerciseOrder;
 
 	/**
 	 * @return the exerciseId
@@ -66,6 +67,20 @@ public class PreMadeWorkoutDto {
 	 */
 	public void setEquipmentId(String equipmentId) {
 		this.equipmentId = equipmentId;
+	}
+
+	/**
+	 * @return the exerciseOrder
+	 */
+	public int getExerciseOrder() {
+		return exerciseOrder;
+	}
+
+	/**
+	 * @param exerciseOrder the exerciseOrder to set
+	 */
+	public void setExerciseOrder(int exerciseOrder) {
+		this.exerciseOrder = exerciseOrder;
 	}
 
 }

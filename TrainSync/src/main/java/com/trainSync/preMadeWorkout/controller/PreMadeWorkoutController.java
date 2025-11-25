@@ -57,7 +57,7 @@ public class PreMadeWorkoutController {
 	public ResponseEntity<String> addExerciseToWorkout(@RequestHeader("Authorization") String authHeader,
 			@RequestBody PreMadeWorkoutDto dto) {
 		try {
-			String result = preMadeWorkoutService.addExerciseToWorkout(dto.getPreMadeWorkoutId(), dto.getExerciseId(), dto.getEquipmentId());
+			String result = preMadeWorkoutService.addExerciseToWorkout(dto.getPreMadeWorkoutId(), dto.getExerciseId(), dto.getEquipmentId(), dto.getExerciseOrder());
 			return ResponseEntity.ok(result);
 		} catch (Exception e) {
 			e.printStackTrace();

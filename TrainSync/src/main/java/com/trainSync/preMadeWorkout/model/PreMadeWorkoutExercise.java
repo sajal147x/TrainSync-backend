@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.trainSync.workout.model.EquipmentTag;
 import com.trainSync.workout.model.ExerciseLibrary;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,9 +34,8 @@ public class PreMadeWorkoutExercise {
 	@JoinColumn(name = "exercise_id", nullable = false)
 	private ExerciseLibrary exercise;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "equipment_id", nullable = false)
-	private EquipmentTag equipment;
+	@Column
+	private int exerciseOrder;
 
 	/**
 	 * @return the id
@@ -79,18 +79,19 @@ public class PreMadeWorkoutExercise {
 		this.exercise = exercise;
 	}
 
+
 	/**
-	 * @return the equipment
+	 * @return the exerciseOrder
 	 */
-	public EquipmentTag getEquipment() {
-		return equipment;
+	public int getExerciseOrder() {
+		return exerciseOrder;
 	}
 
 	/**
-	 * @param equipment the equipment to set
+	 * @param exerciseOrder the exerciseOrder to set
 	 */
-	public void setEquipment(EquipmentTag equipment) {
-		this.equipment = equipment;
+	public void setExerciseOrder(int exerciseOrder) {
+		this.exerciseOrder = exerciseOrder;
 	}
 
 }
