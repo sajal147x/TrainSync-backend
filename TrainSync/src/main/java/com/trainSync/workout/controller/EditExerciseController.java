@@ -4,15 +4,19 @@ package com.trainSync.workout.controller;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trainSync.workout.dto.ChangeExerciseDto;
 import com.trainSync.workout.dto.DeleteSetDto;
 import com.trainSync.workout.dto.EditExerciseDto;
+import com.trainSync.workout.model.Exercise;
+import com.trainSync.workout.model.ExerciseLibrary;
+import com.trainSync.workout.respository.ExerciseLibraryRepository;
+import com.trainSync.workout.respository.ExerciseRepository;
 import com.trainSync.workout.respository.ExerciseSetRepository;
 import com.trainSync.workout.service.EditExerciseService;
 
@@ -26,11 +30,17 @@ public class EditExerciseController {
 
     private final EditExerciseService editExerciseService;
     
-    @Autowired
-    private ExerciseSetRepository exerciseSetRepository;
+    private final ExerciseSetRepository exerciseSetRepository;
+    
+    private final ExerciseRepository exerciseRepository;
+    
+    private final ExerciseLibraryRepository exerciseLibraryRepository;
 
-    public EditExerciseController(EditExerciseService editExerciseService) {
+    public EditExerciseController(EditExerciseService editExerciseService, ExerciseSetRepository exerciseSetRepository, ExerciseRepository exerciseRepository, ExerciseLibraryRepository exerciseLibraryRepository) {
         this.editExerciseService = editExerciseService;
+        this.exerciseSetRepository = exerciseSetRepository;
+        this.exerciseRepository = exerciseRepository;
+        this.exerciseLibraryRepository = exerciseLibraryRepository;
     }
 
     // Add a set to an exercise
@@ -71,4 +81,21 @@ public class EditExerciseController {
 			return ResponseEntity.status(500).body("Failed to update set");
 		}
 	}
+	
+	// delete an existing set
+		@PostMapping("/change-exercise-in-workout")
+		public ResponseEntity<?> changeExerciseInWorkout(@RequestBody ChangeExerciseDto dto) {
+			try {
+				
+				Exercise exercise = exerciseRepository.findById(UUID.fromString(dto.getExerciseId())).get();
+				ExerciseLibrary exerciseLibrary = exerciseLibraryRepository.findById(UUID.fromString(dto.getNewExerciseLibraryId())).get();
+				exercise.setExerciseLibrary(exerciseLibrary);
+				exerciseRepository.save(exercise);
+				
+				return ResponseEntity.ok(200);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(500).body("Failed to update set");
+			}
+		}
 }
