@@ -71,4 +71,7 @@ public interface ExerciseLibraryRepository extends JpaRepository<ExerciseLibrary
     );
 
     ExerciseLibrary findByNameIgnoreCase(String name);
+    
+    Page<ExerciseLibrary> findByExercisePictureUrlIsNull(Pageable pageable);
+   
 }

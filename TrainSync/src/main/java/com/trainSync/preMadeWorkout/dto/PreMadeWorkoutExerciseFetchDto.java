@@ -8,6 +8,7 @@ public class PreMadeWorkoutExerciseFetchDto {
 
 	private String id;
 	private String name;
+	private String exercisePictureUrl;
 
 	/**
 	 * @return the id
@@ -35,6 +36,20 @@ public class PreMadeWorkoutExerciseFetchDto {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @return the exercisePictureUrl
+	 */
+	public String getExercisePictureUrl() {
+		return exercisePictureUrl;
+	}
+
+	/**
+	 * @param exercisePictureUrl the exercisePictureUrl to set
+	 */
+	public void setExercisePictureUrl(String exercisePictureUrl) {
+		this.exercisePictureUrl = exercisePictureUrl;
 	}
 
 }

@@ -78,6 +78,7 @@ public class PreMadeWorkoutController {
 				PreMadeWorkoutExerciseFetchDto exerciseDto = new PreMadeWorkoutExerciseFetchDto();
 				exerciseDto.setId(exercise.getId().toString());
 				exerciseDto.setName(exercise.getExercise().getDisplayName());
+				exerciseDto.setExercisePictureUrl(exercise.getExercise().getExercisePictureUrl());
 				dto.getExercises().add(exerciseDto);
 
 			}
