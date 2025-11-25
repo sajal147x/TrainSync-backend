@@ -126,7 +126,7 @@ public class ExerciseLibraryController {
 			dto.setEquipmentTag(equipmentDto);
 			dto.setId(e.getId().toString());
 			dto.setExercisePictureUrl(e.getExercisePictureUrl());
-			dto.setName(e.getName() + " (" + e.getEquipment().getName() + ")");
+			dto.setName(e.getDisplayName());
 
 			for (ExerciseLibraryTagLink tag : e.getTagLinks()) {
 				MuscleTagDto muscleTagDto = new MuscleTagDto();

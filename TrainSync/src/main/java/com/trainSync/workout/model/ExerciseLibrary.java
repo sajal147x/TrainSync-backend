@@ -145,6 +145,10 @@ public class ExerciseLibrary {
 	}
 
 	
+	public String getDisplayName() {
+		return this.getName() + " (" + this.getEquipment().getName() + ")";
+	}
+	
 	
 
 
