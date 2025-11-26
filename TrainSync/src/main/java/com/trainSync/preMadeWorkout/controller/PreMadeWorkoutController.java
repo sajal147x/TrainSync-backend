@@ -22,6 +22,9 @@ import com.trainSync.preMadeWorkout.model.PreMadeWorkout;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkoutExercise;
 import com.trainSync.preMadeWorkout.service.PreMadeWorkoutService;
 import com.trainSync.service.JwtService;
+import com.trainSync.workout.dto.ChangeExerciseDto;
+import com.trainSync.workout.model.Exercise;
+import com.trainSync.workout.model.ExerciseLibrary;
 
 /**
  * Author: Sajal Gupta Date: Nov 18, 2025
@@ -79,6 +82,7 @@ public class PreMadeWorkoutController {
 				exerciseDto.setId(exercise.getId().toString());
 				exerciseDto.setName(exercise.getExercise().getDisplayName());
 				exerciseDto.setExercisePictureUrl(exercise.getExercise().getExercisePictureUrl());
+				exerciseDto.setExerciseOrder(exercise.getExerciseOrder());
 				dto.getExercises().add(exerciseDto);
 
 			}
@@ -134,5 +138,18 @@ public class PreMadeWorkoutController {
 			return ResponseEntity.status(500).body("Failed to create workout");
 		}
 	}
+	
+	// delete an existing set
+			@PostMapping("/switch-exercise-in-pre-made")
+			public ResponseEntity<?> changeExerciseInWorkout(@RequestBody ChangeExerciseDto dto) {
+				try {
+					preMadeWorkoutService.changeExerciseInPreMadeWorkout(dto.getNewExerciseLibraryId(), dto.getPreMadeExerciseId());
+					
+					return ResponseEntity.ok(200);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return ResponseEntity.status(500).body("Failed to update set");
+				}
+			}
 
 }

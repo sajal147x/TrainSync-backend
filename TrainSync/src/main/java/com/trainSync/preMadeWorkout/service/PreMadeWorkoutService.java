@@ -155,4 +155,16 @@ public class PreMadeWorkoutService {
 		return workoutId;
 	}
 
+	/**
+	 * @param newExerciseLibraryId
+	 * @param preMadeExerciseId
+	 */
+	public void changeExerciseInPreMadeWorkout(String newExerciseLibraryId, String preMadeExerciseId) {
+		PreMadeWorkoutExercise exercise = preMadeWorkoutExerciseRepository.findById(UUID.fromString(preMadeExerciseId)).get();
+		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(newExerciseLibraryId)).get();
+		exercise.setExercise(exerciseLib);
+		preMadeWorkoutExerciseRepository.save(exercise);
+		
+	}
+
 }

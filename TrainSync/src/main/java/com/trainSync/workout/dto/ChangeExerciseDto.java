@@ -9,6 +9,7 @@ public class ChangeExerciseDto {
 	private String exerciseId;
 	private String newExerciseLibraryId;
 	private String workoutId;
+	private String preMadeExerciseId;
 
 	/**
 	 * @return the exerciseId
@@ -51,6 +52,20 @@ public class ChangeExerciseDto {
 	 */
 	public void setWorkoutId(String workoutId) {
 		this.workoutId = workoutId;
+	}
+
+	/**
+	 * @return the preMadeExerciseId
+	 */
+	public String getPreMadeExerciseId() {
+		return preMadeExerciseId;
+	}
+
+	/**
+	 * @param preMadeExerciseId the preMadeExerciseId to set
+	 */
+	public void setPreMadeExerciseId(String preMadeExerciseId) {
+		this.preMadeExerciseId = preMadeExerciseId;
 	}
 
 }
