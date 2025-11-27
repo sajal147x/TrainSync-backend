@@ -13,6 +13,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class UserSearchResponseDto {
+	private String requestId;
 	private String userId;
 	private String name;
 	private Integer age;

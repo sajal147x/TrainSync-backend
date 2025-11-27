@@ -1,9 +1,11 @@
 
 package com.trainSync.community.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -69,6 +71,28 @@ public class FriendRequestController {
 		friendRequestService.sendFriendRequest(loggedinUserId, toUserId);
 		
 		return ResponseEntity.ok().body(200);
+
+	}
+	
+	@GetMapping("/received-requests")
+	public ResponseEntity<?> getReceivedRequests(@RequestHeader("Authorization") String authHeader) {
+		String token = authHeader.replace("Bearer ", "");
+		String userIdStr = jwtService.extractUserId(token); // validate JWT and extract Supabase UUID
+		UUID loggedinUserId = UUID.fromString(userIdStr);
+		
+		List<UserSearchResponseDto> receivedRequests = friendRequestService.getReceivedFriendRequests(loggedinUserId);
+		return ResponseEntity.ok().body(receivedRequests);
+	}
+	
+	@PostMapping("/accept-request")
+	public ResponseEntity<?> acceptFriendRequest(@RequestHeader("Authorization") String authHeader, @RequestBody UserSearchDto userSearchDto) {
+		String requestId=userSearchDto.getRequestId();
+		
+		friendRequestService.acceptFriendRequest(UUID.fromString(requestId));
+		
+		
+		return ResponseEntity.ok().body(200);
+		
 
 	}
 

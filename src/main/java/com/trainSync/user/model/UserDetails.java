@@ -28,7 +28,7 @@ public class UserDetails {
 
 	@Id
 	@GeneratedValue
-	private UUID id; // matches Supabase Auth ID
+	private UUID id;
 
 	@Column(nullable = true, length = 100)
 	private String name;
