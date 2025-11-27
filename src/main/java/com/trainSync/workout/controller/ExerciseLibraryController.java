@@ -32,14 +32,17 @@ import com.trainSync.workout.respository.MuscleTagRepository;
 @RequestMapping("/api/exercises")
 public class ExerciseLibraryController {
 
-	@Autowired
-	private ExerciseLibraryRepository exerciseLibraryRepository;
+	ExerciseLibraryController(ExerciseLibraryRepository exerciseLibraryRepository,
+			MuscleTagRepository muscleTagRepository, EquipmentTagRepository equipmentTagRepository) {
+		this.exerciseLibraryRepository = exerciseLibraryRepository;
+		this.muscleTagRepository = muscleTagRepository;
+		this.equipmentTagRepository = equipmentTagRepository;
+	}
 	
-	@Autowired
-	private MuscleTagRepository muscleTagRepository;
+	private final ExerciseLibraryRepository exerciseLibraryRepository;
+	private final MuscleTagRepository muscleTagRepository;
+	private final EquipmentTagRepository equipmentTagRepository;
 	
-	@Autowired
-	private EquipmentTagRepository equipmentTagRepository;
 	
 	
 	/**

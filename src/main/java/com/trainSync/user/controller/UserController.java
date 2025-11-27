@@ -3,7 +3,6 @@ package com.trainSync.user.controller;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,14 +25,17 @@ import com.trainSync.user.repository.UserDetailsRepository;
 @RequestMapping("/api/user")
 public class UserController {
 
-	@Autowired
-	private UserDetailsRepository userDetailsRepository;
+	private final UserDetailsRepository userDetailsRepository;
 
-	@Autowired
-	private JwtService jwtService;
+	private final JwtService jwtService;
 	
-	@Autowired
-	private SupabaseStorageService storageService;
+	private final SupabaseStorageService storageService;
+	
+	UserController(UserDetailsRepository userDetailsRepository, JwtService jwtService, SupabaseStorageService storageService) {
+		this.userDetailsRepository = userDetailsRepository;
+		this.jwtService = jwtService;
+		this.storageService = storageService;
+	}
 
 	/**
 	 * 
@@ -45,7 +47,6 @@ public class UserController {
 		try {
 			String token = authHeader.replace("Bearer ", "");
 			String userIdStr = jwtService.extractUserId(token); // validate JWT and extract Supabase UUID
-			System.out.println(userIdStr);
 			UUID userId = UUID.fromString(userIdStr);
 
 			UserDetails user = userDetailsRepository.findById(userId)
@@ -70,12 +71,10 @@ public class UserController {
 			String token = authHeader.replace("Bearer ", "");
 			String userIdStr = jwtService.extractUserId(token);
 			UUID userId = UUID.fromString(userIdStr);
-			System.out.println(request.getProfilePictureBase64());
 			Optional<UserDetails> optionalUser = userDetailsRepository.findById(userId);
 			if (optionalUser.isEmpty()) {
 				return ResponseEntity.status(404).body("User not found");
 			}
-
 			UserDetails user = optionalUser.get();
 			user.setName(request.getName());
 			user.setAge(request.getAge());
@@ -85,7 +84,6 @@ public class UserController {
 		            String publicUrl = storageService.uploadBase64Image(request.getProfilePictureBase64(), fileName, "profile-pictures");
 		            user.setProfilePictureUrl(publicUrl);
 		        }
-
 			userDetailsRepository.save(user);
 
 			return ResponseEntity.ok(user);

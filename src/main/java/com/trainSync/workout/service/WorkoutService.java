@@ -60,6 +60,7 @@ public class WorkoutService {
 		// Convert date string to LocalDateTime
 		OffsetDateTime dateTime = OffsetDateTime.parse(workoutDto.getWorkoutDate(),
 				DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+		
 		// Create and save workout
 		Workout workout = createWorkout(workoutDto.getWorkoutName(), dateTime, userId);
 
@@ -71,7 +72,8 @@ public class WorkoutService {
 
 		Exercise exercise = createExercise(exerciseLib, workout, 1); //exercise order will always be 1 for new workouts
 		// ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
-		createSetsBasedOnLastWorkoutForExercise(lastExerciseForUser, exercise, exerciseLib.getId(), userId);
+		
+		createSetsBasedOnLastWorkoutForExercise(lastExerciseForUser, exercise);
 
 		return workout.getId().toString();
 	}
@@ -92,7 +94,7 @@ public class WorkoutService {
 		Exercise lastExerciseForUser = exerciseRepository.findLatestExerciseForUser(userId, exerciseLib.getId());
 		Exercise exercise = createExercise(exerciseLib, workout, workoutDto.getExerciseOrder());
 		// ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
-		createSetsBasedOnLastWorkoutForExercise(lastExerciseForUser, exercise, exerciseLib.getId(), userId);
+		createSetsBasedOnLastWorkoutForExercise(lastExerciseForUser, exercise);
 		return workout.getId().toString();
 	}
 
@@ -113,7 +115,7 @@ public class WorkoutService {
 			// SETS
 			List<PreMadeWorkoutSet> preMadeSets = preMadeWorkoutSetRepository
 					.findByPreMadeWorkoutExerciseId(preMadeExercise.getId());
-			List<ExerciseSet> sets = new ArrayList<ExerciseSet>();
+			List<ExerciseSet> sets = new ArrayList<>();
 			for (var preMadeSet : preMadeSets) {
 				ExerciseSet set = new ExerciseSet();
 				set.setSetNumber(preMadeSet.getSetNumber());
@@ -169,13 +171,12 @@ public class WorkoutService {
      * @param exerciseLibId
      * @param userId
      */
-	private void createSetsBasedOnLastWorkoutForExercise(Exercise lastExerciseForUser, Exercise exercise,
-			UUID exerciseLibId, UUID userId) {
+	private void createSetsBasedOnLastWorkoutForExercise(Exercise lastExerciseForUser, Exercise exercise) {
 		if (lastExerciseForUser == null) {
 			return;
 		}
 		List<ExerciseSet> setsFromLast = lastExerciseForUser.getSets();
-		List<ExerciseSet> setsToSave = new ArrayList<ExerciseSet>();
+		List<ExerciseSet> setsToSave = new ArrayList<>();
 		if (setsFromLast == null || setsFromLast.isEmpty()) {
 			return;
 		}

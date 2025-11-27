@@ -33,14 +33,17 @@ public class AuthController {
 	@Value("${default.password}")
 	private String defaultPass;
 	
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
+	private final JwtService jwtService;
+	private final PasswordEncoder passwordEncoder;
 	
-	@Autowired
-	private JwtService jwtService;
 	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	AuthController(UserService userService, JwtService jwtService, PasswordEncoder passwordEncoder) {
+		this.userService = userService;
+		this.jwtService = jwtService;
+		this.passwordEncoder = passwordEncoder;
+	}
+
 
 	/**
 	 * SIGNUP CODE

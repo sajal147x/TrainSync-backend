@@ -40,16 +40,15 @@ public class ConfigureExerciseController {
     private final MuscleTagRepository muscleTagRepository;
     private final EquipmentTagRepository equipmentTagRepository;
     private final ExerciseLibraryTagLinkRepository linkRepository;
-    
-    @Autowired
-	private SupabaseStorageService storageService;
+    private final SupabaseStorageService storageService;
     
     public ConfigureExerciseController(
+    					SupabaseStorageService storageService,
             ExerciseLibraryRepository exerciseLibraryRepository,
             MuscleTagRepository muscleTagRepository,
             EquipmentTagRepository equipmentTagRepository,
-            ExerciseLibraryTagLinkRepository linkRepository
-    ) {
+            ExerciseLibraryTagLinkRepository linkRepository) {
+    	this.storageService = storageService;
         this.exerciseLibraryRepository = exerciseLibraryRepository;
         this.muscleTagRepository = muscleTagRepository;
         this.equipmentTagRepository = equipmentTagRepository;
@@ -69,7 +68,6 @@ public class ConfigureExerciseController {
 			// Seed MuscleTags
 			if (dto.muscleTagIdsPrimary != null) {
 				for (String tagDto : dto.muscleTagIdsPrimary) {
-					System.out.println("PRIMARY");
 					MuscleTag tag;
 					Optional<MuscleTag> tagOptional = muscleTagRepository.findById(UUID.fromString(tagDto));
 					if (tagOptional.isPresent()) {
@@ -83,7 +81,6 @@ public class ConfigureExerciseController {
 			}
 			if (dto.muscleTagIdsSecondary != null) {
 				for (String tagDto : dto.muscleTagIdsSecondary) {
-					System.out.println("SECONDARY");
 					MuscleTag tag;
 					Optional<MuscleTag> tagOptional = muscleTagRepository.findById(UUID.fromString(tagDto));
 					if (tagOptional.isPresent()) {
@@ -111,7 +108,6 @@ public class ConfigureExerciseController {
     	String publicUrl = storageService.uploadBase64Image(base64, fileName, "exercise-pictures");
     	exercise.setExercisePictureUrl(publicUrl);
     	exerciseLibraryRepository.save(exercise);
-    	System.out.println("SAVED");
     	return null;
     }
     

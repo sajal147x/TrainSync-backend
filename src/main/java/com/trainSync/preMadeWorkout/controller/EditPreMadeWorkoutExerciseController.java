@@ -1,7 +1,6 @@
 
 package com.trainSync.preMadeWorkout.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,8 +18,11 @@ import com.trainSync.workout.dto.EditExerciseDto;
 @RequestMapping("/api")
 public class EditPreMadeWorkoutExerciseController {
 	
-	@Autowired
-	EditPreMadeExerciseService editPreMadeExerciseService;
+	EditPreMadeWorkoutExerciseController(EditPreMadeExerciseService editPreMadeExerciseService) {
+		this.editPreMadeExerciseService = editPreMadeExerciseService;
+	}
+
+	private final EditPreMadeExerciseService editPreMadeExerciseService;
 	
 	// Add a set to an exercise
     @PostMapping("/add-set-to-pre-made-workout")

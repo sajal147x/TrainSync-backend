@@ -30,18 +30,20 @@ import com.trainSync.workout.service.WorkoutService;
 @RestController
 @RequestMapping("/api")
 public class WorkoutController {
-
-	@Autowired
-	JwtService jwtService;
-
-	@Autowired
-	private WorkoutService workoutService;
-
-	@Autowired
-	private WorkoutRepository workoutRepository;
 	
-	@Autowired
-	private ExerciseRepository exerciseRepository;
+	WorkoutController(JwtService jwtService, WorkoutService workoutService,
+			WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository) {
+		this.jwtService = jwtService;
+		this.workoutService = workoutService;
+		this.workoutRepository = workoutRepository;
+		this.exerciseRepository = exerciseRepository;
+	}
+
+	private final JwtService jwtService;
+	private final WorkoutService workoutService;
+	private final WorkoutRepository workoutRepository;
+	private final ExerciseRepository exerciseRepository;
+	
 	
 	@PostMapping("/create-workout")
 	public ResponseEntity<String> createWorkout(@RequestHeader("Authorization") String authHeader,
