@@ -5,8 +5,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.UUID;
@@ -19,6 +21,8 @@ import java.util.UUID;
 @Getter
 @Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "user_details")
 public class UserDetails {
 
@@ -47,9 +51,7 @@ public class UserDetails {
 	@Column
 	private String userType;
 
-	// Constructors
-	public UserDetails() {
-	}
+
 
 	public UserDetails(UUID id, String name, Integer age, String email) {
 		this.id = id;

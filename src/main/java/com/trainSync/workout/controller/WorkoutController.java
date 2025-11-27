@@ -63,12 +63,10 @@ public class WorkoutController {
 	public ResponseEntity<String> addExerciseToWorkout(@RequestHeader("Authorization") String authHeader,
 			@RequestBody WorkoutDto workoutDto) {
 		try {
-			System.out.println("EQUIPMENT" + workoutDto.getEquipmentId());
 			String token = authHeader.replace("Bearer ", "");
 			String userIdStr = jwtService.extractUserId(token); // validate JWT and extract Supabase UUID
 			UUID userId = UUID.fromString(userIdStr);
 			String result = workoutService.addExerciseToWorkout(workoutDto, userId);
-			System.out.println(result);
 			return ResponseEntity.ok(result);
 		} catch (Exception e) {
 			e.printStackTrace();
