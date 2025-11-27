@@ -32,20 +32,24 @@ import com.trainSync.workout.respository.WorkoutRepository;
 @Service
 public class WorkoutService {
 
-	@Autowired
-	private WorkoutRepository workoutRepository;
-
-	@Autowired
-	private ExerciseRepository exerciseRepository;
-
-	@Autowired
-	private ExerciseLibraryRepository exerciseLibraryRepository;
 	
-	@Autowired
-	private PreMadeWorkoutSetRepository preMadeWorkoutSetRepository;
+	private final WorkoutRepository workoutRepository;
+	private final ExerciseRepository exerciseRepository;
+	private final ExerciseLibraryRepository exerciseLibraryRepository;
+	private final PreMadeWorkoutSetRepository preMadeWorkoutSetRepository;
+	private final ExerciseSetRepository exerciseSetRepository;
 	
-	@Autowired
-	private ExerciseSetRepository exerciseSetRepository;
+	
+	WorkoutService(WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository,
+			ExerciseLibraryRepository exerciseLibraryRepository,
+			PreMadeWorkoutSetRepository preMadeWorkoutSetRepository,
+			ExerciseSetRepository exerciseSetRepository) {
+		this.workoutRepository = workoutRepository;
+		this.exerciseRepository = exerciseRepository;
+		this.exerciseLibraryRepository = exerciseLibraryRepository;
+		this.preMadeWorkoutSetRepository = preMadeWorkoutSetRepository;
+		this.exerciseSetRepository = exerciseSetRepository;
+	}
 	
 
 	/**

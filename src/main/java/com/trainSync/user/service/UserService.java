@@ -40,8 +40,13 @@ public class UserService {
 	}
 
 	public UserDetails findByUsername(String username) {
-		UserDetails user = userDetailsRepository.findByUsername(username);
-		return user;
+		return userDetailsRepository.findByUsername(username);
 		
 	}
+	
+	public UserDetails findById(UUID userId) {
+		Optional<UserDetails> userOpt = userDetailsRepository.findById(userId);
+		return userOpt.orElse(null);
+	}
+	
 }
