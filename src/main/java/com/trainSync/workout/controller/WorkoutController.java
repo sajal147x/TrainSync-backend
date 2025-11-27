@@ -75,15 +75,14 @@ public class WorkoutController {
 			return ResponseEntity.status(500).body("Failed to create workout");
 		}
 	}
-	
-	
 
-	/**
-	 * 
-	 * @param authHeader
-	 * @param workoutIdStr
-	 * @return
-	 */
+
+    /**
+     *
+     * @param authHeader
+     * @param workoutId
+     * @return
+     */
 	@GetMapping("/get-workout")
 	public ResponseEntity<?> retrieveWorkout(
 	        @RequestHeader("Authorization") String authHeader,
@@ -125,14 +124,8 @@ public class WorkoutController {
 
 				exerciseDto.setExercisePictureUrl(exercise.getExerciseLibrary().getExercisePictureUrl());
 
-				if (exercise.getSets() != null && !exercise.getSets().isEmpty()) {
-					for (ExerciseSet set : exercise.getSets()) {
-						SetDto setDto = new SetDto(set.getId().toString(), set.getWeight(), set.getReps(),
-								set.getSetNumber());
-						exerciseDto.getSets().add(setDto);
-					}
-				}
-				workoutDto.getExercises().add(exerciseDto);
+                convertExerciseSetToDto(exercise, exerciseDto);
+                workoutDto.getExercises().add(exerciseDto);
 			}
 
 			return ResponseEntity.ok(workoutDto);
@@ -142,14 +135,24 @@ public class WorkoutController {
 			return ResponseEntity.status(500).body("Failed to retrieve workout");
 		}
 	}
-	
-	
-	/**
-	 * 
-	 * @param authHeader
-	 * @param workoutIdStr
-	 * @return
-	 */
+
+    private void convertExerciseSetToDto(Exercise exercise, ExerciseDto exerciseDto) {
+        if (exercise.getSets() != null && !exercise.getSets().isEmpty()) {
+            for (ExerciseSet set : exercise.getSets()) {
+                SetDto setDto = new SetDto(set.getId().toString(), set.getWeight(), set.getReps(),
+                        set.getSetNumber());
+                exerciseDto.getSets().add(setDto);
+            }
+        }
+    }
+
+
+    /**
+     *
+     * @param authHeader
+     * @param exerciseId
+     * @return
+     */
 	@GetMapping("/get-sets")
 	public ResponseEntity<?> retrieveSets(
 	        @RequestHeader("Authorization") String authHeader,
@@ -170,15 +173,9 @@ public class WorkoutController {
 				exerciseDto.setPreFilledDate(exercise.getPreFilledWorkout().getStartTime().toString());
 				exerciseDto.setPreFilledWorkoutName(exercise.getPreFilledWorkout().getName());
 			}
-			if (exercise.getSets() != null && !exercise.getSets().isEmpty()) {
-				for (ExerciseSet set : exercise.getSets()) {
-					SetDto setDto = new SetDto(set.getId().toString(), set.getWeight(), set.getReps(),
-							set.getSetNumber());
-					exerciseDto.getSets().add(setDto);
-				}
-			}
+            convertExerciseSetToDto(exercise, exerciseDto);
 
-			return ResponseEntity.ok(exerciseDto);
+            return ResponseEntity.ok(exerciseDto);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(500).body("Failed to retrieve workout");
