@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
@@ -12,6 +14,8 @@ import java.util.UUID;
  * Author: Sajal Gupta Date: Nov 7, 2025
  */
 
+@Setter
+@Getter
 @Entity
 @Table(name = "user_details")
 public class UserDetails {
@@ -52,81 +56,5 @@ public class UserDetails {
 		this.email = email;
 	}
 
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	// Getters & Setters
-	public UUID getId() {
-		return id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Integer getAge() {
-		return age;
-	}
-
-	public void setAge(Integer age) {
-		this.age = age;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	/**
-	 * @return the profilePictureUrl
-	 */
-	public String getProfilePictureUrl() {
-		return profilePictureUrl;
-	}
-
-	/**
-	 * @param profilePictureUrl the profilePictureUrl to set
-	 */
-	public void setProfilePictureUrl(String profilePictureUrl) {
-		this.profilePictureUrl = profilePictureUrl;
-	}
-
-	/**
-	 * @return the userType
-	 */
-	public String getUserType() {
-		return userType;
-	}
-
-	/**
-	 * @param userType the userType to set
-	 */
-	public void setUserType(String userType) {
-		this.userType = userType;
-	}
-	
-	public String getPasswordHash() {
-		return passwordHash;
-	}
-
-	public void setPasswordHash(String passwordHash) {
-		this.passwordHash = passwordHash;
-	}
 
 }

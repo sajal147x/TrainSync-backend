@@ -13,10 +13,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Author: Sajal Gupta Date: Nov 11, 2025
  */
+@Setter
+@Getter
 @Entity
 @Table(name = "exercise")
 public class Exercise {
@@ -54,121 +58,5 @@ public class Exercise {
 	@Column
 	private int exerciseOrder;
 
-	/**
-	 * @return the id
-	 */
-	public UUID getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(UUID id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return the workout
-	 */
-	public Workout getWorkout() {
-		return workout;
-	}
-
-	/**
-	 * @param workout the workout to set
-	 */
-	public void setWorkout(Workout workout) {
-		this.workout = workout;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
-	/**
-	 * @return the sets
-	 */
-	public List<ExerciseSet> getSets() {
-		return sets;
-	}
-
-	/**
-	 * @param sets the sets to set
-	 */
-	public void setSets(List<ExerciseSet> sets) {
-		this.sets = sets;
-	}
-
-
-	/**
-	 * @return the preFilledFromLastWorkoutFlag
-	 */
-	public String getPreFilledFromLastWorkoutFlag() {
-		return preFilledFromLastWorkoutFlag;
-	}
-
-	/**
-	 * @param preFilledFromLastWorkoutFlag the preFilledFromLastWorkoutFlag to set
-	 */
-	public void setPreFilledFromLastWorkoutFlag(String preFilledFromLastWorkoutFlag) {
-		this.preFilledFromLastWorkoutFlag = preFilledFromLastWorkoutFlag;
-	}
-
-
-
-	/**
-	 * @return the preFilledWorkout
-	 */
-	public Workout getPreFilledWorkout() {
-		return preFilledWorkout;
-	}
-
-	/**
-	 * @param preFilledWorkout the preFilledWorkout to set
-	 */
-	public void setPreFilledWorkout(Workout preFilledWorkout) {
-		this.preFilledWorkout = preFilledWorkout;
-	}
-
-
-	/**
-	 * @return the exerciseLibrary
-	 */
-	public ExerciseLibrary getExerciseLibrary() {
-		return exerciseLibrary;
-	}
-
-	/**
-	 * @param exerciseLibrary the exerciseLibrary to set
-	 */
-	public void setExerciseLibrary(ExerciseLibrary exerciseLibrary) {
-		this.exerciseLibrary = exerciseLibrary;
-	}
-
-	/**
-	 * @return the exerciseOrder
-	 */
-	public int getExerciseOrder() {
-		return exerciseOrder;
-	}
-
-	/**
-	 * @param exerciseOrder the exerciseOrder to set
-	 */
-	public void setExerciseOrder(int exerciseOrder) {
-		this.exerciseOrder = exerciseOrder;
-	}
 
 }

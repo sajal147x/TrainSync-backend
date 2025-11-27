@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 
 import jakarta.persistence.CascadeType;
@@ -21,6 +23,8 @@ import jakarta.persistence.Table;
 /**
  * Author: Sajal Gupta Date: Nov 12, 2025
  */
+@Setter
+@Getter
 @Entity
 @Table(name = "exercise_library")
 public class ExerciseLibrary {
@@ -53,93 +57,7 @@ public class ExerciseLibrary {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "equipment_id")
     private EquipmentTag equipment;
-  
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public boolean isCustom() {
-        return isCustom;
-    }
-
-    public void setCustom(boolean custom) {
-        isCustom = custom;
-    }
-
-    public UUID getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(UUID createdBy) {
-        this.createdBy = createdBy;
-    }
-
-
-
-	/**
-	 * @return the tagLinks
-	 */
-	public List<ExerciseLibraryTagLink> getTagLinks() {
-		return tagLinks;
-	}
-
-	/**
-	 * @param tagLinks the tagLinks to set
-	 */
-	public void setTagLinks(List<ExerciseLibraryTagLink> tagLinks) {
-		this.tagLinks = tagLinks;
-	}
-
-
-	/**
-	 * @return the exercisePictureUrl
-	 */
-	public String getExercisePictureUrl() {
-		return exercisePictureUrl;
-	}
-
-	/**
-	 * @param exercisePictureUrl the exercisePictureUrl to set
-	 */
-	public void setExercisePictureUrl(String exercisePictureUrl) {
-		this.exercisePictureUrl = exercisePictureUrl;
-	}
-
-	/**
-	 * @return the equipment
-	 */
-	public EquipmentTag getEquipment() {
-		return equipment;
-	}
-
-	/**
-	 * @param equipment the equipment to set
-	 */
-	public void setEquipment(EquipmentTag equipment) {
-		this.equipment = equipment;
-	}
 
 	
 	public String getDisplayName() {

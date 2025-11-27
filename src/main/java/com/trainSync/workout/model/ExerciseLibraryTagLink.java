@@ -9,7 +9,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "exercise_library_tag_link")
 public class ExerciseLibraryTagLink {
@@ -41,35 +45,5 @@ public class ExerciseLibraryTagLink {
         this.id = new ExerciseLibraryTagKey(exerciseLibrary.getId(), muscleTag.getId());
     }
 
-    public ExerciseLibraryTagKey getId() {
-        return id;
-    }
 
-    public void setId(ExerciseLibraryTagKey id) {
-        this.id = id;
-    }
-
-    public ExerciseLibrary getExerciseLibrary() {
-        return exerciseLibrary;
-    }
-
-    public void setExerciseLibrary(ExerciseLibrary exerciseLibrary) {
-        this.exerciseLibrary = exerciseLibrary;
-    }
-
-    public MuscleTag getMuscleTag() {
-        return muscleTag;
-    }
-
-    public void setMuscleTag(MuscleTag muscleTag) {
-        this.muscleTag = muscleTag;
-    }
-
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
 }

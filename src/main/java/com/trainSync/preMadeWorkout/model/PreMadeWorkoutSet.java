@@ -11,10 +11,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Author: Sajal Gupta Date: Nov 17, 2025
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "pre_made_workout_set")
 public class PreMadeWorkoutSet {
@@ -31,46 +35,5 @@ public class PreMadeWorkoutSet {
 	@Column
 	private int setNumber;
 
-	/**
-	 * @return the id
-	 */
-	public UUID getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(UUID id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return the preMadeWorkoutExercise
-	 */
-	public PreMadeWorkoutExercise getPreMadeWorkoutExercise() {
-		return preMadeWorkoutExercise;
-	}
-
-	/**
-	 * @param preMadeWorkoutExercise the preMadeWorkoutExercise to set
-	 */
-	public void setPreMadeWorkoutExercise(PreMadeWorkoutExercise preMadeWorkoutExercise) {
-		this.preMadeWorkoutExercise = preMadeWorkoutExercise;
-	}
-	
-	/**
-	 * @return the setNumber
-	 */
-	public int getSetNumber() {
-		return setNumber;
-	}
-
-	/**
-	 * @param setNumber the setNumber to set
-	 */
-	public void setSetNumber(int setNumber) {
-		this.setNumber = setNumber;
-	}
 
 }

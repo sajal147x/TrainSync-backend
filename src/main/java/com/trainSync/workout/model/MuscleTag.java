@@ -8,10 +8,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Author: Sajal Gupta Date: Nov 12, 2025
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "muscle_tag")
 public class MuscleTag {
@@ -29,47 +33,4 @@ public class MuscleTag {
 	@Column
 	private String musclePictureUrl;
 
-	public UUID getId() {
-		return id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the muscleGroup
-	 */
-	public String getMuscleGroup() {
-		return muscleGroup;
-	}
-
-	/**
-	 * @param muscleGroup the muscleGroup to set
-	 */
-	public void setMuscleGroup(String muscleGroup) {
-		this.muscleGroup = muscleGroup;
-	}
-
-	/**
-	 * @return the musclePictureUrl
-	 */
-	public String getMusclePictureUrl() {
-		return musclePictureUrl;
-	}
-
-	/**
-	 * @param musclePictureUrl the musclePictureUrl to set
-	 */
-	public void setMusclePictureUrl(String musclePictureUrl) {
-		this.musclePictureUrl = musclePictureUrl;
-	}
 }
