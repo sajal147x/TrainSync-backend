@@ -5,29 +5,20 @@ package com.trainSync.user.dto;
  */
 
 public class SignUpRequest {
-    private String email;
+	private String name;
+	private int age;
+    private String username;
+
     private String password;
 
     // Constructors
     public SignUpRequest() {}
 
-    public SignUpRequest(String email, String password) {
-        this.email = email;
+    public SignUpRequest(String username, String password) {
+        this.setUsername(username);
         this.password = password;
     }
 
-    // Getters & Setters
-    public String getEmail() {
-        return email;
-    }
-
-    /**
-     * 
-     * @param email
-     */
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     /**
      * 
@@ -44,4 +35,28 @@ public class SignUpRequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
 }

@@ -1,6 +1,7 @@
 package com.trainSync.user.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class UserDetails {
 
 	@Id
+	@GeneratedValue
 	private UUID id; // matches Supabase Auth ID
 
 	@Column(nullable = true, length = 100)
@@ -24,8 +26,14 @@ public class UserDetails {
 	@Column
 	private Integer age;
 
-	@Column(nullable = false, unique = true, length = 150)
+	@Column(nullable = true, unique = true, length = 150)
 	private String email;
+	
+	@Column
+	private String username;
+	
+	@Column
+	private String passwordHash;
 	
 	@Column
 	private String profilePictureUrl;
@@ -42,6 +50,14 @@ public class UserDetails {
 		this.name = name;
 		this.age = age;
 		this.email = email;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	// Getters & Setters
@@ -104,4 +120,13 @@ public class UserDetails {
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
+	
+	public String getPasswordHash() {
+		return passwordHash;
+	}
+
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
+	}
+
 }

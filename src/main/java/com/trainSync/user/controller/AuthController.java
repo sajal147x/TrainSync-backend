@@ -1,17 +1,21 @@
 package com.trainSync.user.controller;
 
-import com.trainSync.user.dto.SignUpRequest;
-import com.trainSync.user.service.UserService;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-
-import org.json.JSONObject;
+import com.trainSync.service.JwtService;
+import com.trainSync.user.dto.SignUpRequest;
+import com.trainSync.user.model.UserDetails;
+import com.trainSync.user.service.UserService;
 
 /**
  * Author: Sajal Gupta 
@@ -23,12 +27,6 @@ import org.json.JSONObject;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-	@Value("${supabase.url}")
-	private String supabaseUrl;
-
-	@Value("${supabase.key}")
-	private String supabaseKey;
-	
 	@Value("${default.email}")
 	private String defaultEmail;
 	
@@ -37,6 +35,12 @@ public class AuthController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private JwtService jwtService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	/**
 	 * SIGNUP CODE
@@ -45,76 +49,54 @@ public class AuthController {
 	 * @return
 	 */
 	@PostMapping("/signup")
-	public ResponseEntity<String> signUp(@RequestBody SignUpRequest request) {
-		try {
-			// Prepare request body
-			JSONObject body = new JSONObject();
-			body.put("email", request.getEmail());
-			body.put("password", request.getPassword());
+	public ResponseEntity<?> signUp(@RequestBody SignUpRequest request) {
+		if (userService.existsByUsername(request.getUsername())) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Already Exists");
+	    }
 
-			// Prepare HTTP headers
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.set("apikey", supabaseKey);
-			headers.set("Authorization", "Bearer " + supabaseKey);
+	    UserDetails user = new UserDetails();
+	    user.setUsername(request.getUsername());
+	    user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+	    user.setName(request.getName());
+	    user.setAge(request.getAge());
 
-			HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
+	    user = userService.saveUser(user);
 
-			// Send POST to Supabase Auth API
-			RestTemplate restTemplate = new RestTemplate();
-			String url = supabaseUrl + "/auth/v1/admin/users";
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+	    String token = jwtService.generateToken(
+	            user.getId().toString(),
+	            user.getUsername()
+	    );
 
-			// Create entry in user table
-			if (response.getStatusCode().is2xxSuccessful()) {
-				JSONObject jsonResponse = new JSONObject(response.getBody());
-				UUID supabaseId = UUID.fromString(jsonResponse.getString("id"));
-				userService.createUser(supabaseId, request.getEmail());
-			}
-
-			return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Signup failed");
-		}
+	    return ResponseEntity.ok(Map.of(
+	            "userId", user.getId().toString(),
+	            "username", user.getUsername(),
+	            "accessToken", token
+	    ));
 	}
-	
+
+
 	/**
 	 * SIGN IN CODE
 	 * @param request
 	 * @return
 	 */
 	@PostMapping("/signin")
-	public ResponseEntity<String> login(@RequestBody SignUpRequest request) {
-	    try {
-	    	System.out.println("SIGN IN");
-	        // Prepare JSON body
-	        JSONObject body = new JSONObject();
-	        
-	        body.put("email", request.getEmail());
-	        body.put("password", request.getPassword());
-	        if(request.getEmail() == null || request.getEmail().isBlank()) {
-	        	body.put("email", defaultEmail);
-	        	body.put("password", defaultPass);
-	        }
+	public ResponseEntity<?> login(@RequestBody SignUpRequest request) {
 
-	        // Headers
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.setContentType(MediaType.APPLICATION_JSON);
-	        headers.set("apikey", supabaseKey);
+		UserDetails user = userService.findByUsername(request.getUsername());
+		if (user == null) {
+			System.out.println("HERE");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+		}
 
-	        HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
+		if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+		}
 
-	        // Call Supabase Auth login
-	        String url = supabaseUrl + "/auth/v1/token?grant_type=password";
-	        RestTemplate restTemplate = new RestTemplate();
-	        ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+		String token = jwtService.generateToken(user.getId().toString(), user.getUsername());
 
-	        return ResponseEntity.ok(response.getBody());
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
-	    }
+		return ResponseEntity
+				.ok(Map.of("userId", user.getId().toString(), "username", user.getUsername(), "accessToken", token));
 	}
 
 }

@@ -6,6 +6,7 @@ import com.trainSync.user.repository.UserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -28,4 +29,19 @@ public class UserService {
         user.setEmail(email);
         return userDetailsRepository.save(user);
     }
+
+	public boolean existsByUsername(String username) {
+		return userDetailsRepository.existsByUsername(username);
+	}
+
+	public UserDetails saveUser(UserDetails user) {
+		userDetailsRepository.save(user);
+		return user;
+	}
+
+	public UserDetails findByUsername(String username) {
+		UserDetails user = userDetailsRepository.findByUsername(username);
+		return user;
+		
+	}
 }
