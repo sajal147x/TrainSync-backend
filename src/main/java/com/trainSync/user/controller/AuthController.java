@@ -54,11 +54,12 @@ public class AuthController {
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Already Exists");
 	    }
 
-	    UserDetails user = new UserDetails();
-	    user.setUsername(request.getUsername());
-	    user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-	    user.setName(request.getName());
-	    user.setAge(request.getAge());
+	    UserDetails user = UserDetails.builder()
+                .username(request.getUsername())
+                .age(request.getAge())
+                .name(request.getName())
+                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .build();
 
 	    user = userService.saveUser(user);
 
@@ -85,7 +86,6 @@ public class AuthController {
 
 		UserDetails user = userService.findByUsername(request.getUsername());
 		if (user == null) {
-			System.out.println("HERE");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
 		}
 

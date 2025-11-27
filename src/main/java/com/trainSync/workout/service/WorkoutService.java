@@ -135,10 +135,11 @@ public class WorkoutService {
 	 * @return
 	 */
 	private Workout createWorkout(String name, OffsetDateTime time, UUID userId) {
-		Workout workout = new Workout();
-		workout.setName(name);
-		workout.setStartTime(time);
-		workout.setUserId(userId);
+		Workout workout = Workout.builder()
+                .name(name)
+                .startTime(time)
+                .userId(userId)
+                .build();
 		workoutRepository.save(workout);
 		return workout;
 	}
@@ -151,21 +152,23 @@ public class WorkoutService {
 	 * @return
 	 */
 	private Exercise createExercise(ExerciseLibrary exerciseLib, Workout workout, int exerciseOrder) {
-		Exercise exercise = new Exercise();
-		exercise.setWorkout(workout);
-		exercise.setExerciseLibrary(exerciseLib);
-		exercise.setName(exerciseLib.getName());
-		exercise.setExerciseOrder(exerciseOrder);
+		Exercise exercise = Exercise.builder()
+                .workout(workout)
+                .exerciseOrder(exerciseOrder)
+                .exerciseLibrary(exerciseLib)
+                .name(exerciseLib.getName())
+                .build();
 
 		return exerciseRepository.save(exercise);
 	}
-	
-	/**
-	 * @param exercise 
-	 * @param id
-	 * @param userId
-	 * @return
-	 */
+
+    /**
+     *
+     * @param lastExerciseForUser
+     * @param exercise
+     * @param exerciseLibId
+     * @param userId
+     */
 	private void createSetsBasedOnLastWorkoutForExercise(Exercise lastExerciseForUser, Exercise exercise,
 			UUID exerciseLibId, UUID userId) {
 		if (lastExerciseForUser == null) {

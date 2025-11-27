@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 @Setter
 @Getter
+@Builder
 @Entity
 @Table(name = "user_details")
 public class UserDetails {

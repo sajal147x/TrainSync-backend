@@ -175,6 +175,7 @@ public class WorkoutController {
 			}
             convertExerciseSetToDto(exercise, exerciseDto);
 
+
             return ResponseEntity.ok(exerciseDto);
 		} catch (Exception e) {
 			e.printStackTrace();

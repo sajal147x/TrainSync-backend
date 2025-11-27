@@ -105,15 +105,14 @@ public class ExerciseLibraryController {
 
 		return dtoPage;
 	}
-	
-	
-	
-	
 
-	/**
-	 * @param exercises
-	 * @return
-	 */
+
+    /**
+     *
+     * @param exercises
+     * @param equipmentTagUuid
+     * @return
+     */
 	private List<ExerciseDto> convertExerciseToDto(Page<ExerciseLibrary> exercises, UUID equipmentTagUuid) {
 		List<ExerciseDto> dtoList = new ArrayList<>();
 
