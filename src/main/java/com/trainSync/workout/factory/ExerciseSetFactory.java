@@ -5,9 +5,7 @@ package com.trainSync.workout.factory;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trainSync.preMadeWorkout.model.PreMadeWorkoutExercise;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkoutSet;
-import com.trainSync.workout.ExerciseSetSource;
 import com.trainSync.workout.model.Exercise;
 import com.trainSync.workout.model.ExerciseSet;
 
@@ -21,26 +19,6 @@ public class ExerciseSetFactory {
 		return null;
 	}
 	
-	/**
-	 * 
-	 * @param source
-	 * @return
-	 */
-	public List<ExerciseSet> createExerciseSets(ExerciseSetSource source, Exercise lastExerciseForUser, Exercise exercise, List<PreMadeWorkoutSet> preMadeSets) {
-		switch (source) {
-		case FROM_LAST_EXERCISE:
-			return createSetsFromExistingExercise(lastExerciseForUser, exercise);
-			
-		case FROM_PRE_MADE_EXERCISE:
-			return createSetsFromPreMadeExercise(exercise, preMadeSets);
-			
-		default:
-			return new ArrayList<>();
-			
-		}
-		
-		
-	}
 
 	/**
 	 * 
@@ -48,7 +26,7 @@ public class ExerciseSetFactory {
 	 * @param preMadeWorkoutExercise
 	 * @return
 	 */
-	private List<ExerciseSet> createSetsFromPreMadeExercise(Exercise exercise,
+	public List<ExerciseSet> createSetsFromPreMadeExercise(Exercise exercise,
 			List<PreMadeWorkoutSet> preMadeSets) {
 		List<ExerciseSet> sets = new ArrayList<>();
 		for (var preMadeSet : preMadeSets) {
@@ -67,7 +45,7 @@ public class ExerciseSetFactory {
 	 * @param exercise
 	 * @return
 	 */
-	private List<ExerciseSet> createSetsFromExistingExercise(Exercise lastExerciseForUser, Exercise exercise) {
+	public List<ExerciseSet> createSetsFromExistingExercise(Exercise lastExerciseForUser, Exercise exercise) {
 
 		if (lastExerciseForUser == null) {
 			return new ArrayList<>();

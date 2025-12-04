@@ -1,12 +1,9 @@
 package com.trainSync.workout.service;
 
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -16,8 +13,6 @@ import com.trainSync.preMadeWorkout.model.PreMadeWorkout;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkoutExercise;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkoutSet;
 import com.trainSync.preMadeWorkout.repository.PreMadeWorkoutSetRepository;
-import com.trainSync.workout.ExerciseSetSource;
-import com.trainSync.workout.WorkoutSource;
 import com.trainSync.workout.dto.WorkoutDto;
 import com.trainSync.workout.factory.ExerciseFactory;
 import com.trainSync.workout.factory.ExerciseSetFactory;
@@ -66,8 +61,8 @@ public class WorkoutService {
 	public String createWorkout(WorkoutDto workoutDto, UUID userId) {
 		
 		// Create and save workout (factory pattern)
-		Workout workout = new WorkoutFactory().createWorkout(WorkoutSource.NEW_BLANK, workoutDto.getWorkoutName(),
-				userId, OffsetDateTime.now(), null, null);
+		Workout workout = new WorkoutFactory().createNewBlankWorkout(workoutDto.getWorkoutName(),
+				userId, OffsetDateTime.now());
 		
 		workoutRepository.save(workout);
 		
@@ -82,7 +77,7 @@ public class WorkoutService {
 		
 		
 		// ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
-		List<ExerciseSet> sets = new ExerciseSetFactory().createExerciseSets(ExerciseSetSource.FROM_LAST_EXERCISE, lastExerciseForUser, exercise, null);
+		List<ExerciseSet> sets = new ExerciseSetFactory().createSetsFromExistingExercise(lastExerciseForUser, exercise);
 		exercise.setSets(sets);
 		exerciseRepository.save(exercise);
 
@@ -107,8 +102,8 @@ public class WorkoutService {
 		Exercise exercise = new ExerciseFactory().createExercise(exerciseLib, workout, workoutDto.getExerciseOrder());
 		exerciseRepository.save(exercise);
 		// ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
-		List<ExerciseSet> sets = new ExerciseSetFactory().createExerciseSets(ExerciseSetSource.FROM_LAST_EXERCISE,
-				lastExerciseForUser, exercise, null);
+		List<ExerciseSet> sets = new ExerciseSetFactory().createSetsFromExistingExercise(
+				lastExerciseForUser, exercise);
 		exercise.setSets(sets);
 		exerciseRepository.save(exercise);
 
@@ -123,8 +118,8 @@ public class WorkoutService {
 	public String createWorkoutUsingPreMade(PreMadeWorkout preMade, List<PreMadeWorkoutExercise> preMadeExercises,
 			UUID userId) {
 		
-		Workout workout = new WorkoutFactory().createWorkout(WorkoutSource.FROM_PRE_MADE, preMade.getName(),
-				userId, OffsetDateTime.now(), preMade, null);
+		Workout workout = new WorkoutFactory().createWorkoutFromPreMade( preMade.getName(),
+				userId, OffsetDateTime.now(), preMade);
 		workoutRepository.save(workout);
 		
 		// Excercises
@@ -139,7 +134,7 @@ public class WorkoutService {
 			List<PreMadeWorkoutSet> preMadeSets = preMadeWorkoutSetRepository
 					.findByPreMadeWorkoutExerciseId(preMadeExercise.getId());
 			
-			List<ExerciseSet> sets = new ExerciseSetFactory().createExerciseSets(ExerciseSetSource.FROM_PRE_MADE_EXERCISE, null, exercise, preMadeSets);
+			List<ExerciseSet> sets = new ExerciseSetFactory().createSetsFromPreMadeExercise( exercise, preMadeSets);
 			
 			exercise.setSets(sets);
 			exerciseRepository.save(exercise);
