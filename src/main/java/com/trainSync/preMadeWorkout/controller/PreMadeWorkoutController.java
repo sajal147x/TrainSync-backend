@@ -130,7 +130,7 @@ public class PreMadeWorkoutController {
 			String userIdStr = jwtService.extractUserId(token); // validate JWT and extract Supabase UUID
 			UUID userId = UUID.fromString(userIdStr);
 			System.out.println(" ID " + dto.getPreMadeWorkoutId());
-			String result = preMadeWorkoutService.createWorkoutWithPreMadeWorkout(userId, dto.getPreMadeWorkoutId(), dto.getEquipmentId());
+			String result = preMadeWorkoutService.createWorkoutWithPreMadeWorkout(userId, dto);
 			System.out.println(result);
 			return ResponseEntity.ok(result);
 		} catch (Exception e) {

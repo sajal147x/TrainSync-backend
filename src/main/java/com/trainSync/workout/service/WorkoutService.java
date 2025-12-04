@@ -16,7 +16,12 @@ import com.trainSync.preMadeWorkout.model.PreMadeWorkout;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkoutExercise;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkoutSet;
 import com.trainSync.preMadeWorkout.repository.PreMadeWorkoutSetRepository;
+import com.trainSync.workout.ExerciseSetSource;
+import com.trainSync.workout.WorkoutSource;
 import com.trainSync.workout.dto.WorkoutDto;
+import com.trainSync.workout.factory.ExerciseFactory;
+import com.trainSync.workout.factory.ExerciseSetFactory;
+import com.trainSync.workout.factory.WorkoutFactory;
 import com.trainSync.workout.model.Exercise;
 import com.trainSync.workout.model.ExerciseLibrary;
 import com.trainSync.workout.model.ExerciseSet;
@@ -37,7 +42,6 @@ public class WorkoutService {
 	private final ExerciseRepository exerciseRepository;
 	private final ExerciseLibraryRepository exerciseLibraryRepository;
 	private final PreMadeWorkoutSetRepository preMadeWorkoutSetRepository;
-	private final ExerciseSetRepository exerciseSetRepository;
 	
 	
 	WorkoutService(WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository,
@@ -48,7 +52,6 @@ public class WorkoutService {
 		this.exerciseRepository = exerciseRepository;
 		this.exerciseLibraryRepository = exerciseLibraryRepository;
 		this.preMadeWorkoutSetRepository = preMadeWorkoutSetRepository;
-		this.exerciseSetRepository = exerciseSetRepository;
 	}
 	
 
@@ -61,23 +64,27 @@ public class WorkoutService {
 	 * @return
 	 */
 	public String createWorkout(WorkoutDto workoutDto, UUID userId) {
-		// Convert date string to LocalDateTime
-		OffsetDateTime dateTime = OffsetDateTime.parse(workoutDto.getWorkoutDate(),
-				DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 		
-		// Create and save workout
-		Workout workout = createWorkout(workoutDto.getWorkoutName(), dateTime, userId);
-
+		// Create and save workout (factory pattern)
+		Workout workout = new WorkoutFactory().createWorkout(WorkoutSource.NEW_BLANK, workoutDto.getWorkoutName(),
+				userId, OffsetDateTime.now(), null, null);
+		
+		workoutRepository.save(workout);
+		
 		// Create and save exercise linked to workout
 		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(workoutDto.getExerciseId()))
 				.get();
 
 		Exercise lastExerciseForUser = exerciseRepository.findLatestExerciseForUser(userId, exerciseLib.getId());
 
-		Exercise exercise = createExercise(exerciseLib, workout, 1); //exercise order will always be 1 for new workouts
-		// ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
+		Exercise exercise = new ExerciseFactory().createExercise(exerciseLib, workout, 1); //order is always 1 for new workouts
+		exerciseRepository.save(exercise);
 		
-		createSetsBasedOnLastWorkoutForExercise(lastExerciseForUser, exercise);
+		
+		// ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
+		List<ExerciseSet> sets = new ExerciseSetFactory().createExerciseSets(ExerciseSetSource.FROM_LAST_EXERCISE, lastExerciseForUser, exercise, null);
+		exercise.setSets(sets);
+		exerciseRepository.save(exercise);
 
 		return workout.getId().toString();
 	}
@@ -96,9 +103,15 @@ public class WorkoutService {
 		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(workoutDto.getExerciseId()))
 				.get();
 		Exercise lastExerciseForUser = exerciseRepository.findLatestExerciseForUser(userId, exerciseLib.getId());
-		Exercise exercise = createExercise(exerciseLib, workout, workoutDto.getExerciseOrder());
+
+		Exercise exercise = new ExerciseFactory().createExercise(exerciseLib, workout, workoutDto.getExerciseOrder());
+		exerciseRepository.save(exercise);
 		// ADD SETS FROM LAST TIME THIS EXERCISE WAS DONE
-		createSetsBasedOnLastWorkoutForExercise(lastExerciseForUser, exercise);
+		List<ExerciseSet> sets = new ExerciseSetFactory().createExerciseSets(ExerciseSetSource.FROM_LAST_EXERCISE,
+				lastExerciseForUser, exercise, null);
+		exercise.setSets(sets);
+		exerciseRepository.save(exercise);
+
 		return workout.getId().toString();
 	}
 
@@ -109,23 +122,25 @@ public class WorkoutService {
 	 */
 	public String createWorkoutUsingPreMade(PreMadeWorkout preMade, List<PreMadeWorkoutExercise> preMadeExercises,
 			UUID userId) {
-		OffsetDateTime dateTime = OffsetDateTime.now();
-		Workout workout = createWorkout(preMade.getName(), dateTime, userId);
+		
+		Workout workout = new WorkoutFactory().createWorkout(WorkoutSource.FROM_PRE_MADE, preMade.getName(),
+				userId, OffsetDateTime.now(), preMade, null);
+		workoutRepository.save(workout);
+		
 		// Excercises
 		for (PreMadeWorkoutExercise preMadeExercise : preMadeExercises) {
 			ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(preMadeExercise.getExercise().getId())
 					.get();
-			Exercise exercise = createExercise(exerciseLib, workout, preMadeExercise.getExerciseOrder());
+			
+			Exercise exercise = new ExerciseFactory().createExercise(exerciseLib, workout, preMadeExercise.getExerciseOrder());
+			exerciseRepository.save(exercise);
+			
 			// SETS
 			List<PreMadeWorkoutSet> preMadeSets = preMadeWorkoutSetRepository
 					.findByPreMadeWorkoutExerciseId(preMadeExercise.getId());
-			List<ExerciseSet> sets = new ArrayList<>();
-			for (var preMadeSet : preMadeSets) {
-				ExerciseSet set = new ExerciseSet();
-				set.setSetNumber(preMadeSet.getSetNumber());
-				set.setExercise(exercise);
-				sets.add(set);
-			}
+			
+			List<ExerciseSet> sets = new ExerciseSetFactory().createExerciseSets(ExerciseSetSource.FROM_PRE_MADE_EXERCISE, null, exercise, preMadeSets);
+			
 			exercise.setSets(sets);
 			exerciseRepository.save(exercise);
 		}
@@ -133,71 +148,8 @@ public class WorkoutService {
 		return workout.getId().toString();
 	}
 	
-	/**
-	 * 
-	 * @param name
-	 * @param time
-	 * @param userId
-	 * @return
-	 */
-	private Workout createWorkout(String name, OffsetDateTime time, UUID userId) {
-		Workout workout = Workout.builder()
-                .name(name)
-                .startTime(time)
-                .userId(userId)
-                .build();
-		workoutRepository.save(workout);
-		return workout;
-	}
-	
-	/**
-	 * 
-	 * @param exerciseLib
-	 * @param workout
-	 * @param exerciseOrder 
-	 * @return
-	 */
-	private Exercise createExercise(ExerciseLibrary exerciseLib, Workout workout, int exerciseOrder) {
-		Exercise exercise = Exercise.builder()
-                .workout(workout)
-                .exerciseOrder(exerciseOrder)
-                .exerciseLibrary(exerciseLib)
-                .name(exerciseLib.getName())
-                .build();
 
-		return exerciseRepository.save(exercise);
-	}
 
-    /**
-     *
-     * @param lastExerciseForUser
-     * @param exercise
-     * @param exerciseLibId
-     * @param userId
-     */
-	private void createSetsBasedOnLastWorkoutForExercise(Exercise lastExerciseForUser, Exercise exercise) {
-		if (lastExerciseForUser == null) {
-			return;
-		}
-		List<ExerciseSet> setsFromLast = lastExerciseForUser.getSets();
-		List<ExerciseSet> setsToSave = new ArrayList<>();
-		if (setsFromLast == null || setsFromLast.isEmpty()) {
-			return;
-		}
-		for (var set : setsFromLast) {
-			ExerciseSet newSet = new ExerciseSet();
-			newSet.setSetNumber(set.getSetNumber());
-			newSet.setExercise(exercise);
-			newSet.setWeight(set.getWeight());
-			newSet.setReps(set.getReps());
-			setsToSave.add(newSet);
-			exercise.setPreFilledFromLastWorkoutFlag("YES");
-			exercise.setPreFilledWorkout(lastExerciseForUser.getWorkout());
-		}
-		exerciseRepository.save(exercise);
-		exerciseSetRepository.saveAll(setsToSave);
-	}
-	
 	
 	public static void main(String[] args) {
 		ApplicationContext ctx = SpringApplication.run(TrainSyncApplication.class, args);
