@@ -23,8 +23,6 @@ import com.trainSync.preMadeWorkout.model.PreMadeWorkoutExercise;
 import com.trainSync.preMadeWorkout.service.PreMadeWorkoutService;
 import com.trainSync.service.JwtService;
 import com.trainSync.workout.dto.ChangeExerciseDto;
-import com.trainSync.workout.model.Exercise;
-import com.trainSync.workout.model.ExerciseLibrary;
 
 /**
  * Author: Sajal Gupta Date: Nov 18, 2025
