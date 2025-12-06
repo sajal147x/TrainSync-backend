@@ -30,24 +30,28 @@ import com.trainSync.workout.service.WorkoutService;
 @Service
 public class PreMadeWorkoutService {
 
-	@Autowired
-	PreMadeWorkoutRepository preMadeWorkoutRepository;
+	private final PreMadeWorkoutRepository preMadeWorkoutRepository;
 
-	@Autowired
-	ExerciseLibraryRepository exerciseLibraryRepository;
+	private final ExerciseLibraryRepository exerciseLibraryRepository;
 
-	@Autowired
-	PreMadeWorkoutExerciseRepository preMadeWorkoutExerciseRepository;
+	private final PreMadeWorkoutExerciseRepository preMadeWorkoutExerciseRepository;
 
-	@Autowired
-	EquipmentTagRepository equipmentTagRepository;
 	
-	@Autowired
-	PreMadeWorkoutSetRepository preMadeWorkoutSetRepository;
+	private final PreMadeWorkoutSetRepository preMadeWorkoutSetRepository;
 	
-	@Autowired
-	WorkoutService workoutService;
+	private final WorkoutService workoutService;
 
+	PreMadeWorkoutService(PreMadeWorkoutRepository preMadeWorkoutRepository,
+			ExerciseLibraryRepository exerciseLibraryRepository,
+			PreMadeWorkoutExerciseRepository preMadeWorkoutExerciseRepository,
+			PreMadeWorkoutSetRepository preMadeWorkoutSetRepository,
+			WorkoutService workoutService) {
+		this.preMadeWorkoutRepository = preMadeWorkoutRepository;
+		this.exerciseLibraryRepository = exerciseLibraryRepository;
+		this.preMadeWorkoutExerciseRepository = preMadeWorkoutExerciseRepository;
+		this.preMadeWorkoutSetRepository = preMadeWorkoutSetRepository;
+		this.workoutService = workoutService;
+	}
 	/**
 	 * @param dto
 	 * @param userId

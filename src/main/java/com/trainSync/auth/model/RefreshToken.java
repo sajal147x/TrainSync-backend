@@ -3,6 +3,7 @@ package com.trainSync.auth.model;
 
 
 import java.util.Date;
+import java.util.UUID;
 
 import com.trainSync.user.model.UserDetails;
 
@@ -13,8 +14,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -26,11 +29,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RefreshToken {
 	
 	@GeneratedValue
 	@Id
-	private String id;
+	private UUID id;
 	
 	@Column
 	private String token;
