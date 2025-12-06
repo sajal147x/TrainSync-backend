@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trainSync.preMadeWorkout.dto.ConvertWorkoutToPreMadeDto;
 import com.trainSync.preMadeWorkout.dto.PreMadeWorkoutDto;
 import com.trainSync.preMadeWorkout.dto.PreMadeWorkoutExerciseFetchDto;
 import com.trainSync.preMadeWorkout.dto.PreMadeWorkoutFetchDto;
@@ -136,18 +137,36 @@ public class PreMadeWorkoutController {
 			return ResponseEntity.status(500).body("Failed to create workout");
 		}
 	}
-	
+
 	// delete an existing set
-			@PostMapping("/switch-exercise-in-pre-made")
-			public ResponseEntity<?> changeExerciseInWorkout(@RequestBody ChangeExerciseDto dto) {
-				try {
-					preMadeWorkoutService.changeExerciseInPreMadeWorkout(dto.getNewExerciseLibraryId(), dto.getPreMadeExerciseId());
-					
-					return ResponseEntity.ok(200);
-				} catch (Exception e) {
-					e.printStackTrace();
-					return ResponseEntity.status(500).body("Failed to update set");
-				}
-			}
+	@PostMapping("/switch-exercise-in-pre-made")
+	public ResponseEntity<?> changeExerciseInWorkout(@RequestBody ChangeExerciseDto dto) {
+		try {
+			preMadeWorkoutService.changeExerciseInPreMadeWorkout(dto.getNewExerciseLibraryId(),
+					dto.getPreMadeExerciseId());
+
+			return ResponseEntity.ok(200);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body("Failed to update set");
+		}
+	}
+	
+	
+	@PostMapping("/createPreMadeWorkoutFromExistingWorkout")
+	public ResponseEntity<String> createWorkout(@RequestHeader("Authorization") String authHeader,
+			@RequestBody ConvertWorkoutToPreMadeDto dto) {
+		try {
+			String token = authHeader.replace("Bearer ", "");
+			String userIdStr = jwtService.extractUserId(token); // validate JWT and extract Supabase UUID
+			UUID userId = UUID.fromString(userIdStr);
+			String result = preMadeWorkoutService.createPreMadeWorkoutFromExistingWorkout(dto.getWorkoutId(), dto.getName(), userId);
+			System.out.println(result);
+			return ResponseEntity.ok(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body("Failed to create workout");
+		}
+	}
 
 }

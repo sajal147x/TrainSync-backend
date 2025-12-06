@@ -143,6 +143,15 @@ public class WorkoutService {
 		return workout.getId().toString();
 	}
 	
+	
+	/**
+	 * 
+	 * @param workoutId
+	 * @return
+	 */
+	public Workout fetchWorkout(UUID workoutId) {
+		return workoutRepository.findById(workoutId).get();
+	}
 
 
 	

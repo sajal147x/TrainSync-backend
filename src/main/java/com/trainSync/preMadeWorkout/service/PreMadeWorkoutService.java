@@ -1,25 +1,26 @@
 
 package com.trainSync.preMadeWorkout.service;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.trainSync.preMadeWorkout.dto.PreMadeWorkoutDto;
 import com.trainSync.preMadeWorkout.dto.PreMadeWorkoutFetchDto;
 import com.trainSync.preMadeWorkout.dto.PreMadeWorkoutSetFetchDto;
+import com.trainSync.preMadeWorkout.factory.PreMadeWorkoutExerciseFactory;
+import com.trainSync.preMadeWorkout.factory.PreMadeWorkoutFactory;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkout;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkoutExercise;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkoutSet;
 import com.trainSync.preMadeWorkout.repository.PreMadeWorkoutExerciseRepository;
 import com.trainSync.preMadeWorkout.repository.PreMadeWorkoutRepository;
 import com.trainSync.preMadeWorkout.repository.PreMadeWorkoutSetRepository;
+import com.trainSync.workout.model.Exercise;
 import com.trainSync.workout.model.ExerciseLibrary;
-import com.trainSync.workout.respository.EquipmentTagRepository;
+import com.trainSync.workout.model.Workout;
 import com.trainSync.workout.respository.ExerciseLibraryRepository;
 import com.trainSync.workout.service.WorkoutService;
 
@@ -59,18 +60,13 @@ public class PreMadeWorkoutService {
 	 */
 	public String createPreMadeWorkout(PreMadeWorkoutDto dto, UUID userId) {
 		// Create and save workout
-		PreMadeWorkout workout = new PreMadeWorkout();
-		workout.setName(dto.getName());
-		workout.setUserId(userId);
-		workout.setCreatedAt(OffsetDateTime.now());
+		PreMadeWorkout workout = new PreMadeWorkoutFactory().createPreMadeWorkout(dto.getName(), userId);
 		preMadeWorkoutRepository.save(workout);
 
 		// Create and save exercise linked to workout
-		PreMadeWorkoutExercise exercise = new PreMadeWorkoutExercise();
-		exercise.setPreMadeWorkout(workout);
-		exercise.setExerciseOrder(1); //exercise order will be 1 for new pre made workouts
 		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(dto.getExerciseId())).get();
-		exercise.setExercise(exerciseLib);
+		
+		PreMadeWorkoutExercise exercise = new PreMadeWorkoutExerciseFactory().createPreMadeWorkoutExercise(workout, 1, exerciseLib);
 
 		preMadeWorkoutExerciseRepository.save(exercise);
 
@@ -119,11 +115,9 @@ public class PreMadeWorkoutService {
 	 * @return
 	 */
 	public String addExerciseToWorkout(String preMadeWorkoutId, String exerciseId, String equipmentId, int exerciseOrder) {
-		PreMadeWorkoutExercise exercise = new PreMadeWorkoutExercise();
-		exercise.setPreMadeWorkout(preMadeWorkoutRepository.findById(UUID.fromString(preMadeWorkoutId)).get());
-		exercise.setExerciseOrder(exerciseOrder);
+		PreMadeWorkout workout = preMadeWorkoutRepository.findById(UUID.fromString(preMadeWorkoutId)).get();
 		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(exerciseId)).get();
-		exercise.setExercise(exerciseLib);
+		PreMadeWorkoutExercise exercise = new PreMadeWorkoutExerciseFactory().createPreMadeWorkoutExercise(workout, exerciseOrder, exerciseLib);
 		preMadeWorkoutExerciseRepository.save(exercise);
 		return preMadeWorkoutId;
 	}
@@ -168,6 +162,27 @@ public class PreMadeWorkoutService {
 		ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(UUID.fromString(newExerciseLibraryId)).get();
 		exercise.setExercise(exerciseLib);
 		preMadeWorkoutExerciseRepository.save(exercise);
+		
+	}
+	
+	/**
+	 * 
+	 * @param workoutId
+	 * @param userId
+	 * @return
+	 */
+	public String createPreMadeWorkoutFromExistingWorkout(String workoutId,String name, UUID userId) {
+		Workout workout = workoutService.fetchWorkout(UUID.fromString(workoutId));
+		PreMadeWorkout preMadeWorkout = new PreMadeWorkoutFactory().createPreMadeWorkout(name, userId);
+		preMadeWorkoutRepository.save(preMadeWorkout);
+		List<PreMadeWorkoutExercise> preMadeExercises = new ArrayList<PreMadeWorkoutExercise>();
+		for(Exercise exercise : workout.getExercises()) {
+			PreMadeWorkoutExercise preMadeWorkoutExercise = new PreMadeWorkoutExerciseFactory().createPreMadeWorkoutExercise(preMadeWorkout, exercise.getExerciseOrder(), exercise.getExerciseLibrary());
+			preMadeExercises.add(preMadeWorkoutExercise);
+		}
+		preMadeWorkoutExerciseRepository.saveAll(preMadeExercises);
+		
+		return preMadeWorkout.getId().toString();
 		
 	}
 
