@@ -5,6 +5,8 @@ import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,18 +20,35 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler(UnauthorizedException.class)
+    private static final Logger log =
+            LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ApiError> handleUnauthorized(UnauthorizedException ex) {
+
+        log.error("Unauthorized access: {}", ex.getMessage());
+
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(new ApiError("UNAUTHORIZED", ex.getMessage(), OffsetDateTime.now()));
+                .body(new ApiError(
+                        "UNAUTHORIZED",
+                        ex.getMessage(),
+                        OffsetDateTime.now()
+                ));
     }
-	
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiError> handleBadRequest(IllegalArgumentException ex) {
+
+        log.warn("Bad request: {}", ex.getMessage());
+
         return ResponseEntity
                 .badRequest()
-                .body(new ApiError("BAD_REQUEST", ex.getMessage(), OffsetDateTime.now()));
+                .body(new ApiError(
+                        "BAD_REQUEST",
+                        ex.getMessage(),
+                        OffsetDateTime.now()
+                ));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -42,19 +61,31 @@ public class GlobalExceptionHandler {
           .forEach(error ->
               fieldErrors.put(error.getField(), error.getDefaultMessage())
           );
+
+        log.warn("Validation failed: {}", fieldErrors);
+
         ApiError apiError = new ApiError(
                 "VALIDATION_ERROR",
                 "Validation failed",
                 fieldErrors,
                 OffsetDateTime.now()
         );
+
         return ResponseEntity.badRequest().body(apiError);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(Exception ex) {
+
+        // Always log stack trace for 500s
+        log.error("Unhandled exception occurred", ex);
+
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiError("INTERNAL_ERROR", "Something went wrong", OffsetDateTime.now()));
+                .body(new ApiError(
+                        "INTERNAL_ERROR",
+                        "Something went wrong",
+                        OffsetDateTime.now()
+                ));
     }
 }
