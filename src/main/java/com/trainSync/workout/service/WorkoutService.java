@@ -118,24 +118,24 @@ public class WorkoutService {
 	public String createWorkoutUsingPreMade(PreMadeWorkout preMade, List<PreMadeWorkoutExercise> preMadeExercises,
 			UUID userId) {
 		
+		//Create Workout
 		Workout workout = new WorkoutFactory().createWorkoutFromPreMade( preMade.getName(),
 				userId, OffsetDateTime.now(), preMade);
 		workoutRepository.save(workout);
 		
-		// Excercises
+		// Create Exercises
 		for (PreMadeWorkoutExercise preMadeExercise : preMadeExercises) {
 			ExerciseLibrary exerciseLib = exerciseLibraryRepository.findById(preMadeExercise.getExercise().getId())
 					.get();
 			
+			Exercise lastExerciseForUser = exerciseRepository.findLatestExerciseForUser(userId, exerciseLib.getId());
+			
 			Exercise exercise = new ExerciseFactory().createExercise(exerciseLib, workout, preMadeExercise.getExerciseOrder());
 			exerciseRepository.save(exercise);
 			
-			// SETS
-			List<PreMadeWorkoutSet> preMadeSets = preMadeWorkoutSetRepository
-					.findByPreMadeWorkoutExerciseId(preMadeExercise.getId());
-			
-			List<ExerciseSet> sets = new ExerciseSetFactory().createSetsFromPreMadeExercise( exercise, preMadeSets);
-			
+			// Create Sets from previous iteration of the exercise
+			List<ExerciseSet> sets = new ExerciseSetFactory().createSetsFromExistingExercise(
+					lastExerciseForUser, exercise);
 			exercise.setSets(sets);
 			exerciseRepository.save(exercise);
 		}
