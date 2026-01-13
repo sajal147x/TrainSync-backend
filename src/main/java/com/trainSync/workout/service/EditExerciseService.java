@@ -1,5 +1,6 @@
 package com.trainSync.workout.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,10 @@ import com.trainSync.workout.respository.ExerciseSetRepository;
 @Service
 public class EditExerciseService {
 
-	@Autowired
-    private ExerciseRepository exerciseRepository;
-	@Autowired
-    private ExerciseSetRepository exerciseSetRepository;
+	
+    private final ExerciseRepository exerciseRepository;
+	
+    private final ExerciseSetRepository exerciseSetRepository;
 
     public EditExerciseService(
             ExerciseRepository exerciseRepository,
@@ -66,4 +67,19 @@ public class EditExerciseService {
 
         exerciseSetRepository.save(set);
     }
+    
+    /**
+     * 1. delete sets if exist
+     * 2. delete exercise
+     * @param fromString
+     */
+	public void deleteExerciseInWorkout(UUID exerciseId) {
+		Exercise exercise = exerciseRepository.findById(exerciseId).get();
+		List<ExerciseSet> sets = exercise.getSets();
+		if (sets != null && !sets.isEmpty()) {
+			exerciseSetRepository.deleteAll(sets);
+		}
+		exerciseRepository.delete(exercise);
+		
+	}
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trainSync.workout.dto.ChangeExerciseDto;
+import com.trainSync.workout.dto.DeleteExerciseInWorkoutRequest;
 import com.trainSync.workout.dto.DeleteSetDto;
 import com.trainSync.workout.dto.EditExerciseDto;
 import com.trainSync.workout.model.Exercise;
@@ -82,20 +83,38 @@ public class EditExerciseController {
 		}
 	}
 	
-	// delete an existing set
-		@PostMapping("/change-exercise-in-workout")
-		public ResponseEntity<?> changeExerciseInWorkout(@RequestBody ChangeExerciseDto dto) {
-			try {
-				
-				Exercise exercise = exerciseRepository.findById(UUID.fromString(dto.getExerciseId())).get();
-				ExerciseLibrary exerciseLibrary = exerciseLibraryRepository.findById(UUID.fromString(dto.getNewExerciseLibraryId())).get();
-				exercise.setExerciseLibrary(exerciseLibrary);
-				exerciseRepository.save(exercise);
-				
-				return ResponseEntity.ok(200);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return ResponseEntity.status(500).body("Failed to update set");
-			}
+	/**
+	 * 
+	 * @param dto
+	 * @return
+	 */
+	@PostMapping("/change-exercise-in-workout")
+	public ResponseEntity<?> changeExerciseInWorkout(@RequestBody ChangeExerciseDto dto) {
+		try {
+
+			Exercise exercise = exerciseRepository.findById(UUID.fromString(dto.getExerciseId())).get();
+			ExerciseLibrary exerciseLibrary = exerciseLibraryRepository
+					.findById(UUID.fromString(dto.getNewExerciseLibraryId())).get();
+			exercise.setExerciseLibrary(exerciseLibrary);
+			exerciseRepository.save(exercise);
+
+			return ResponseEntity.ok(200);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body("Failed to update set");
 		}
+	}
+	
+	/**
+	 * 
+	 * @param dto
+	 * @return
+	 */
+	@PostMapping("/delete-exercise-in-workout")
+	public ResponseEntity<Integer> deleteExerciseInWorkout(@RequestBody DeleteExerciseInWorkoutRequest request) {
+			editExerciseService.deleteExerciseInWorkout(UUID.fromString(request.getExerciseId()));
+
+			return ResponseEntity.ok(200);
+		
+	}
 }
