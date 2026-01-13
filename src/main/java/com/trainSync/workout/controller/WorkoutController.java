@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trainSync.config.exception.UnauthorizedException;
 import com.trainSync.service.JwtService;
 import com.trainSync.workout.dto.ExerciseDto;
 import com.trainSync.workout.dto.SetDto;
@@ -47,16 +48,17 @@ public class WorkoutController {
 	@PostMapping("/create-workout")
 	public ResponseEntity<String> createWorkout(@RequestHeader("Authorization") String authHeader,
 			@RequestBody WorkoutDto workoutDto) {
-		try {
+			
+			if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+				throw new UnauthorizedException("Missing or invalid Authorization header");
+			}
+			
 			String token = authHeader.replace("Bearer ", "");
 			String userIdStr = jwtService.extractUserId(token); // validate JWT and extract Supabase UUID
 			UUID userId = UUID.fromString(userIdStr);
 			String result = workoutService.createWorkout(workoutDto, userId);
 			return ResponseEntity.ok(result);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(500).body("Failed to create workout");
-		}
+		
 	}
 	
 	
