@@ -1,9 +1,11 @@
 
 package com.trainSync.community.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trainSync.community.dto.FriendGroupCreateDto;
+import com.trainSync.community.dto.FriendGroupSummaryDto;
 import com.trainSync.community.service.FriendGroupService;
 import com.trainSync.config.exception.UnauthorizedException;
 import com.trainSync.service.JwtService;
@@ -57,5 +60,27 @@ public class FriendGroupController {
 		return ResponseEntity.ok(groupId);
 		
 	}
+	
+	
+	/**
+	 * 
+	 * @param authHeader
+	 * @return
+	 */
+	@GetMapping("/get-groups-for-user")
+	public ResponseEntity<List<FriendGroupSummaryDto>> getGroupsForUser(@RequestHeader("Authorization") String authHeader){
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+	        throw new UnauthorizedException("Missing or invalid Authorization header");
+	    }
+		
+		String token = authHeader.replace("Bearer ", "");
+		UUID userId = UUID.fromString(jwtService.extractUserId(token)); // validate JWT and extract Supabase UUID
+		
+		List<FriendGroupSummaryDto> groups = groupService.getGroupsForUser(userId);
+		
+		return ResponseEntity.ok(groups);
+		
+	}
+	
 
 }
