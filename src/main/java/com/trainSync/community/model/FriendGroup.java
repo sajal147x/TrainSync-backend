@@ -45,6 +45,9 @@ public class FriendGroup {
 	private UserDetails createdByUser;
 	
 	@Column
+	private String profilePictureUrl;
+	
+	@Column
 	private OffsetDateTime createdAt;
 	
 

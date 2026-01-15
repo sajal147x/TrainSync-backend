@@ -18,4 +18,7 @@ public interface FriendGroupMemberLinkRepository extends JpaRepository<FriendGro
 	
 	List<FriendGroupMemberLink> findByFriendGroupId(UUID groupId);
 
+
+	void deleteByFriendGroupIdAndGroupMember_IdIn(UUID groupUUID, List<UUID> userUUIDsToRemove);
+
 }

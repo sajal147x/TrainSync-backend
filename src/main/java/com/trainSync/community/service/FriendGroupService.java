@@ -13,10 +13,12 @@ import org.springframework.stereotype.Service;
 
 import com.trainSync.community.dto.FriendGroupSummaryDto;
 import com.trainSync.community.dto.GroupLeaderboardDto;
+import com.trainSync.community.dto.GroupMemberDto;
 import com.trainSync.community.model.FriendGroup;
 import com.trainSync.community.model.FriendGroupMemberLink;
 import com.trainSync.community.repository.FriendGroupMemberLinkRepository;
 import com.trainSync.community.repository.FriendGroupRepository;
+import com.trainSync.service.SupabaseStorageService;
 import com.trainSync.user.model.UserDetails;
 import com.trainSync.user.service.UserService;
 import com.trainSync.util.Constants;
@@ -38,12 +40,15 @@ public class FriendGroupService {
 	
 	private final WorkoutRepository workoutRepository;
 	
+	private final SupabaseStorageService storageService;
+	
 	FriendGroupService(UserService userService, FriendGroupRepository friendGroupRepository,
-			FriendGroupMemberLinkRepository friendGroupMemberLinkRepository, WorkoutRepository workoutRepository) {
+			FriendGroupMemberLinkRepository friendGroupMemberLinkRepository, WorkoutRepository workoutRepository, SupabaseStorageService storageService) {
 		this.userService = userService;
 		this.friendGroupRepository = friendGroupRepository;
 		this.friendGroupMemberLinkRepository = friendGroupMemberLinkRepository;
 		this.workoutRepository = workoutRepository;
+		this.storageService = storageService;
 	}
 
 	/**
@@ -109,6 +114,7 @@ public class FriendGroupService {
 			FriendGroupSummaryDto dto = FriendGroupSummaryDto.builder()
 					.groupId(group.getId().toString())
 					.groupName(group.getGroupName())
+					.profilePictureUrl(group.getProfilePictureUrl())
 					.build();
 					
 			groupSummaries.add(dto);
@@ -164,7 +170,59 @@ public class FriendGroupService {
 		return leaderboard;
 		
 	}
-	
+
+	/**
+	 * 
+	 * @param groupId
+	 * @return
+	 */
+	public List<GroupMemberDto> getGroupMembers(String groupId) {
+
+		UUID groupUUID = UUID.fromString(groupId);
+
+		// RETRIEVE GROUP MEMBERS
+		List<UserDetails> groupMembers = friendGroupMemberLinkRepository.findByFriendGroupId(groupUUID).stream()
+				.map(FriendGroupMemberLink::getGroupMember).toList();
+
+		// MAP TO DTO
+		List<GroupMemberDto> memberDtos = new ArrayList<>();
+		for (UserDetails member : groupMembers) {
+
+			GroupMemberDto dto = GroupMemberDto.builder().userId(member.getId().toString()).name(member.getName())
+					.profilePictureUrl(member.getProfilePictureUrl()).build();
+			memberDtos.add(dto);
+		}
+		return memberDtos;
+	}
+
+	/**
+	 * 
+	 * @param profilePictureBase64
+	 * @param toRemoveUserIds
+	 */
+	public void editGroup(String profilePictureBase64, List<String> toRemoveUserIds, String groupId) {
+		
+		UUID groupUUID = UUID.fromString(groupId);
+		
+		FriendGroup group = friendGroupRepository.findById(groupUUID).get();
+
+		// REMOVE GROUP MEMBERS IF NEEDED
+		if(toRemoveUserIds != null && !toRemoveUserIds.isEmpty()) {
+			List<UUID> userUUIDsToRemove = new ArrayList<>();
+			for(String userIdStr : toRemoveUserIds) {
+				userUUIDsToRemove.add(UUID.fromString(userIdStr));
+			}
+			friendGroupMemberLinkRepository.deleteByFriendGroupIdAndGroupMember_IdIn(groupUUID, userUUIDsToRemove);
+		}
+		
+		//UPDATE PROFILE PICTURE IF NEEDED
+		if(profilePictureBase64 != null && !profilePictureBase64.isEmpty()) {
+			 String fileName = groupId + ".png";
+	            String publicUrl = storageService.uploadBase64Image(profilePictureBase64, fileName, "profile-pictures");
+	            group.setProfilePictureUrl(publicUrl);
+		}
+		friendGroupRepository.save(group);
+	}
 	
 
 }

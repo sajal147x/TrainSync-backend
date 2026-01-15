@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trainSync.community.dto.EditGroupRequest;
 import com.trainSync.community.dto.FriendGroupCreateDto;
 import com.trainSync.community.dto.FriendGroupSummaryDto;
 import com.trainSync.community.dto.GroupLeaderboardDto;
+import com.trainSync.community.dto.GroupMemberDto;
 import com.trainSync.community.dto.GroupRequest;
 import com.trainSync.community.service.FriendGroupService;
 import com.trainSync.config.exception.UnauthorizedException;
@@ -101,7 +103,27 @@ public class FriendGroupController {
 		
 	}
 	
-	
+	@PostMapping("/get-group-members")
+	public ResponseEntity<List<GroupMemberDto>> editGroup(@RequestHeader("Authorization") String authHeader, @RequestBody GroupRequest groupRequest){
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+	        throw new UnauthorizedException("Missing or invalid Authorization header");
+	    }
+		List<GroupMemberDto> groupMembers = groupService.getGroupMembers(groupRequest.getGroupId());
+
+		return ResponseEntity.ok(groupMembers);
+		
+	}
+
+	@PostMapping("/edit-group")
+	public ResponseEntity<Integer> editGroup(@RequestHeader("Authorization") String authHeader, @RequestBody EditGroupRequest editGroupRequest){
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+	        throw new UnauthorizedException("Missing or invalid Authorization header");
+	    }
+		
+		groupService.editGroup(editGroupRequest.getProfilePictureBase64(), editGroupRequest.getToRemoveUserIds(), editGroupRequest.getGroupId());
+		return ResponseEntity.ok(200);
+
+	}
 	
 
 }
