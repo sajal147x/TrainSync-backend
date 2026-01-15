@@ -15,5 +15,7 @@ import com.trainSync.community.model.FriendGroupMemberLink;
 public interface FriendGroupMemberLinkRepository extends JpaRepository<FriendGroupMemberLink, UUID> {
 
 	List<FriendGroupMemberLink> findByGroupMemberId(UUID userId);
+	
+	List<FriendGroupMemberLink> findByFriendGroupId(UUID groupId);
 
 }

@@ -3,19 +3,24 @@ package com.trainSync.community.service;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.trainSync.community.dto.FriendGroupSummaryDto;
+import com.trainSync.community.dto.GroupLeaderboardDto;
 import com.trainSync.community.model.FriendGroup;
 import com.trainSync.community.model.FriendGroupMemberLink;
 import com.trainSync.community.repository.FriendGroupMemberLinkRepository;
 import com.trainSync.community.repository.FriendGroupRepository;
 import com.trainSync.user.model.UserDetails;
-import com.trainSync.user.repository.UserDetailsRepository;
 import com.trainSync.user.service.UserService;
+import com.trainSync.workout.dto.UserWorkoutCount;
+import com.trainSync.workout.respository.WorkoutRepository;
 
 /**
  * Author: Sajal Gupta
@@ -30,10 +35,14 @@ public class FriendGroupService {
 	
 	private final FriendGroupMemberLinkRepository friendGroupMemberLinkRepository;
 	
-	FriendGroupService(UserService userService, FriendGroupRepository friendGroupRepository, FriendGroupMemberLinkRepository friendGroupMemberLinkRepository) {
+	private final WorkoutRepository workoutRepository;
+	
+	FriendGroupService(UserService userService, FriendGroupRepository friendGroupRepository,
+			FriendGroupMemberLinkRepository friendGroupMemberLinkRepository, WorkoutRepository workoutRepository) {
 		this.userService = userService;
 		this.friendGroupRepository = friendGroupRepository;
 		this.friendGroupMemberLinkRepository = friendGroupMemberLinkRepository;
+		this.workoutRepository = workoutRepository;
 	}
 
 	/**
@@ -105,6 +114,53 @@ public class FriendGroupService {
 		}
 		
 		return groupSummaries;
+	}
+
+	/**
+	 * 1. retrieve group members
+	 * 2. compute weekly workouts for each member
+	 * 3. map to dto and sort
+	 * @param groupId
+	 * @return
+	 */
+	public List<GroupLeaderboardDto> computeAndGetGroupLeaderboard(String groupId) {
+		UUID groupUUID = UUID.fromString(groupId);
+		
+		// RETRIEVE GROUP MEMBERS
+		List<UserDetails> groupMembers = friendGroupMemberLinkRepository.findByFriendGroupId(groupUUID).stream()
+				.map(FriendGroupMemberLink::getGroupMember)
+				.toList();
+		
+		// COMPUTE WEEKLY STATS
+		List<UserWorkoutCount> userWorkoutCountsThisWeek = workoutRepository.countWorkoutsPerUserSince(
+				groupMembers.stream().map(UserDetails::getId).toList(),
+				OffsetDateTime.now().minusDays(7)
+		);
+		
+		//MAP FOR EFFECIENT LOOKUP
+		Map<UUID, Long> workoutCountByUserId = new HashMap<>();
+		for(UserWorkoutCount uwc : userWorkoutCountsThisWeek) {
+			workoutCountByUserId.put(uwc.getUserId(), (long) uwc.getWorkoutCount());
+		}
+		
+		// MAP TO DTO
+		List<GroupLeaderboardDto> leaderboard = new ArrayList<>();
+		for(UserDetails member : groupMembers) {
+			
+			GroupLeaderboardDto dto = GroupLeaderboardDto.builder()
+					.userId(member.getId().toString())
+					.name(member.getName())
+					.profilePictureUrl(member.getProfilePictureUrl())
+					.workoutsThisWeek(workoutCountByUserId.getOrDefault(member.getId(), 0L).intValue())
+					.build();
+			leaderboard.add(dto);
+		}
+		
+		// SORT BY WORKOUT COUNT DESCENDING
+		leaderboard.sort(Comparator.comparing(GroupLeaderboardDto::getWorkoutsThisWeek).reversed());
+		
+		return leaderboard;
+		
 	}
 
 }

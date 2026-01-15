@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trainSync.community.dto.FriendGroupCreateDto;
 import com.trainSync.community.dto.FriendGroupSummaryDto;
+import com.trainSync.community.dto.GroupLeaderboardDto;
+import com.trainSync.community.dto.GroupRequest;
 import com.trainSync.community.service.FriendGroupService;
 import com.trainSync.config.exception.UnauthorizedException;
 import com.trainSync.service.JwtService;
@@ -81,6 +84,24 @@ public class FriendGroupController {
 		return ResponseEntity.ok(groups);
 		
 	}
+	
+	/**
+	 * 
+	 * @param authHeader
+	 * @return
+	 */
+	@PostMapping("/group-leaderboard")
+	public ResponseEntity<List<GroupLeaderboardDto>> getGroupLeaderboard(@RequestHeader("Authorization") String authHeader, @RequestBody GroupRequest groupRequest){
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+	        throw new UnauthorizedException("Missing or invalid Authorization header");
+	    }
+		List<GroupLeaderboardDto> groups = groupService.computeAndGetGroupLeaderboard(groupRequest.getGroupId());
+
+		return ResponseEntity.ok(groups);
+		
+	}
+	
+	
 	
 
 }
