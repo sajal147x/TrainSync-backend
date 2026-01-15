@@ -152,6 +152,20 @@ public class WorkoutService {
 	public Workout fetchWorkout(UUID workoutId) {
 		return workoutRepository.findById(workoutId).get();
 	}
+	
+	/**
+	 * 1. fetch all exercises for workout
+	 * 2. delete all sets for each exercise
+	 * 3. delete all exercises
+	 * 4. delete workout
+	 * 
+	 * @param workoutId
+	 */
+	public void deleteWorkout(String workoutId) {
+		UUID workoutUuid = UUID.fromString(workoutId);
+		Workout workout = workoutRepository.findById(workoutUuid).get();
+		workoutRepository.delete(workout);
+	}
 
 
 	
@@ -163,4 +177,6 @@ public class WorkoutService {
 				UUID.fromString("a1363c95-b399-4907-9015-3ab6681113de"));
 		System.out.println(lastExerciseForUser.getName());
 	}
+
+
 }

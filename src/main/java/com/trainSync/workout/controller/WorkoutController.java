@@ -183,4 +183,10 @@ public class WorkoutController {
 			return ResponseEntity.status(500).body("Failed to retrieve workout");
 		}
 	}
+	
+	@PostMapping("/delete-workout")
+	public ResponseEntity<Integer> deleteWorkout(@RequestHeader("Authorization") String authHeader, @RequestBody WorkoutDto workoutDto) {
+			workoutService.deleteWorkout(workoutDto.getWorkoutId());
+			return ResponseEntity.ok(200);
+	}
 }

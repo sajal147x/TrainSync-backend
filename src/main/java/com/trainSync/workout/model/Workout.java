@@ -53,6 +53,7 @@ public class Workout {
 	@ManyToOne
 	@JoinColumn(name = "pre_made_workout_id")
 	private PreMadeWorkout preMadeWorkout;
+	
 
 
 
