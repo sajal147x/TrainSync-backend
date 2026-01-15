@@ -95,7 +95,7 @@ public class FriendGroupController {
 		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 	        throw new UnauthorizedException("Missing or invalid Authorization header");
 	    }
-		List<GroupLeaderboardDto> groups = groupService.computeAndGetGroupLeaderboard(groupRequest.getGroupId());
+		List<GroupLeaderboardDto> groups = groupService.computeAndGetGroupLeaderboard(groupRequest.getGroupId(), groupRequest.getTimeFrame());
 
 		return ResponseEntity.ok(groups);
 		

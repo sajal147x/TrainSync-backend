@@ -19,6 +19,7 @@ import com.trainSync.community.repository.FriendGroupMemberLinkRepository;
 import com.trainSync.community.repository.FriendGroupRepository;
 import com.trainSync.user.model.UserDetails;
 import com.trainSync.user.service.UserService;
+import com.trainSync.util.Constants;
 import com.trainSync.workout.dto.UserWorkoutCount;
 import com.trainSync.workout.respository.WorkoutRepository;
 
@@ -121,9 +122,10 @@ public class FriendGroupService {
 	 * 2. compute weekly workouts for each member
 	 * 3. map to dto and sort
 	 * @param groupId
+	 * @param string 
 	 * @return
 	 */
-	public List<GroupLeaderboardDto> computeAndGetGroupLeaderboard(String groupId) {
+	public List<GroupLeaderboardDto> computeAndGetGroupLeaderboard(String groupId, String timeFrame) {
 		UUID groupUUID = UUID.fromString(groupId);
 		
 		// RETRIEVE GROUP MEMBERS
@@ -131,10 +133,10 @@ public class FriendGroupService {
 				.map(FriendGroupMemberLink::getGroupMember)
 				.toList();
 		
-		// COMPUTE WEEKLY STATS
+		// COMPUTE STATS
 		List<UserWorkoutCount> userWorkoutCountsThisWeek = workoutRepository.countWorkoutsPerUserSince(
 				groupMembers.stream().map(UserDetails::getId).toList(),
-				OffsetDateTime.now().minusDays(7)
+				OffsetDateTime.now().minusDays(Constants.TIME_FRAME_DAYS_MAP.get(timeFrame))
 		);
 		
 		//MAP FOR EFFECIENT LOOKUP
@@ -162,5 +164,7 @@ public class FriendGroupService {
 		return leaderboard;
 		
 	}
+	
+	
 
 }
