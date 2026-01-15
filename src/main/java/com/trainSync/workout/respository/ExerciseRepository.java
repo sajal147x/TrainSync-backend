@@ -6,11 +6,13 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.trainSync.stats.dto.MonthlyExerciseCountPerMuscleDto;
+import com.trainSync.stats.dto.TopExerciseCount;
 import com.trainSync.workout.model.Exercise;
 
 /**
@@ -55,4 +57,27 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
 		    ORDER BY MAX(w.startTime) DESC
 		""")
 	List<MonthlyExerciseCountPerMuscleDto> findPrimaryMuscleCounts(@Param("userId") UUID userId, @Param("cutoff") OffsetDateTime cutoff);
+	
+	
+	@Query("""
+		    SELECT
+		        e.exerciseLibrary.id AS exerciseLibraryId,
+		        e.exerciseLibrary.name AS exerciseName,
+		        e.exerciseLibrary.exercisePictureUrl AS exercisePictureUrl,
+		        COUNT(e) AS count
+		    FROM Exercise e
+		    JOIN e.workout w
+		    WHERE w.userId = :userId
+		      AND e.exerciseLibrary IS NOT NULL
+		    GROUP BY
+		        e.exerciseLibrary.id,
+		        e.exerciseLibrary.name,
+		        e.exerciseLibrary.exercisePictureUrl
+		    ORDER BY COUNT(e) DESC
+		""")
+		List<TopExerciseCount> findTopExercisesForUser(
+		        @Param("userId") UUID userId,
+		        Pageable pageable
+		);
+
 }

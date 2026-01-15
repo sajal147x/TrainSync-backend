@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trainSync.service.JwtService;
+import com.trainSync.stats.dto.ExerciseCountDto;
 import com.trainSync.stats.dto.MonthlyExerciseCountPerMuscleDto;
+import com.trainSync.stats.service.ExerciseStatsService;
 import com.trainSync.workout.respository.ExerciseRepository;
 import com.trainSync.workout.respository.WorkoutRepository;
 
@@ -30,11 +32,14 @@ public class HomeStatsController {
 	
 	private final ExerciseRepository exerciseRepository;
 	
+	private final ExerciseStatsService exerciseStatsService;
+	
 	public HomeStatsController(WorkoutRepository workoutRepository, JwtService jwtService,
-			ExerciseRepository exerciseRepository) {
+			ExerciseRepository exerciseRepository, ExerciseStatsService exerciseStatsService) {
 		this.workoutRepository = workoutRepository;
 		this.jwtService = jwtService;
 		this.exerciseRepository = exerciseRepository;
+		this.exerciseStatsService = exerciseStatsService;
 	}
 
 
@@ -77,6 +82,18 @@ public class HomeStatsController {
 
 		return ResponseEntity.ok(dto);
 	}
+    
+    @GetMapping("/most-performed-exercises")
+    public ResponseEntity<List<ExerciseCountDto>> getMostPerformedExercises(@RequestHeader("Authorization") String authHeader) {
+    	// Extract user ID from JWT token
+		String token = authHeader.replace("Bearer ", "");
+		String userIdStr = jwtService.extractUserId(token);
+		UUID userId = UUID.fromString(userIdStr);
+
+		List<ExerciseCountDto> dto = exerciseStatsService.getMostPerformedExercises(userId);
+
+		return ResponseEntity.ok(dto);
+    }
     
     public static void main(String[] args) {
     	
