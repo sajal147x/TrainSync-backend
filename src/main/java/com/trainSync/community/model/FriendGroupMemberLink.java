@@ -4,8 +4,6 @@ package com.trainSync.community.model;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import org.hibernate.annotations.BatchSize;
-
 import com.trainSync.user.model.UserDetails;
 
 import jakarta.persistence.Column;

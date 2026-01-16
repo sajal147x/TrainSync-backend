@@ -9,7 +9,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.trainSync.stats.dto.ExerciseCountDto;
+import com.trainSync.stats.dto.ExerciseStats;
+import com.trainSync.stats.dto.ExerciseStatsDto;
 import com.trainSync.stats.dto.TopExerciseCount;
+import com.trainSync.workout.dto.SetDto;
+import com.trainSync.workout.model.ExerciseSet;
 import com.trainSync.workout.respository.ExerciseRepository;
 
 /**
@@ -48,4 +52,36 @@ public class ExerciseStatsService {
 		
 	}
 
+	/**
+	 * @desc method for computing stats to provide insights to user for a specific exercise
+	 * @param userId
+	 * @param fromString
+	 * @return
+	 */
+	public ExerciseStatsDto computeExerciseStats(UUID userId, UUID exerciseLibraryId) {
+		
+		ExerciseStats basicStats = exerciseRepository.getExerciseStats(userId, exerciseLibraryId);
+		
+		//BASIC STATS
+		ExerciseStatsDto statsDto = ExerciseStatsDto.builder()
+				.totalCount(basicStats.getTotalCount())
+				.averageNumberOfSets(basicStats.getAvgSets())
+				.maxWeight(basicStats.getMaxWeight())
+				.build();
+		
+		//REPS FOR MAX WEIGHT
+		Integer repsForMaxWeight = exerciseRepository.findHighestRepsAtMaxWeight(userId, exerciseLibraryId);
+		statsDto.setRepsForMaxWeight(repsForMaxWeight);
+		
+		//RECOMMENDED SET/REPS
+		
+		return statsDto;
+		
+		
+	}
+	
+	public List<SetDto> createRecommendedSetsBasedOnExistingSets(List<ExerciseSet> existingSets, double weightIncreasePercentage, double repsIncreasePercentage) {
+		return null;
+	}
+	
 }

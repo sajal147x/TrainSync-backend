@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.trainSync.TrainSyncApplication;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkout;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkoutExercise;
-import com.trainSync.preMadeWorkout.model.PreMadeWorkoutSet;
 import com.trainSync.preMadeWorkout.repository.PreMadeWorkoutSetRepository;
 import com.trainSync.workout.dto.WorkoutDto;
 import com.trainSync.workout.factory.ExerciseFactory;
@@ -36,9 +35,6 @@ public class WorkoutService {
 	private final WorkoutRepository workoutRepository;
 	private final ExerciseRepository exerciseRepository;
 	private final ExerciseLibraryRepository exerciseLibraryRepository;
-	private final PreMadeWorkoutSetRepository preMadeWorkoutSetRepository;
-	
-	
 	WorkoutService(WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository,
 			ExerciseLibraryRepository exerciseLibraryRepository,
 			PreMadeWorkoutSetRepository preMadeWorkoutSetRepository,
@@ -46,7 +42,6 @@ public class WorkoutService {
 		this.workoutRepository = workoutRepository;
 		this.exerciseRepository = exerciseRepository;
 		this.exerciseLibraryRepository = exerciseLibraryRepository;
-		this.preMadeWorkoutSetRepository = preMadeWorkoutSetRepository;
 	}
 	
 
