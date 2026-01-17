@@ -112,8 +112,9 @@ public class WorkoutController {
 			workoutDto.setWorkoutName(workout.getName());
 
 			for (Exercise exercise : workout.getExercises()) {
-				ExerciseDto exerciseDto = new ExerciseDto(exercise.getId().toString(),
-						(exercise.getExerciseLibrary().getName() + " (" + exercise.getExerciseLibrary().getEquipment().getName() + ")"));
+				ExerciseDto exerciseDto = new ExerciseDto();
+				exerciseDto.setId(exercise.getId().toString());
+				exerciseDto.setName(exercise.getExerciseLibrary().getName() + " (" + exercise.getExerciseLibrary().getEquipment().getName() + ")");
 				exerciseDto.setPreFilledFlag(exercise.getPreFilledFromLastWorkoutFlag());
 				if (exercise.getPreFilledWorkout() != null) {
 					exerciseDto.setPreFilledDate(exercise.getPreFilledWorkout().getStartTime().toString());
@@ -124,6 +125,7 @@ public class WorkoutController {
 				exerciseDto.setExerciseOrder(exercise.getExerciseOrder());
 
 				exerciseDto.setExercisePictureUrl(exercise.getExerciseLibrary().getExercisePictureUrl());
+				exerciseDto.setExerciseLibraryId(exercise.getExerciseLibrary().getId().toString());
 
                 convertExerciseSetToDto(exercise, exerciseDto);
                 workoutDto.getExercises().add(exerciseDto);
@@ -166,7 +168,9 @@ public class WorkoutController {
 
 			Exercise exercise = optionalExercise.get();
 
-			ExerciseDto exerciseDto = new ExerciseDto(exercise.getId().toString(), exercise.getName());
+			ExerciseDto exerciseDto = new ExerciseDto();
+			exerciseDto.setId(exercise.getId().toString());
+			exerciseDto.setName(exercise.getExerciseLibrary().getName());
 
 			exerciseDto.setExercisePictureUrl(exercise.getExerciseLibrary().getExercisePictureUrl());
 			exerciseDto.setPreFilledFlag(exercise.getPreFilledFromLastWorkoutFlag());

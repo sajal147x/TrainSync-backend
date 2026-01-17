@@ -23,9 +23,9 @@ import lombok.Setter;
 public class ExerciseStatsDto {
 	
 	private int totalCount;
-	private int averageNumberOfSets;
+	private Double averageNumberOfSets;
 	private Double maxWeight;
-	private int repsForMaxWeight;
+	private Integer repsForMaxWeight;
 	private List<SetDto> recommendedSets;
 
 }

@@ -1,9 +1,12 @@
 
 package com.trainSync.workout.dto;
 
+import lombok.Builder;
+
 /**
  * Author: Sajal Gupta Date: Nov 13, 2025
  */
+@Builder
 public class SetDto {
 
 	private String id;

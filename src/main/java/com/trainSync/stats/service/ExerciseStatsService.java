@@ -13,6 +13,7 @@ import com.trainSync.stats.dto.ExerciseStats;
 import com.trainSync.stats.dto.ExerciseStatsDto;
 import com.trainSync.stats.dto.TopExerciseCount;
 import com.trainSync.workout.dto.SetDto;
+import com.trainSync.workout.model.Exercise;
 import com.trainSync.workout.model.ExerciseSet;
 import com.trainSync.workout.respository.ExerciseRepository;
 
@@ -74,14 +75,37 @@ public class ExerciseStatsService {
 		statsDto.setRepsForMaxWeight(repsForMaxWeight);
 		
 		//RECOMMENDED SET/REPS
+		Exercise lastExerciseForUser = exerciseRepository.findLatestExerciseForUser(userId, exerciseLibraryId);
+		List<ExerciseSet> existingSets = lastExerciseForUser.getSets();
+		List<SetDto> recommendedSets = createRecommendedSetsBasedOnExistingSets(existingSets, 2.0, 2.0);
+		statsDto.setRecommendedSets(recommendedSets);
 		
 		return statsDto;
 		
 		
 	}
 	
+	/**
+	 * 
+	 * @param existingSets
+	 * @param weightIncreasePercentage
+	 * @param repsIncreasePercentage
+	 * @return
+	 */
 	public List<SetDto> createRecommendedSetsBasedOnExistingSets(List<ExerciseSet> existingSets, double weightIncreasePercentage, double repsIncreasePercentage) {
-		return null;
+		List<SetDto> recommendedSets = new ArrayList<>();
+		for (ExerciseSet set : existingSets) {
+			double newWeight = set.getWeight() * (1 + weightIncreasePercentage / 100);
+			int newReps = (int) Math.round(set.getReps() * (1 + repsIncreasePercentage / 100));
+			
+			SetDto recommendedSet = SetDto.builder()
+					.weight(newWeight)
+					.reps(newReps)
+					.setNumber(set.getSetNumber())
+					.build();
+			recommendedSets.add(recommendedSet);
+		}
+		return recommendedSets;
 	}
 	
 }

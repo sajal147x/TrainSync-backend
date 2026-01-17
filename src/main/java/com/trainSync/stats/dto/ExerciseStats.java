@@ -7,7 +7,7 @@ package com.trainSync.stats.dto;
 public interface ExerciseStats {
 	
 	int getTotalCount();
-	int getAvgSets();
+	Double getAvgSets();
 	Double getMaxWeight();
 
 }
