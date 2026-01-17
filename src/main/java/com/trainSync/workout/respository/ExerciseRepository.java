@@ -98,6 +98,24 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
 				    ORDER BY w.startTime
 				""")
 		List<ExerciseStatTimeFrame> findExerciseVolumeHistory(UUID userId, UUID exerciseId, OffsetDateTime startDate);
+		
+		
+		@Query("""
+			    SELECT
+			        w.startTime AS workoutDate,
+			        MAX(s.weight) AS statValue
+			    FROM ExerciseSet s
+			    JOIN s.exercise e
+			    JOIN e.exerciseLibrary el
+			    JOIN e.workout w
+			    WHERE w.userId = :userId
+			      AND el.id = :exerciseId
+			      AND w.startTime >= :startDate
+			    GROUP BY w.startTime, el.id, el.name
+			    ORDER BY w.startTime
+			""")
+		List<ExerciseStatTimeFrame> findExerciseMaxWeightHistory(UUID userId, UUID exerciseId,
+				OffsetDateTime startDate);
 
 
 }

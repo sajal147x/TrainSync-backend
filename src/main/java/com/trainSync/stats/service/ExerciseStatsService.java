@@ -73,23 +73,43 @@ public class ExerciseStatsService {
 		//DETERMINE CUT OFF DATE 
 		OffsetDateTime cutOff = DateUtility.getCutOffDateTimeFromMonthsAgo(timeFrameMonths);
 
-		//IF VOLUME STAT TYPE
+		// VOLUME HISTORY
 		if (statType.equals(Constants.STAT_TYPE_TOTAL_VOLUME)) {
 			List<ExerciseStatTimeFrame> statTimeFrames = exerciseRepository.findExerciseVolumeHistory(userId,
 					exerciseLibraryId, cutOff);
 			List<ExerciseStatTimeFrameDto> dtoTimeFrames = new ArrayList<>();
-
-			for (ExerciseStatTimeFrame estf : statTimeFrames) {
-				ExerciseStatTimeFrameDto dto = ExerciseStatTimeFrameDto.builder().workoutDate(estf.getWorkoutDate())
-						.statValue(estf.getStatValue()).build();
-				dtoTimeFrames.add(dto);
-			}
-			resultDto.setExerciseStatTimeFrames(dtoTimeFrames);
-
+			convertExerciseTimeFrameResultToDto(resultDto, statTimeFrames, dtoTimeFrames);
+		
 		}
 		
+		// MAX WEIGHT HISTORY
+		else if (statType.equals(Constants.STAT_TYPE_MAX_WEIGHT)) {
+			List<ExerciseStatTimeFrame> statTimeFrames = exerciseRepository.findExerciseMaxWeightHistory(userId,
+					exerciseLibraryId, cutOff);
+			List<ExerciseStatTimeFrameDto> dtoTimeFrames = new ArrayList<>();
+			convertExerciseTimeFrameResultToDto(resultDto, statTimeFrames, dtoTimeFrames);
+			
+		}
 		
 		return resultDto;
 	}
+
+	/**
+	 * 
+	 * @param resultDto
+	 * @param statTimeFrames
+	 * @param dtoTimeFrames
+	 */
+	private void convertExerciseTimeFrameResultToDto(ExerciseStatsDto resultDto,
+			List<ExerciseStatTimeFrame> statTimeFrames, List<ExerciseStatTimeFrameDto> dtoTimeFrames) {
+		for (ExerciseStatTimeFrame estf : statTimeFrames) {
+			ExerciseStatTimeFrameDto dto = ExerciseStatTimeFrameDto.builder().workoutDate(estf.getWorkoutDate())
+					.statValue(estf.getStatValue()).build();
+			dtoTimeFrames.add(dto);
+		}
+		resultDto.setExerciseStatTimeFrames(dtoTimeFrames);
+	}
+
+
 	
 }
