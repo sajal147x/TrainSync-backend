@@ -59,11 +59,15 @@ public class FriendGroupMessageController {
 	 * @param request
 	 * @return
 	 */
-	@GetMapping("/get-group-messages")
+	@PostMapping("/get-group-messages")
 	public ResponseEntity<List<GroupMessageDto>> getGroupMessages(@RequestHeader("Authorization") String authHeader,
 			@RequestBody GroupMessageRequest request) {
-
-		return null;
+		String token = authHeader.replace("Bearer ", "");
+		String userIdStr = jwtService.extractUserId(token); // validate JWT and extract Supabase UUID
+		UUID userId = UUID.fromString(userIdStr);
+		
+		List<GroupMessageDto> messages = groupMessageService.getGroupMessages(userId, UUID.fromString(request.getGroupId()));
+		return ResponseEntity.ok(messages);
 	}
 
 }

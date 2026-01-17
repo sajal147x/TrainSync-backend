@@ -1,10 +1,14 @@
 package com.trainSync.community.service;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.trainSync.community.dto.FriendsResponseDto;
+import com.trainSync.community.dto.GroupMessageDto;
 import com.trainSync.community.model.FriendGroup;
 import com.trainSync.community.model.GroupMessage;
 import com.trainSync.community.repository.FriendGroupRepository;
@@ -53,6 +57,36 @@ public class FriendGroupMessageService {
 				.build();
 		
 		groupMessageRepository.save(groupMessage);
+		
+	}
+
+	
+	/**
+	 * 
+	 * @param userId
+	 * @param fromString
+	 * @return
+	 */
+	public List<GroupMessageDto> getGroupMessages(UUID loggedInUserId, UUID groupId) {
+		
+		List<GroupMessage> messages = groupMessageRepository.findByGroupIdOrderBySentAtAsc(groupId);
+		
+		List<GroupMessageDto> messageDtos = new ArrayList<>(); 
+		
+		for(GroupMessage msg : messages) {
+			GroupMessageDto dto = GroupMessageDto.builder()
+					.sentAt(msg.getSentAt())
+					.message(msg.getMessage())
+					.isSentByLoggedInUser(msg.getSender().getId().equals(loggedInUserId) ? "true" : "false")
+					.userDto(FriendsResponseDto.builder()
+							.userId(msg.getSender().getId().toString())
+							.name(msg.getSender().getName())
+							.profilePictureUrl(msg.getSender().getProfilePictureUrl())
+							.build())
+					.build();
+			messageDtos.add(dto);
+		}
+		return messageDtos;
 		
 	}
 	
