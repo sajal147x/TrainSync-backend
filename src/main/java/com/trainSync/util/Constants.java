@@ -14,6 +14,10 @@ public class Constants {
 		"month", 30,
 		"year", 365
 	);
+	
+	public static final String STAT_TYPE_MAX_WEIGHT = "max_weight";
+	public static final String STAT_TYPE_TOTAL_VOLUME = "total_volume";
+	public static final String STAT_TYPE_ONE_REP_MAX = "one_rep_max";
 
 
 }

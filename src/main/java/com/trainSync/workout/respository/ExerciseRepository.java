@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.trainSync.stats.dto.ExerciseStatTimeFrame;
 import com.trainSync.stats.dto.ExerciseStats;
 import com.trainSync.stats.dto.MonthlyExerciseCountPerMuscleDto;
 import com.trainSync.stats.dto.TopExerciseCount;
@@ -81,42 +82,22 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
 		        Pageable pageable
 		);
 	
-	@Query("""
-		    SELECT
-		        COUNT(DISTINCT e.id) AS totalCount,
-		        AVG(SIZE(e.sets)) AS avgSets,
-		        MAX(s.weight) AS maxWeight
-		    FROM Exercise e
-		    JOIN e.workout w
-		    JOIN e.sets s
-		    WHERE w.userId = :userId
-		      AND e.exerciseLibrary.id = :exerciseLibraryId
-		""")
-		ExerciseStats getExerciseStats(
-		        UUID userId,
-		        UUID exerciseLibraryId
-		);
-	
-	@Query("""
-		    SELECT MAX(s.reps)
-		    FROM Exercise e
-		    JOIN e.workout w
-		    JOIN e.sets s
-		    WHERE w.userId = :userId
-		      AND e.exerciseLibrary.id = :exerciseLibraryId
-		      AND s.weight = (
-		          SELECT MAX(s2.weight)
-		          FROM Exercise e2
-		          JOIN e2.workout w2
-		          JOIN e2.sets s2
-		          WHERE w2.userId = :userId
-		            AND e2.exerciseLibrary.id = :exerciseLibraryId
-		      )
-		""")
-		Integer findHighestRepsAtMaxWeight(
-		        @Param("userId") UUID userId,
-		        @Param("exerciseLibraryId") UUID exerciseLibraryId
-		);
+
+		@Query("""
+				    SELECT
+				        w.startTime AS workoutDate,
+				        SUM(s.reps * s.weight) AS statValue
+				    FROM ExerciseSet s
+				    JOIN s.exercise e
+				    JOIN e.exerciseLibrary el
+				    JOIN e.workout w
+				    WHERE w.userId = :userId
+				      AND el.id = :exerciseId
+				      AND w.startTime >= :startDate
+				    GROUP BY w.startTime, el.id, el.name
+				    ORDER BY w.startTime
+				""")
+		List<ExerciseStatTimeFrame> findExerciseVolumeHistory(UUID userId, UUID exerciseId, OffsetDateTime startDate);
 
 
 }

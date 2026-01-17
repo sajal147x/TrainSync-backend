@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.trainSync.service.JwtService;
 import com.trainSync.stats.dto.ExerciseCountDto;
 import com.trainSync.stats.dto.ExerciseStatsDto;
+import com.trainSync.stats.dto.ExerciseStatsRequest;
 import com.trainSync.stats.service.ExerciseStatsService;
 
 /**
@@ -39,14 +40,14 @@ public class ExerciseStatsController {
 	 */
 	@RequestMapping("/exercise-stats")
 	public ResponseEntity<ExerciseStatsDto> getExerciseStats(@RequestHeader("Authorization") String authHeader,
-			@RequestBody ExerciseCountDto dto) {
+			@RequestBody ExerciseStatsRequest dto) {
 		// Extract user ID from JWT token
 		String token = authHeader.replace("Bearer ", "");
 		String userIdStr = jwtService.extractUserId(token);
 		UUID userId = UUID.fromString(userIdStr);
 
-		ExerciseStatsDto statsDto = exerciseStatsService.computeExerciseStats(userId,
-				UUID.fromString(dto.getExerciseLibraryId()));
+		ExerciseStatsDto statsDto = exerciseStatsService.computeExerciseProgression(userId,
+				UUID.fromString(dto.getExerciseLibraryId()), dto.getStatType(), dto.getTimeFrameMonths());
 
 		return ResponseEntity.ok(statsDto);
 	}

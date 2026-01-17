@@ -1,9 +1,7 @@
 
 package com.trainSync.stats.dto;
 
-import java.util.List;
-
-import com.trainSync.workout.dto.SetDto;
+import java.time.OffsetDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,17 +11,16 @@ import lombok.Setter;
 
 /**
  * Author: Sajal Gupta
- * Created on: Jan 16, 2026 10:33:21 AM
+ * Created on: Jan 17, 2026 2:07:07 PM
  */
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExerciseStatsDto {
+public class ExerciseStatTimeFrameDto {
 	
-	private List<ExerciseStatTimeFrameDto> exerciseStatTimeFrames;
-	
-	
+	Double statValue;
+	OffsetDateTime workoutDate;
 
 }

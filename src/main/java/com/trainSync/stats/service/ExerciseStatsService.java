@@ -1,6 +1,7 @@
 
 package com.trainSync.stats.service;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -9,9 +10,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.trainSync.stats.dto.ExerciseCountDto;
+import com.trainSync.stats.dto.ExerciseStatTimeFrame;
+import com.trainSync.stats.dto.ExerciseStatTimeFrameDto;
 import com.trainSync.stats.dto.ExerciseStats;
 import com.trainSync.stats.dto.ExerciseStatsDto;
 import com.trainSync.stats.dto.TopExerciseCount;
+import com.trainSync.util.Constants;
+import com.trainSync.util.DateUtility;
 import com.trainSync.workout.dto.SetDto;
 import com.trainSync.workout.model.Exercise;
 import com.trainSync.workout.model.ExerciseSet;
@@ -54,58 +59,37 @@ public class ExerciseStatsService {
 	}
 
 	/**
-	 * @desc method for computing stats to provide insights to user for a specific exercise
+	 * @desc method for computing progression for an exercise
 	 * @param userId
+	 * @param timeFrameMonths
+	 * @param statType
 	 * @param fromString
 	 * @return
 	 */
-	public ExerciseStatsDto computeExerciseStats(UUID userId, UUID exerciseLibraryId) {
+	public ExerciseStatsDto computeExerciseProgression(UUID userId, UUID exerciseLibraryId, String statType,
+			String timeFrameMonths) {
 		
-		ExerciseStats basicStats = exerciseRepository.getExerciseStats(userId, exerciseLibraryId);
-		
-		//BASIC STATS
-		ExerciseStatsDto statsDto = ExerciseStatsDto.builder()
-				.totalCount(basicStats.getTotalCount())
-				.averageNumberOfSets(basicStats.getAvgSets())
-				.maxWeight(basicStats.getMaxWeight())
-				.build();
-		
-		//REPS FOR MAX WEIGHT
-		Integer repsForMaxWeight = exerciseRepository.findHighestRepsAtMaxWeight(userId, exerciseLibraryId);
-		statsDto.setRepsForMaxWeight(repsForMaxWeight);
-		
-		//RECOMMENDED SET/REPS
-		Exercise lastExerciseForUser = exerciseRepository.findLatestExerciseForUser(userId, exerciseLibraryId);
-		List<ExerciseSet> existingSets = lastExerciseForUser.getSets();
-		List<SetDto> recommendedSets = createRecommendedSetsBasedOnExistingSets(existingSets, 2.0, 2.0);
-		statsDto.setRecommendedSets(recommendedSets);
-		
-		return statsDto;
-		
-		
-	}
-	
-	/**
-	 * 
-	 * @param existingSets
-	 * @param weightIncreasePercentage
-	 * @param repsIncreasePercentage
-	 * @return
-	 */
-	public List<SetDto> createRecommendedSetsBasedOnExistingSets(List<ExerciseSet> existingSets, double weightIncreasePercentage, double repsIncreasePercentage) {
-		List<SetDto> recommendedSets = new ArrayList<>();
-		for (ExerciseSet set : existingSets) {
-			double newWeight = set.getWeight() * (1 + weightIncreasePercentage / 100);
-			int newReps = (int) Math.round(set.getReps() * (1 + repsIncreasePercentage / 100));
-			
-			SetDto recommendedSet = SetDto.builder()
-					.weight(newWeight)
-					.reps(newReps)
-					.setNumber(set.getSetNumber())
-					.build();
-			recommendedSets.add(recommendedSet);
+		ExerciseStatsDto resultDto = new ExerciseStatsDto();
+		//DETERMINE CUT OFF DATE 
+		OffsetDateTime cutOff = DateUtility.getCutOffDateTimeFromMonthsAgo(timeFrameMonths);
+
+		//IF VOLUME STAT TYPE
+		if (statType.equals(Constants.STAT_TYPE_TOTAL_VOLUME)) {
+			List<ExerciseStatTimeFrame> statTimeFrames = exerciseRepository.findExerciseVolumeHistory(userId,
+					exerciseLibraryId, cutOff);
+			List<ExerciseStatTimeFrameDto> dtoTimeFrames = new ArrayList<>();
+
+			for (ExerciseStatTimeFrame estf : statTimeFrames) {
+				ExerciseStatTimeFrameDto dto = ExerciseStatTimeFrameDto.builder().workoutDate(estf.getWorkoutDate())
+						.statValue(estf.getStatValue()).build();
+				dtoTimeFrames.add(dto);
+			}
+			resultDto.setExerciseStatTimeFrames(dtoTimeFrames);
+
 		}
-		return recommendedSets;
+		
+		
+		return resultDto;
 	}
 	
 }
