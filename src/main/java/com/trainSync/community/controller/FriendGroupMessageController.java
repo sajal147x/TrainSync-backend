@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 
 import com.trainSync.community.dto.GroupMessageDto;
 import com.trainSync.community.dto.GroupMessageRequest;
@@ -30,9 +31,13 @@ public class FriendGroupMessageController {
 	
 	private final FriendGroupMessageService groupMessageService;
 	
-	public FriendGroupMessageController(JwtService jwtService, FriendGroupMessageService groupMessageService) {
+	private final SimpMessagingTemplate messagingTemplate;
+	
+	
+	public FriendGroupMessageController(JwtService jwtService, FriendGroupMessageService groupMessageService, SimpMessagingTemplate messagingTemplate) {
 		this.jwtService = jwtService;
 		this.groupMessageService = groupMessageService;
+		this.messagingTemplate = messagingTemplate;
 	}
 	
 	/**
@@ -49,6 +54,12 @@ public class FriendGroupMessageController {
 		UUID userId = UUID.fromString(userIdStr);
 
 		groupMessageService.saveSentMessage(userId, UUID.fromString(request.getGroupId()), request.getMessage());
+		
+		//send a websocket notification to members
+		messagingTemplate.convertAndSend(
+		        "/topic/groups/" + request.getGroupId(),
+		        request
+		    );
 
 		return ResponseEntity.ok(200);
 	}
