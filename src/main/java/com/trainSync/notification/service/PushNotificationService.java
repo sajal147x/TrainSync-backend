@@ -4,11 +4,11 @@ package com.trainSync.notification.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.niamedtech.expo.exposerversdk.ExpoPushNotificationClient;
@@ -39,7 +39,7 @@ public class PushNotificationService {
 	/**
 	 * common method to send push notification
 	 */
-	public void sendPushNotification(List<String> tokens, String title, String message) throws IOException {
+	public void sendPushNotification(List<String> tokens, String title, String message, Map<String, Object> data) throws IOException {
 		
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		
@@ -54,6 +54,7 @@ public class PushNotificationService {
 		pushNotification.setTitle(title);
 		pushNotification.setBody(message);
 		
+		pushNotification.setData(data);
 
 		List<PushNotification> notifications = new ArrayList<>();
 		notifications.add(pushNotification);
@@ -82,6 +83,18 @@ public class PushNotificationService {
 				.build();
 		pushNotificationTokenRepository.save(token);
 		
+	}
+	
+	
+	public static void main(String[] args) {
+		try {
+			List<String> tokens = new ArrayList<>();
+			tokens.add("ExponentPushToken[JBYOMYNvpKH7ZGHWsSBQBK]");
+			PushNotificationService service = new PushNotificationService(null, null);
+			service.sendPushNotification(tokens, "Test Title", "This is a test message from TrainSync backend.", null);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

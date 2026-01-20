@@ -19,5 +19,8 @@ public class Constants {
 	public static final String STAT_TYPE_TOTAL_VOLUME = "total_volume";
 	public static final String STAT_TYPE_ONE_REP_MAX = "one_rep_max";
 
+	//NOTIFICATION
+	public static final Object NOTIF_TYPE_GROUP = "GROUP";
+
 
 }

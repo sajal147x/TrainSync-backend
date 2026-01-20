@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import com.trainSync.notification.repository.PushNotificationTokenRepository;
 import com.trainSync.notification.service.PushNotificationService;
 import com.trainSync.user.model.UserDetails;
 import com.trainSync.user.repository.UserDetailsRepository;
+import com.trainSync.util.Constants;
 
 /**
  * @author sajalgupta
@@ -132,7 +134,14 @@ public class FriendGroupMessageService {
 		//GET TOKENS FOR USERS AND SEND PUSH NOTIFICATION
 		List<PushNotificationToken> tokensForUsers = pushNotificationTokenRepository.findAllByUser_IdIn(memberIds);
 		List<String> tokens = tokensForUsers.stream().map(PushNotificationToken::getToken).toList();
-		pushNotificationService.sendPushNotification(tokens, message, message);
+		FriendGroup group = friendGroupRepository.findById(groupId).get();
+		Map<String, Object> data = Map.of(
+ 				"type", Constants.NOTIF_TYPE_GROUP,
+				"groupId", groupId.toString(),
+				"groupName", group.getGroupName(),
+				"profilePictureUrl", group.getProfilePictureUrl() != null ? group.getProfilePictureUrl() : ""
+				);
+		pushNotificationService.sendPushNotification(tokens, message, message, data);
 		
 		
 		
