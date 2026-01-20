@@ -1,5 +1,6 @@
 package com.trainSync.community.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,15 +46,18 @@ public class FriendGroupMessageController {
 	 * @param authHeader
 	 * @param request
 	 * @return
+	 * @throws IOException 
 	 */
 	@PostMapping("/send-message")
 	public ResponseEntity<Integer> sendMessage(@RequestHeader("Authorization") String authHeader,
-			@RequestBody GroupMessageRequest request) {
+			@RequestBody GroupMessageRequest request) throws IOException {
 		String token = authHeader.replace("Bearer ", "");
 		String userIdStr = jwtService.extractUserId(token); // validate JWT and extract Supabase UUID
 		UUID userId = UUID.fromString(userIdStr);
-
+		//
 		groupMessageService.saveSentMessage(userId, UUID.fromString(request.getGroupId()), request.getMessage());
+		//
+		groupMessageService.sendPushNotificationToGroupMembers(userId, UUID.fromString(request.getGroupId()), request.getMessage());
 		
 		//send a websocket notification to members
 		messagingTemplate.convertAndSend(
