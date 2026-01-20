@@ -141,7 +141,7 @@ public class FriendGroupMessageService {
 				"groupName", group.getGroupName(),
 				"profilePictureUrl", group.getProfilePictureUrl() != null ? group.getProfilePictureUrl() : ""
 				);
-		pushNotificationService.sendPushNotification(tokens, message, message, data);
+		pushNotificationService.sendPushNotification(tokens, group.getGroupName(), message, data);
 		
 		
 		
