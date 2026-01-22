@@ -22,5 +22,7 @@ public class Constants {
 	//NOTIFICATION
 	public static final Object NOTIF_TYPE_GROUP = "GROUP";
 
+	public static final Object NOTIF_TYPE_FRIEND_SUMMARY = "FRIEND";
+
 
 }

@@ -7,13 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.antlr.v4.runtime.misc.TestRig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.niamedtech.expo.exposerversdk.ExpoPushNotificationClient;
 import com.niamedtech.expo.exposerversdk.request.PushNotification;
 import com.niamedtech.expo.exposerversdk.response.TicketResponse;
+import com.trainSync.config.exception.GlobalExceptionHandler;
 import com.trainSync.notification.model.PushNotificationToken;
 import com.trainSync.notification.repository.PushNotificationTokenRepository;
 import com.trainSync.user.model.UserDetails;
@@ -30,6 +34,9 @@ public class PushNotificationService {
 	
 	private final PushNotificationTokenRepository pushNotificationTokenRepository;
 	
+	private static final Logger log =
+            LoggerFactory.getLogger(GlobalExceptionHandler.class);
+	
 	public PushNotificationService(UserDetailsRepository userDetailsRepository, PushNotificationTokenRepository pushNotificationTokenRepository) {
 		this.userDetailsRepository = userDetailsRepository;
 		this.pushNotificationTokenRepository = pushNotificationTokenRepository;
@@ -39,7 +46,7 @@ public class PushNotificationService {
 	/**
 	 * common method to send push notification
 	 */
-	public void sendPushNotification(List<String> tokens, String title, String message, Map<String, Object> data) throws IOException {
+	public void sendPushNotification(List<String> tokens, String title, String message, Map<String, Object> data) {
 		
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		
@@ -59,11 +66,10 @@ public class PushNotificationService {
 		List<PushNotification> notifications = new ArrayList<>();
 		notifications.add(pushNotification);
 		
-		List<TicketResponse.Ticket> response =  client.sendPushNotifications(notifications);
-
-		for (TicketResponse.Ticket ticket : response) {
-				System.out.println(ticket.getId());
-				System.out.println(ticket.getStatus());
+		try {
+			 client.sendPushNotifications(notifications);
+		} catch (IOException e) {
+			log.error("SENDING PUSH NOTIFICATION FAILED");
 		}
 
 	}
@@ -87,14 +93,15 @@ public class PushNotificationService {
 	
 	
 	public static void main(String[] args) {
-		try {
+	
 			List<String> tokens = new ArrayList<>();
 			tokens.add("ExponentPushToken[JBYOMYNvpKH7ZGHWsSBQBK]");
 			PushNotificationService service = new PushNotificationService(null, null);
 			service.sendPushNotification(tokens, "Test Title", "This is a test message from TrainSync backend.", null);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	
 	}
+
+
+	
 
 }

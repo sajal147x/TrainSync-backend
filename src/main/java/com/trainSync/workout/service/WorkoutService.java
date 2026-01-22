@@ -2,16 +2,27 @@ package com.trainSync.workout.service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.trainSync.TrainSyncApplication;
+import com.trainSync.community.dto.FriendsResponseDto;
+import com.trainSync.community.model.FriendLink;
+import com.trainSync.community.repository.FriendLinkRepository;
+import com.trainSync.notification.model.PushNotificationToken;
+import com.trainSync.notification.repository.PushNotificationTokenRepository;
+import com.trainSync.notification.service.PushNotificationService;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkout;
 import com.trainSync.preMadeWorkout.model.PreMadeWorkoutExercise;
 import com.trainSync.preMadeWorkout.repository.PreMadeWorkoutSetRepository;
+import com.trainSync.user.model.UserDetails;
+import com.trainSync.user.repository.UserDetailsRepository;
+import com.trainSync.util.Constants;
 import com.trainSync.workout.dto.WorkoutDto;
 import com.trainSync.workout.factory.ExerciseFactory;
 import com.trainSync.workout.factory.ExerciseSetFactory;
@@ -31,20 +42,30 @@ import com.trainSync.workout.respository.WorkoutRepository;
 @Service
 public class WorkoutService {
 
-	
+	//
 	private final WorkoutRepository workoutRepository;
 	private final ExerciseRepository exerciseRepository;
 	private final ExerciseLibraryRepository exerciseLibraryRepository;
+	private final PushNotificationService pushNotificationService;
+	private final FriendLinkRepository friendLinkRepository;
+	private final UserDetailsRepository userDetailsRepository;
+	private final PushNotificationTokenRepository pushNotificationTokenRepository;
+	//
 	WorkoutService(WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository,
 			ExerciseLibraryRepository exerciseLibraryRepository,
-			PreMadeWorkoutSetRepository preMadeWorkoutSetRepository,
-			ExerciseSetRepository exerciseSetRepository) {
+			PreMadeWorkoutSetRepository preMadeWorkoutSetRepository, ExerciseSetRepository exerciseSetRepository,
+			PushNotificationService pushNotificationService, FriendLinkRepository friendLinkRepository,
+			UserDetailsRepository userDetailsRepository, PushNotificationTokenRepository pushNotificationTokenRepository) {
 		this.workoutRepository = workoutRepository;
 		this.exerciseRepository = exerciseRepository;
 		this.exerciseLibraryRepository = exerciseLibraryRepository;
+		this.pushNotificationService = pushNotificationService;
+		this.friendLinkRepository = friendLinkRepository;
+		this.userDetailsRepository = userDetailsRepository;
+		this.pushNotificationTokenRepository = pushNotificationTokenRepository;
 	}
+	//
 	
-
 	/**
 	 * 1. create and save workout
 	 * 2. create and save exercise
@@ -75,9 +96,12 @@ public class WorkoutService {
 		List<ExerciseSet> sets = new ExerciseSetFactory().createSetsFromExistingExercise(lastExerciseForUser, exercise);
 		exercise.setSets(sets);
 		exerciseRepository.save(exercise);
+		
+		sendPushNotificationForStartingWorkout(userId);
 
 		return workout.getId().toString();
 	}
+
 
 
 	/**
@@ -135,6 +159,8 @@ public class WorkoutService {
 			exerciseRepository.save(exercise);
 		}
 
+		sendPushNotificationForStartingWorkout(userId);
+		
 		return workout.getId().toString();
 	}
 	
@@ -162,6 +188,30 @@ public class WorkoutService {
 		workoutRepository.delete(workout);
 	}
 
+	/**
+	 * send notification to users friends that user started workout
+	 * @param userId
+	 */
+	@Async
+	public void sendPushNotificationForStartingWorkout(UUID userId) {
+		UserDetails userDetails  = userDetailsRepository.findById(userId).get();
+		String title = "TrainSync";
+		String message = userDetails.getName() + " just started a workout!";
+		
+ 		List<FriendLink> friendsForUser = friendLinkRepository.findByUserDetails_Id(userId);
+ 		List<UUID> friendIds = friendsForUser.stream().map(FriendLink::getFriendDetails).map(UserDetails::getId).toList();
+ 		List<PushNotificationToken> tokens = pushNotificationTokenRepository.findAllByUser_IdIn(friendIds);
+ 		List<String> tokenStrs = tokens.stream().map(PushNotificationToken::getToken).toList();
+ 		
+ 		Map<String, Object> data = Map.of(
+ 				"type", Constants.NOTIF_TYPE_FRIEND_SUMMARY,
+				"friendId", userId.toString(),
+				"name", userDetails.getName(),
+				"profilePictureUrl", userDetails.getProfilePictureUrl() != null ? userDetails.getProfilePictureUrl() : ""
+				);
+ 		pushNotificationService.sendPushNotification(tokenStrs, title, message, data);
+ 		
+	}
 
 	
 	public static void main(String[] args) {
