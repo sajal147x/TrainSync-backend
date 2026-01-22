@@ -81,7 +81,14 @@ public class PushNotificationService {
 	 * @param platform
 	 */
 	public void savePushNotificationToken(UUID userId, String pushNotificationToken, String platform) {
+		
+		//no need to save if token already in db
+		if(pushNotificationTokenRepository.existsByUser_IdAndToken(userId, pushNotificationToken)) {
+			return;
+		}
+		
 		UserDetails userDetails = userDetailsRepository.findById(userId).get();
+		
 		PushNotificationToken token = PushNotificationToken.builder()
 				.user(userDetails)
 				.token(pushNotificationToken)
