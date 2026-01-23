@@ -1,4 +1,5 @@
-package com.trainSync.user.dto;
+
+package com.trainSync.passwordReset.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,21 +9,15 @@ import lombok.Setter;
 
 /**
  * Author: Sajal Gupta
- * Date: 2025-11-06
+ * Created on: Jan 23, 2026 1:40:32 PM
  */
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class SignUpRequest {
-	private String name;
-	private int age;
-    private String username;
-    
-    private String email;
-
-    private String password;
-
+public class ResetPasswordResponse {
+	
+	private String message;
 
 }

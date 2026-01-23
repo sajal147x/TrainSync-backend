@@ -62,6 +62,7 @@ public class AuthController {
                 .username(request.getUsername())
                 .age(request.getAge())
                 .name(request.getName())
+                .email(request.getEmail())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .build();
 
