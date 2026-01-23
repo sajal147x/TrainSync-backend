@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.trainSync.passwordReset.dto.ResetPasswordRequest;
 import com.trainSync.passwordReset.dto.ResetPasswordResponse;
 import com.trainSync.passwordReset.service.ResetPasswordService;
+import com.trainSync.user.model.UserDetails;
 
 /**
  * Author: Sajal Gupta
@@ -32,11 +33,10 @@ public class ResetPasswordController {
 	 */
 	@PostMapping("/reset-password")
 	public ResponseEntity<ResetPasswordResponse> resetPassword(@RequestBody ResetPasswordRequest request) {
-		String email = resetPasswordService.findEmailFromUsernameOrEmail(request.getUserNameOrEmail());
+		
+		UserDetails user = resetPasswordService.findUserFromUsernameOrEmail(request.getUserNameOrEmail());
 
-		if (email != null && !email.isBlank()) {
-			resetPasswordService.sendPasswordResetLink(email);
-		}
+		resetPasswordService.sendPasswordResetLink(user);
 
 		return ResponseEntity.ok(ResetPasswordResponse.builder()
 				.message("If an account exists, a password reset link has been sent.").build());
