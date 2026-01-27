@@ -117,5 +117,30 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
 		List<ExerciseStatTimeFrame> findExerciseMaxWeightHistory(UUID userId, UUID exerciseId,
 				OffsetDateTime startDate);
 
+		@Query("""
+			    SELECT MAX(s.weight)
+			    FROM ExerciseSet s
+			    JOIN s.exercise e
+			    JOIN e.exerciseLibrary el
+			    JOIN e.workout w
+			    WHERE w.userId = :userId
+			      AND el.id = :exerciseId
+			""")
+			Double findAllTimeMaxWeight(UUID userId, UUID exerciseId);
+		
+		@Query(value = """
+			    SELECT MAX(workout_volume)
+			    FROM (
+			        SELECT SUM(s.reps * s.weight) AS workout_volume
+			        FROM exercise_set s
+			        JOIN exercise e ON s.exercise_id = e.id
+			        JOIN exercise_library el ON e.exercise_id = el.id
+			        JOIN workout w ON e.workout_id = w.id
+			        WHERE w.user_id = :userId
+			          AND el.id = :exerciseId
+			        GROUP BY w.id
+			    ) t
+			""", nativeQuery = true)
+			Double findAllTimeMaxVolume(UUID userId, UUID exerciseId);
 
 }
