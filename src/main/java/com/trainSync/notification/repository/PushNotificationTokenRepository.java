@@ -18,4 +18,6 @@ public interface PushNotificationTokenRepository extends JpaRepository<PushNotif
 
 	public boolean existsByUser_IdAndToken(UUID userId, String pushNotificationToken);
 
+	public PushNotificationToken findByUser_IdAndToken(UUID userId, String pushNotificationToken);
+
 }

@@ -1,8 +1,7 @@
 package com.trainSync.workout.respository;
+import java.util.List;
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,64 +13,60 @@ public interface ExerciseLibraryRepository extends JpaRepository<ExerciseLibrary
 
     // Search only by name
     @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
-    Page<ExerciseLibrary> findByNameContainingIgnoreCase(
-            String searchText,
-            Pageable pageable
+    List<ExerciseLibrary> findByNameContainingIgnoreCase(
+            String searchText
     );
 
     // Equipment only
     @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
-    Page<ExerciseLibrary> findByEquipment_Id(
-            UUID equipmentId,
-            Pageable pageable
+    List<ExerciseLibrary> findByEquipment_Id(
+            UUID equipmentId
     );
 
     // MUSCLE TAG (PRIMARY ONLY)
     @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
-    Page<ExerciseLibrary> findByTagLinks_MuscleTag_IdAndTagLinks_Level(
+    List<ExerciseLibrary> findByTagLinks_MuscleTag_IdAndTagLinks_Level(
             UUID muscleTagId,
-            String level, // always pass "PRIMARY"
-            Pageable pageable
+            String level // always pass "PRIMARY"
+            
     );
 
     // SEARCH + MUSCLE TAG (PRIMARY ONLY)
     @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
-    Page<ExerciseLibrary> findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndTagLinks_Level(
+    List<ExerciseLibrary> findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndTagLinks_Level(
             String searchText,
             UUID muscleTagId,
-            String level, // always pass "PRIMARY"
-            Pageable pageable
+            String level // always pass "PRIMARY"
+          
     );
 
     // SEARCH + EQUIPMENT
     @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
-    Page<ExerciseLibrary> findByNameContainingIgnoreCaseAndEquipment_Id(
+    List<ExerciseLibrary> findByNameContainingIgnoreCaseAndEquipment_Id(
             String searchText,
-            UUID equipmentId,
-            Pageable pageable
+            UUID equipmentId
+            
     );
 
     // EQUIPMENT + MUSCLE TAG (PRIMARY ONLY)
     @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
-    Page<ExerciseLibrary> findByTagLinks_MuscleTag_IdAndTagLinks_LevelAndEquipment_Id(
+    List<ExerciseLibrary> findByTagLinks_MuscleTag_IdAndTagLinks_LevelAndEquipment_Id(
             UUID muscleTagId,
             String level, // always "PRIMARY"
-            UUID equipmentId,
-            Pageable pageable
+            UUID equipmentId
     );
 
     // SEARCH + MUSCLE TAG (PRIMARY ONLY) + EQUIPMENT
     @EntityGraph(attributePaths = { "equipment", "tagLinks", "tagLinks.muscleTag" })
-    Page<ExerciseLibrary> findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndTagLinks_LevelAndEquipment_Id(
+    List<ExerciseLibrary> findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndTagLinks_LevelAndEquipment_Id(
             String searchText,
             UUID muscleTagId,
             String level, // always "PRIMARY"
-            UUID equipmentId,
-            Pageable pageable
+            UUID equipmentId
     );
 
     ExerciseLibrary findByNameIgnoreCase(String name);
     
-    Page<ExerciseLibrary> findByExercisePictureUrlIsNull(Pageable pageable);
+    List<ExerciseLibrary> findByExercisePictureUrlIsNull();
    
 }

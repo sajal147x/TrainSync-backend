@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import com.trainSync.workout.model.MuscleTag;
 import com.trainSync.workout.respository.EquipmentTagRepository;
 import com.trainSync.workout.respository.ExerciseLibraryRepository;
 import com.trainSync.workout.respository.MuscleTagRepository;
+import com.trainSync.workout.service.ExerciseLibraryService;
 
 /**
  * Author: Sajal Gupta Date: Nov 12, 2025
@@ -32,16 +34,17 @@ import com.trainSync.workout.respository.MuscleTagRepository;
 public class ExerciseLibraryController {
 
 	ExerciseLibraryController(ExerciseLibraryRepository exerciseLibraryRepository,
-			MuscleTagRepository muscleTagRepository, EquipmentTagRepository equipmentTagRepository) {
+			MuscleTagRepository muscleTagRepository, EquipmentTagRepository equipmentTagRepository, ExerciseLibraryService exerciseLibraryService) {
 		this.exerciseLibraryRepository = exerciseLibraryRepository;
 		this.muscleTagRepository = muscleTagRepository;
 		this.equipmentTagRepository = equipmentTagRepository;
+		this.exerciseLibraryService=exerciseLibraryService;
 	}
 	
 	private final ExerciseLibraryRepository exerciseLibraryRepository;
 	private final MuscleTagRepository muscleTagRepository;
 	private final EquipmentTagRepository equipmentTagRepository;
-	
+	private final ExerciseLibraryService exerciseLibraryService;
 	
 	
 	/**
@@ -53,95 +56,17 @@ public class ExerciseLibraryController {
 	 * @return
 	 */
 	@GetMapping
-	public Page<ExerciseDto> getExercises(@RequestParam(required = false) String searchText,
-			@RequestParam(required = false) String muscleTag, @RequestParam(required = false) String equipmentTag, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
-		Pageable pageable = PageRequest.of(page, size);
-		Page<ExerciseLibrary> exercises;
-		UUID muscleTagUuid = muscleTag != null ? UUID.fromString(muscleTag) : null;
-		UUID equipmentTagUuid = equipmentTag != null ? UUID.fromString(equipmentTag) : null;
+	public List<ExerciseDto> getExercises(@RequestParam(required = false) String searchText,
+			@RequestParam(required = false) String muscleTag, @RequestParam(required = false) String equipmentTag) {
 		
-		System.out.println("SEARCH TEXT " + searchText + "MUSCLE TAG" + muscleTag + "EQUIPMENT TAG" + equipmentTag);
-		//search text, muscle tag, and equipment
-		if (searchText != null && muscleTagUuid != null && equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndTagLinks_LevelAndEquipment_Id(
-					searchText, muscleTagUuid,"PRIMARY", equipmentTagUuid, pageable);
-		} 
-		//search text and muscle tag
-		else if (searchText != null && muscleTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCaseAndTagLinks_MuscleTag_IdAndTagLinks_Level(searchText,
-					muscleTagUuid,"PRIMARY", pageable);
-		}
-		//search text and equipment tag
-		else if (searchText != null && equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCaseAndEquipment_Id(searchText,
-					equipmentTagUuid, pageable);
-		} 
-		//muscle tag and equipment tag
-		else if (muscleTagUuid != null && equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByTagLinks_MuscleTag_IdAndTagLinks_LevelAndEquipment_Id(muscleTagUuid, "PRIMARY",
-					equipmentTagUuid, pageable);
-		} 
-		//only search text
-		else if (searchText != null) {
-			exercises = exerciseLibraryRepository.findByNameContainingIgnoreCase(searchText, pageable);
-		} 
-		//only muscle tag
-		else if (muscleTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByTagLinks_MuscleTag_IdAndTagLinks_Level(muscleTagUuid, "PRIMARY", pageable);
-		} 
-		//only equipment tag
-		else if (equipmentTagUuid != null) {
-			exercises = exerciseLibraryRepository.findByEquipment_Id(equipmentTagUuid, pageable);
-		}
-		// no filter
-		else {
-			exercises = exerciseLibraryRepository.findAll(pageable);
-		}
 
 		// Convert to DTO
-		List<ExerciseDto> dtoList = convertExerciseToDto(exercises, equipmentTagUuid);
-		// Wrap into Page<ExerciseDto>
-		Page<ExerciseDto> dtoPage = new PageImpl<>(dtoList, pageable, exercises.getTotalElements());
+		List<ExerciseDto> dtoList = exerciseLibraryService.getExercises(searchText, muscleTag, equipmentTag);
 		
-
-		return dtoPage;
-	}
-
-
-    /**
-     *
-     * @param exercises
-     * @param equipmentTagUuid
-     * @return
-     */
-	private List<ExerciseDto> convertExerciseToDto(Page<ExerciseLibrary> exercises, UUID equipmentTagUuid) {
-		List<ExerciseDto> dtoList = new ArrayList<>();
-
-		for (ExerciseLibrary e : exercises) {
-
-			EquipmentTagDto equipmentDto = new EquipmentTagDto();
-			equipmentDto.setId(e.getEquipment().getId().toString());
-			equipmentDto.setName(e.getEquipment().getName());
-			ExerciseDto dto = new ExerciseDto();
-			dto.setEquipmentTag(equipmentDto);
-			dto.setId(e.getId().toString());
-			dto.setExercisePictureUrl(e.getExercisePictureUrl());
-			dto.setName(e.getDisplayName());
-
-			for (ExerciseLibraryTagLink tag : e.getTagLinks()) {
-				MuscleTagDto muscleTagDto = new MuscleTagDto();
-				muscleTagDto.setId(tag.getMuscleTag().getId().toString());
-				muscleTagDto.setName(tag.getMuscleTag().getName());
-				muscleTagDto.setLevel(tag.getLevel());
-				dto.getMuscleTags().add(muscleTagDto);
-			}
-			dtoList.add(dto);
-
-		}
 
 		return dtoList;
 	}
+
 	
 	
 	

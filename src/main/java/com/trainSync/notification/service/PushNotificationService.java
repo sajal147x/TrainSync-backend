@@ -93,6 +93,7 @@ public class PushNotificationService {
 				.user(userDetails)
 				.token(pushNotificationToken)
 				.platform(platform)
+				.status("ACTIVE")
 				.build();
 		pushNotificationTokenRepository.save(token);
 		
@@ -106,6 +107,19 @@ public class PushNotificationService {
 			PushNotificationService service = new PushNotificationService(null, null);
 			service.sendPushNotification(tokens, "Test Title", "This is a test message from TrainSync backend.", null);
 	
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @param pushNotificationToken
+	 */
+	public void removePushNotifToken(UUID userId, String pushNotificationToken) {
+		PushNotificationToken token = pushNotificationTokenRepository.findByUser_IdAndToken(userId, pushNotificationToken);
+		if(token==null) {
+			return;
+		}
+		pushNotificationTokenRepository.deleteById(token.getId());
 	}
 
 
