@@ -7,7 +7,7 @@ This repository contains the **backend** for **<App Name>**, built using **Java 
 The backend exposes REST APIs consumed by the **React Native + Expo frontend**, which is maintained in a separate repository.
 
  **Frontend repository:**  
-🔗 https://github.com/<your-username>/<frontend-repo-name>
+🔗 https://github.com/sajal147x/-TrainSync-react-native
 
 ---
 
@@ -24,13 +24,11 @@ The backend exposes REST APIs consumed by the **React Native + Expo frontend**, 
 
 ## Tech Stack
 
-- Java 17+
+- Java 21+
 - Spring Boot
-- Spring Web
 - Spring Data JPA
 - Lombok
-- Hibernate
-- MySQL / PostgreSQL (configurable)
+- PostgreSQL (configurable)
 - Maven
 
 ---
@@ -54,9 +52,6 @@ The backend exposes REST APIs consumed by the **React Native + Expo frontend**, 
   - Uses Spring Data JPA
   - No business logic
 
----
-
-## 📁 Project Structure
 
 
 
