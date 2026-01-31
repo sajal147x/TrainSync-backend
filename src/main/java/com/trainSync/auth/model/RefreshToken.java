@@ -42,7 +42,7 @@ public class RefreshToken {
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	private UserDetails userDetails;
+	private UserDetails userDtails;
 	
 	@Column
 	private Date expiredDate;
