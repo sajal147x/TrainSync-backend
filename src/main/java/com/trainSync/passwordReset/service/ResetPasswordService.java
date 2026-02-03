@@ -48,7 +48,7 @@ public class ResetPasswordService {
 	 */
 	public void sendPasswordResetLink(UserDetails user) {
 		
-		if(user==null) {
+		if(user==null || "INACTIVE".equals(user.getAccountStatus())) {
 			return;
 		}
 		String tempPassword = RandomStringUtils.randomAlphanumeric(10);

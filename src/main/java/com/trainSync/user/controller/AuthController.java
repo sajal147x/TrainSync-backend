@@ -93,7 +93,7 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody SignUpRequest request) {
 
         UserDetails user = userService.findByUsername(request.getUsername());
-        if (user == null) {
+        if (user == null || "INACTIVE".equals(user.getAccountStatus())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
         }
 
@@ -162,4 +162,24 @@ public class AuthController {
 
         return ResponseEntity.ok("Logged out successfully");
     }
+    
+    /**
+     * LOGOUT (REVOKE REFRESH TOKEN)
+     */
+    @PostMapping("/delete-account")
+    public ResponseEntity<?> deleteAccount(@RequestHeader("Authorization") String authHeader, @RequestBody LogoutRequest request) {
+    	
+    	String token = authHeader.replace("Bearer ", "");
+		UUID userId = UUID.fromString(jwtService.extractUserId(token)); 
+
+		userService.deleteAccount(userId);
+        
+        
+
+        return ResponseEntity.ok("Account Deleted Succesfully");
+    }
+    
+    
+    
+    
 }

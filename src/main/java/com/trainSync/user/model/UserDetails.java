@@ -50,6 +50,10 @@ public class UserDetails {
 	
 	@Column
 	private String userType;
+	
+	@Column
+	@Builder.Default
+	private String accountStatus = "ACTIVE";
 
 
 

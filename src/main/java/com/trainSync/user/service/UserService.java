@@ -48,5 +48,11 @@ public class UserService {
 		Optional<UserDetails> userOpt = userDetailsRepository.findById(userId);
 		return userOpt.orElse(null);
 	}
+
+	public void deleteAccount(UUID userId) {
+		UserDetails user = userDetailsRepository.findById(userId).get();
+		user.setAccountStatus("INACTIVE");
+		userDetailsRepository.save(user);
+	}
 	
 }
