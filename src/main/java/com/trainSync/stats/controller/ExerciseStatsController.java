@@ -1,9 +1,11 @@
 
 package com.trainSync.stats.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.trainSync.service.JwtService;
 import com.trainSync.stats.dto.ExerciseCountDto;
+import com.trainSync.stats.dto.ExerciseSetRepHistoryDto;
 import com.trainSync.stats.dto.ExerciseStatsDto;
 import com.trainSync.stats.dto.ExerciseStatsRequest;
 import com.trainSync.stats.service.ExerciseStatsService;
@@ -52,4 +55,24 @@ public class ExerciseStatsController {
 		return ResponseEntity.ok(statsDto);
 	}
 
+	/**
+	 * 
+	 * @param authHeader
+	 * @param dto
+	 * @return
+	 */
+	@PostMapping("/exercise-set-rep-history")
+	public ResponseEntity<List<ExerciseSetRepHistoryDto>> getExerciseSetRepHistory(
+			@RequestHeader("Authorization") String authHeader, @RequestBody ExerciseStatsRequest dto) {
+		// Extract user ID from JWT token
+		String token = authHeader.replace("Bearer ", "");
+		String userIdStr = jwtService.extractUserId(token);
+		UUID userId = UUID.fromString(userIdStr);
+
+		List<ExerciseSetRepHistoryDto> resultDtos = exerciseStatsService.computeExerciseSetRepHistory(userId,
+				UUID.fromString(dto.getExerciseLibraryId()), dto.getTimeFrameMonths());
+
+		return ResponseEntity.ok(resultDtos);
+
+	}
 }

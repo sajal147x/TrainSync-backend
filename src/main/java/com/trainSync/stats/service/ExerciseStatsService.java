@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.trainSync.stats.dto.ExerciseCountDto;
+import com.trainSync.stats.dto.ExerciseSetRepHistoryDto;
 import com.trainSync.stats.dto.ExerciseStatTimeFrame;
 import com.trainSync.stats.dto.ExerciseStatTimeFrameDto;
 import com.trainSync.stats.dto.ExerciseStats;
@@ -108,6 +109,19 @@ public class ExerciseStatsService {
 			dtoTimeFrames.add(dto);
 		}
 		resultDto.setExerciseStatTimeFrames(dtoTimeFrames);
+	}
+	
+	/**
+	 * 
+	 * @param userId
+	 * @param exerciseLibraryId
+	 * @param timeFrameMonths
+	 * @return
+	 */
+	public List<ExerciseSetRepHistoryDto> computeExerciseSetRepHistory(UUID userId, UUID exerciseLibraryId,
+			String timeFrameMonths) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
