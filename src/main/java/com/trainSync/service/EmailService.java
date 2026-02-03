@@ -30,6 +30,7 @@ public class EmailService {
 
        
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("trainsynchronize@gmail.com");
         message.setTo(email);
         message.setSubject(subject);
         message.setText(body);
