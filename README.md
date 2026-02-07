@@ -10,47 +10,11 @@ The backend exposes REST APIs consumed by the **React Native + Expo frontend**, 
 🔗 https://github.com/sajal147x/-TrainSync-react-native
 
 ---
+**SETUP**
 
-## Features
-
-- RESTful APIs using **Spring Boot**
-- Clean **Controller–Service–Repository** architecture
-- **Lombok** for reduced boilerplate
-- **Spring Data JPA** for persistence
-- Configurable environments (dev / prod)
-- Designed for mobile-first API consumption
-
----
-
-## Tech Stack
-
-- Java 21+
-- Spring Boot
-- Spring Data JPA
-- Lombok
-- PostgreSQL (configurable)
-- Maven
-
----
-
-##  Architecture Overview
-
-### Layer Responsibilities
-
-- **Controller**
-  - Handles HTTP requests and responses
-  - Performs request validation
-  - Delegates business logic to services
-
-- **Service**
-  - Contains business logic
-  - Transaction management
-  - Orchestrates repository calls
-
-- **Repository**
-  - Data access layer
-  - Uses Spring Data JPA
-  - No business logic
+1. Use intellij for best compatibility
+2. setup credentials in application.properties
+3. navigate to TrainSyncApplication.java and run project
 
 
 
