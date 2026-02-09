@@ -18,5 +18,6 @@ public class FlagContentRequest {
 	
 	private String groupId;
 	private String text;
+	private String userId;
 
 }

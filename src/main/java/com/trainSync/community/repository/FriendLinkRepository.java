@@ -16,4 +16,6 @@ public interface FriendLinkRepository  extends JpaRepository<FriendLink, UUID>{
 
 	List<FriendLink> findByUserDetails_Id(UUID userId);
 
+	FriendLink findByUserDetails_IdAndFriendDetails_Id(UUID userId, UUID blockedUserId);
+
 }

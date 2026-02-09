@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.trainSync.config.exception.UnauthorizedException;
 import com.trainSync.objectionableContent.dto.FlagContentRequest;
+import com.trainSync.objectionableContent.service.ObjectionableContentService;
 import com.trainSync.service.EmailService;
 import com.trainSync.service.JwtService;
 
@@ -28,9 +29,12 @@ public class ObjectionableContentController {
 	
 	private final EmailService emailService;
 	
-	public ObjectionableContentController(JwtService jwtService, EmailService emailService) {
+	private final ObjectionableContentService objectionableContentService;
+	
+	public ObjectionableContentController(JwtService jwtService, EmailService emailService, ObjectionableContentService objectionableContentService) {
 		this.jwtService=jwtService;
 		this.emailService=emailService;
+		this.objectionableContentService=objectionableContentService;
 	}
 	
 	
@@ -44,6 +48,20 @@ public class ObjectionableContentController {
 		UUID userId = UUID.fromString(jwtService.extractUserId(token)); // validate JWT and extract Supabase UUID
 		
 		emailService.sendEmail("sajal147y@gmail.com", "CONTENT FLAGGED" , "User ID: "+userId.toString()+"\ngroupId: "+request.getGroupId()+"\nreason: "+request.getText());
+		
+		return ResponseEntity.ok("SUCCESS");
+	}
+	
+	@PostMapping("/block-user")
+	public ResponseEntity<String> blockUser(@RequestHeader("Authorization") String authHeader, @RequestBody FlagContentRequest request){
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+	        throw new UnauthorizedException("Missing or invalid Authorization header");
+	    }
+		
+		String token = authHeader.replace("Bearer ", "");
+		UUID userId = UUID.fromString(jwtService.extractUserId(token)); // validate JWT and extract Supabase UUID
+		
+		objectionableContentService.blockUser(userId, UUID.fromString(request.getUserId()));
 		
 		return ResponseEntity.ok("SUCCESS");
 	}
