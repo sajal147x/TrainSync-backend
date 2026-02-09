@@ -44,6 +44,10 @@ public class ExerciseLibraryTagLink {
         this.level = level;
         this.id = new ExerciseLibraryTagKey(exerciseLibrary.getId(), muscleTag.getId());
     }
+    
+    public boolean isPrimary() {
+    	return "PRIMARY".equals(level);
+    }
 
 
 }

@@ -46,7 +46,7 @@ public class ExerciseLibrary {
     @Column(name = "created_by")
     private UUID createdBy; // null if global exercise
 
-    @OneToMany(mappedBy = "exerciseLibrary", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "exerciseLibrary", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @BatchSize(size = 10)
     private List<ExerciseLibraryTagLink> tagLinks = new ArrayList<>();
     
