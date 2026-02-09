@@ -5,12 +5,18 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import com.trainSync.TrainSyncApplication;
 import com.trainSync.community.dto.FriendGroupSummaryDto;
 import com.trainSync.community.dto.GroupLeaderboardDto;
 import com.trainSync.community.dto.GroupMemberDto;
@@ -23,6 +29,7 @@ import com.trainSync.user.model.UserDetails;
 import com.trainSync.user.service.UserService;
 import com.trainSync.util.Constants;
 import com.trainSync.workout.dto.UserWorkoutCount;
+import com.trainSync.workout.respository.ExerciseRepository;
 import com.trainSync.workout.respository.WorkoutRepository;
 
 /**
@@ -222,6 +229,38 @@ public class FriendGroupService {
 	            group.setProfilePictureUrl(publicUrl);
 		}
 		friendGroupRepository.save(group);
+	}
+
+	/**
+	 * find all groups for user check if blocked user in any of the groups remove
+	 * user from the groups if any
+	 * 
+	 * @param userId
+	 * @param blockedUserId
+	 */
+	public void removeUserFromAllMutualGroups(UUID userId, UUID blockedUserId) {
+		List<FriendGroupMemberLink> memberLinks = friendGroupMemberLinkRepository.findByGroupMemberId(userId);
+		List<FriendGroupMemberLink> memberLinksForBlockedUser = friendGroupMemberLinkRepository
+				.findByGroupMemberId(blockedUserId);
+		Set<UUID> groupIdsForUser = memberLinks.stream().map(link-> link.getFriendGroup().getId()).collect(Collectors.toSet());
+		Set<UUID> groupIdsForBlockedUser = memberLinksForBlockedUser.stream().map(link-> link.getFriendGroup().getId())
+				.collect(Collectors.toSet());
+
+		Set<UUID> mutualGroupIds = new HashSet<>(groupIdsForUser);
+		mutualGroupIds.retainAll(groupIdsForBlockedUser);
+		for(FriendGroupMemberLink link : memberLinks) {
+			if(mutualGroupIds.contains(link.getFriendGroup().getId())) {
+				friendGroupMemberLinkRepository.delete(link);
+			}
+		}
+		
+
+	}
+	
+	public static void main(String[] args) {
+		ApplicationContext ctx = SpringApplication.run(TrainSyncApplication.class, args);
+		FriendGroupService service = ctx.getBean(FriendGroupService.class);
+		service.removeUserFromAllMutualGroups(UUID.fromString("5283d060-9816-413b-92f3-046ce2fdbc43"), UUID.fromString("b3eb949c-32cd-432f-a647-a147ed4bc88d"));
 	}
 	
 

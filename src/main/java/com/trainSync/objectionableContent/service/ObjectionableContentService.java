@@ -9,6 +9,7 @@ import com.trainSync.community.model.FriendLink;
 import com.trainSync.community.model.FriendRequest;
 import com.trainSync.community.repository.FriendLinkRepository;
 import com.trainSync.community.repository.FriendRequestRepository;
+import com.trainSync.community.service.FriendGroupService;
 
 /**
  * Author: Sajal Gupta
@@ -20,11 +21,14 @@ public class ObjectionableContentService {
 	private final FriendLinkRepository friendLinkRepository;
 	
 	private final FriendRequestRepository friendRequestRepository;
+	
+	private final FriendGroupService friendGroupService;
 
 	
-	public ObjectionableContentService(FriendLinkRepository friendLinkRepository, FriendRequestRepository friendRequestRepository) {
+	public ObjectionableContentService(FriendLinkRepository friendLinkRepository, FriendRequestRepository friendRequestRepository, FriendGroupService friendGroupService) {
 		this.friendLinkRepository=friendLinkRepository;
 		this.friendRequestRepository=friendRequestRepository;
+		this.friendGroupService = friendGroupService;
 	}
 
 	/**
@@ -34,6 +38,7 @@ public class ObjectionableContentService {
 	 */
 	public void blockUser(UUID userId, UUID blockedUserId) {
 		
+		//FRIEND LINKS
 		FriendLink userToBlockedUserLink = friendLinkRepository.findByUserDetails_IdAndFriendDetails_Id(userId, blockedUserId);
 		FriendLink blockedUserToUserLink = friendLinkRepository.findByUserDetails_IdAndFriendDetails_Id(blockedUserId, userId);
 		FriendRequest userToBlockedUserRequest = friendRequestRepository.findBySenderDetails_IdAndReceiverDetails_Id(userId, blockedUserId);
@@ -51,6 +56,9 @@ public class ObjectionableContentService {
 		if (blockedUserToUserRequest != null) {
 			friendRequestRepository.delete(blockedUserToUserRequest);
 		}
+		
+		//REMOVING FROM GROUPS
+		friendGroupService.removeUserFromAllMutualGroups(userId, blockedUserId);
 		
 		
 	}
