@@ -59,6 +59,10 @@ public class Exercise {
 	
 	@Column
 	private int exerciseOrder;
+	
+	@Column
+	@Builder.Default
+	private String editedFlag = "NO";
 
 
 }

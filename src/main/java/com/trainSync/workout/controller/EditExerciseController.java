@@ -92,11 +92,8 @@ public class EditExerciseController {
 	public ResponseEntity<?> changeExerciseInWorkout(@RequestBody ChangeExerciseDto dto) {
 		try {
 
-			Exercise exercise = exerciseRepository.findById(UUID.fromString(dto.getExerciseId())).get();
-			ExerciseLibrary exerciseLibrary = exerciseLibraryRepository
-					.findById(UUID.fromString(dto.getNewExerciseLibraryId())).get();
-			exercise.setExerciseLibrary(exerciseLibrary);
-			exerciseRepository.save(exercise);
+			editExerciseService.changeExerciseInWorkout(UUID.fromString(dto.getExerciseId()), UUID.fromString(dto.getNewExerciseLibraryId()));
+			
 
 			return ResponseEntity.ok(200);
 		} catch (Exception e) {

@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.trainSync.TrainSyncApplication;
-import com.trainSync.community.dto.FriendsResponseDto;
 import com.trainSync.community.model.FriendLink;
 import com.trainSync.community.repository.FriendLinkRepository;
 import com.trainSync.notification.model.PushNotificationToken;
@@ -194,22 +193,22 @@ public class WorkoutService {
 	 */
 	@Async
 	public void sendPushNotificationForStartingWorkout(UUID userId) {
-//		UserDetails userDetails  = userDetailsRepository.findById(userId).get();
-//		String title = "TrainSync";
-//		String message = userDetails.getName() + " just started a workout!";
-//		
-// 		List<FriendLink> friendsForUser = friendLinkRepository.findByUserDetails_Id(userId);
-// 		List<UUID> friendIds = friendsForUser.stream().map(FriendLink::getFriendDetails).map(UserDetails::getId).toList();
-// 		List<PushNotificationToken> tokens = pushNotificationTokenRepository.findAllByUser_IdIn(friendIds);
-// 		List<String> tokenStrs = tokens.stream().map(PushNotificationToken::getToken).toList();
-// 		
-// 		Map<String, Object> data = Map.of(
-// 				"type", Constants.NOTIF_TYPE_FRIEND_SUMMARY,
-//				"friendId", userId.toString(),
-//				"name", userDetails.getName(),
-//				"profilePictureUrl", userDetails.getProfilePictureUrl() != null ? userDetails.getProfilePictureUrl() : ""
-//				);
-// 		pushNotificationService.sendPushNotification(tokenStrs, title, message, data);
+		UserDetails userDetails  = userDetailsRepository.findById(userId).get();
+		String title = "TrainSync";
+		String message = userDetails.getName() + " just started a workout!";
+		
+ 		List<FriendLink> friendsForUser = friendLinkRepository.findByUserDetails_Id(userId);
+ 		List<UUID> friendIds = friendsForUser.stream().map(FriendLink::getFriendDetails).map(UserDetails::getId).toList();
+ 		List<PushNotificationToken> tokens = pushNotificationTokenRepository.findAllByUser_IdIn(friendIds);
+ 		List<String> tokenStrs = tokens.stream().map(PushNotificationToken::getToken).toList();
+ 		
+ 		Map<String, Object> data = Map.of(
+				"type", Constants.NOTIF_TYPE_FRIEND_SUMMARY,
+				"friendId", userId.toString(),
+				"name", userDetails.getName(),
+				"profilePictureUrl", userDetails.getProfilePictureUrl() != null ? userDetails.getProfilePictureUrl() : ""
+				);
+ 		pushNotificationService.sendPushNotification(tokenStrs, title, message, data);
  		
 	}
 
