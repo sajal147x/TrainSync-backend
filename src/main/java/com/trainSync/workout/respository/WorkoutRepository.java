@@ -21,6 +21,8 @@ public interface WorkoutRepository extends JpaRepository<Workout, UUID> {
 
 	List<Workout> findTop5ByUserIdOrderByStartTimeDesc(UUID userId);
 
+	List<Workout> findTop10ByUserIdOrderByStartTimeDesc(UUID userId);
+
 	/**
 	 * @param userId
 	 * @return

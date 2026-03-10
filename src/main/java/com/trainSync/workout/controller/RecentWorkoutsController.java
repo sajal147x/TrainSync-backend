@@ -45,7 +45,7 @@ public class RecentWorkoutsController {
 
             // Fetch top 5 most recent workouts
             List<Workout> recentWorkouts = workoutRepository
-                    .findTop5ByUserIdOrderByStartTimeDesc(userId);
+                    .findTop10ByUserIdOrderByStartTimeDesc(userId);
 
             List<RecentWorkoutDto> dtoList = recentWorkouts.stream()
                     .map(w -> new RecentWorkoutDto(w.getId().toString(), w.getName(), w.getStartTime().toString()))
